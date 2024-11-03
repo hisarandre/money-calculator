@@ -11,7 +11,7 @@ import {
 
 interface TableCustomProps {
   columns: string[];
-  data: Array<Record<string, string>>;
+  data: Record<string, any>[];
   total?: number;
 }
 
@@ -33,8 +33,8 @@ const TableCustom: React.FC<TableCustomProps> =  ({ columns, data, total }) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
+                {data.map((row) => (
+                <TableRow key={row._id}>
                     {columns.map((col, index) => (
                     <TableCell key={col} className={index === lastColIndex ? 'text-right' : ''}>
                         {row[col]}
