@@ -1,7 +1,7 @@
 
 import { ThemeProvider } from "@/services/ThemeProvider"
 import ProjectedCalculator from "@/pages/ProjectedCalculator"
-import { ToggleMode } from "./components/toggleMode"
+import { ToggleMode } from "@/components/ToggleMode"
 
 
 function App() {

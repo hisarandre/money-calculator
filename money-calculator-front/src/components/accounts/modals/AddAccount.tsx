@@ -1,68 +1,57 @@
-import React from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import DialogCustom from '@/components/DialogCustom'
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import DialogCustom from '@/components/DialogCustom';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import FormFieldCustom from '@/components/FormFieldCustom';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store/Store';
+import { addAccount } from '@/store/AccountSlice';
 
-const AddAccount = () => {
 
-    const formSchema = z.object({
-        label: z.string().min(1, { message: "Label is required" }),
-        fee: z.number({ required_error: "Fee is required" }),
-    });
-
-    // 1. Define your form.
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            label: "",
-            fee:0,
-        },
-    })
-
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
-      }
-
-    return (
-        <DialogCustom
-            buttonText="Add" 
-            title="Add a new account" 
-        >
-        <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-            control={form.control}
-            name="label"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <Button type="submit">Add</Button>
-        </form>
-        </Form>
-            
-        </DialogCustom>
-      )
+interface AddAccountProps {
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
 }
 
-export default AddAccount
+const AddAccount: React.FC<AddAccountProps> = ({ isOpen, onOpenChange }) => {
+ const dispatch = useDispatch<AppDispatch>();
+
+
+  const formSchema = z.object({
+    label: z.string().min(1, { message: "Label is required" }),
+    fee: z.preprocess((val) => Number(val), z.number({ required_error: "Fee is required" })),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      label: "",
+      fee: 0,
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      await dispatch(addAccount(data));
+      onOpenChange(false); // Close the modal on success
+    } catch (error) {
+      console.error("Failed to add account:", error);
+    }
+  };
+
+  return (
+    <DialogCustom title="Add a new account" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormFieldCustom form={form} inputName="label" />
+          <FormFieldCustom form={form} inputName="fee" type="number" />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </DialogCustom>
+  );
+};
+
+export default AddAccount;

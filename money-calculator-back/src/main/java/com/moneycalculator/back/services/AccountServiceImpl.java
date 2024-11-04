@@ -2,10 +2,12 @@ package com.moneycalculator.back.services;
 
 import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.repositories.AccountRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -21,5 +23,38 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
+
+    @Override
+    public Account addAccount(Account account) {
+        // Check for duplicates
+        Optional<Account> existingAccount = accountRepository.findByLabel(account.getLabel());
+
+        if (existingAccount.isPresent()) {
+            throw new IllegalArgumentException("An account with this label already exists.");
+        }
+
+        return accountRepository.save(account);
+    }
+
+    @Override
+    public Account updateAccount(Integer _id, Account account) {
+        Account existingAccount = accountRepository.findById(_id)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + _id));
+
+        existingAccount.setLabel(account.getLabel());
+        existingAccount.setFee(account.getFee());
+        // Update other fields as needed
+
+        return accountRepository.save(existingAccount);
+    }
+
+    @Override
+    public void deleteAccount(Integer _id) {
+        if (!accountRepository.existsById(_id)) {
+            throw new EntityNotFoundException("Account not found with ID: " + _id);
+        }
+        accountRepository.deleteById(_id);
+    }
+
 
 }

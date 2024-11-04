@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { BASE_URL } from '@/utils/api'; 
+import { Account } from '@/models/Account';
 
 // Define the structure for individual account and the slice's state
 interface AccountState {
@@ -23,7 +24,6 @@ const initialState: AccountListState = {
   error: null,
 };
 
-// Async thunk to fetch account data from the API
 export const fetchAccounts = createAsyncThunk(
   'account/fetchAccounts',
   async (_, { rejectWithValue }) => {
@@ -36,11 +36,24 @@ export const fetchAccounts = createAsyncThunk(
   }
 );
 
+export const addAccount = createAsyncThunk(
+  'accounts/addAccount',
+  async (newAccount: Account, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/account/add`, newAccount);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue('Failed to add account');
+    }
+  }
+);
+
+
 // Slice definition
 const accountSlice = createSlice({
   name: 'accounts',
   initialState,
-  reducers: {}, // No additional reducers needed for now
+  reducers: {}, 
   extraReducers: (builder) => {
     builder
       .addCase(fetchAccounts.pending, (state) => {
@@ -48,13 +61,26 @@ const accountSlice = createSlice({
       })
       .addCase(fetchAccounts.fulfilled, (state, action: PayloadAction<AccountState[]>) => {
         state.status = 'succeeded';
-        state.accounts = action.payload; // Store fetched accounts
+        state.accounts = action.payload;
       })
       .addCase(fetchAccounts.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
+      })
+      // Add cases for addAccount
+      .addCase(addAccount.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addAccount.fulfilled, (state, action: PayloadAction<AccountState>) => {
+        state.status = 'succeeded';
+        state.accounts.push(action.payload); // Add the new account to the list
+      })
+      .addCase(addAccount.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to add account';
       });
   },
 });
+
 
 export default accountSlice.reducer;

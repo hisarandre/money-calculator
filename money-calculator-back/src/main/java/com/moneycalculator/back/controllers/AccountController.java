@@ -2,13 +2,14 @@ package com.moneycalculator.back.controllers;
 
 import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.services.AccountServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +38,44 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<?> addAccount(@Valid @RequestBody Account account) {
+        logger.info("Adding new account: " + account.getLabel());
 
+        try {
+            Account newAccount = accountService.addAccount(account);
+            return ResponseEntity.ok(newAccount);
+        }  catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateAccount(@PathVariable Long id, @Valid @RequestBody Account account) {
+        logger.info("Updating account with ID: " + id);
+
+        try {
+            Account updatedAccount = accountService.updateAccount(id, account);
+            return ResponseEntity.ok(updatedAccount);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found with ID: " + id);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
+        logger.info("Deleting account with ID: " + id);
+
+        try {
+            accountService.deleteAccount(id);
+            return ResponseEntity.ok("Account deleted successfully");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found with ID: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting account");
+        }
+    }
 
 }
