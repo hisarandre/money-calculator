@@ -1,17 +1,7 @@
-import React from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import React from "react";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash, Edit } from "lucide-react";
-
-
 
 interface TableCustomProps {
   columns: string[];
@@ -23,17 +13,8 @@ interface TableCustomProps {
   onEdit?: any;
 }
 
-const TableCustom: React.FC<TableCustomProps> = ({ 
-  columns, 
-  data, 
-  total, 
-  canDelete = false, 
-  canEdit = false, 
-  onDelete, 
-  onEdit 
-}) => {
-
-  const lastColIndex = columns.length - 1; 
+const TableCustom: React.FC<TableCustomProps> = ({ columns, data, total, canDelete = false, canEdit = false, onDelete, onEdit }) => {
+  const lastColIndex = columns.length - 1;
   const totalPrice = `${total}€`;
 
   return (
@@ -41,7 +22,7 @@ const TableCustom: React.FC<TableCustomProps> = ({
       <TableHeader>
         <TableRow>
           {columns.map((col, colIndex) => (
-            <TableHead key={col} className={colIndex === lastColIndex ? 'text-right' : ''}>
+            <TableHead key={col} className={colIndex === lastColIndex ? "text-right" : ""}>
               {col.charAt(0).toUpperCase() + col.slice(1)}
             </TableHead>
           ))}
@@ -52,7 +33,7 @@ const TableCustom: React.FC<TableCustomProps> = ({
         {data.map((row) => (
           <TableRow key={row._id}>
             {columns.map((col, index) => (
-              <TableCell key={col} className={index === lastColIndex ? 'text-right' : ''}>
+              <TableCell key={col} className={index === lastColIndex ? "text-right" : ""}>
                 {row[col]}
               </TableCell>
             ))}
@@ -60,7 +41,7 @@ const TableCustom: React.FC<TableCustomProps> = ({
               <TableCell>
                 <div className="flex space-x-2">
                   {canEdit && (
-                    <Button variant="ghost" size="icon" onClick={() => onEdit(row._id)}>
+                    <Button variant="ghost" size="icon" onClick={() => onEdit(row)}>
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">Edit</span>
                     </Button>

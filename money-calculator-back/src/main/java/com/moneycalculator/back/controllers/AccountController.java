@@ -64,15 +64,15 @@ public class AccountController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
-        logger.info("Deleting account with ID: " + id);
+    @DeleteMapping("/delete/{_id}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Integer _id) {
+        logger.info("Deleting account with ID: " + _id);
 
         try {
-            accountService.deleteAccount(id);
-            return ResponseEntity.ok("Account deleted successfully");
+            accountService.deleteAccount(_id);
+            return ResponseEntity.ok(_id);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found with ID: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found with ID: " + _id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting account");
         }

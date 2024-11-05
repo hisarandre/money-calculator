@@ -1,16 +1,15 @@
-import React from 'react'
+import React from "react";
 
-import Account from '@/components/accounts/Account'
-import Expense from '@/components/expenses/Expense'
-import Income from '@/components/incomes/Income'
-
+import AccountCard from "@/components/accounts/AccountCard";
+// import Expense from '@/components/expenses/Expense'
+// import Income from '@/components/incomes/Income'
 
 const ProjectedCalculator = () => {
   return (
-    <div className='flex'>
-      <Account></Account>
+    <div className="flex">
+      <AccountCard></AccountCard>
     </div>
-  )
-}
+  );
+};
 
-export default ProjectedCalculator
+export default ProjectedCalculator;
