@@ -1,13 +1,15 @@
 import React from "react";
 
 import AccountCard from "@/components/accounts/AccountCard";
-// import Expense from '@/components/expenses/Expense'
-// import Income from '@/components/incomes/Income'
+import ExpenseCard from "@/components/transactions/ExpenseCard";
+import IncomeCard from "@/components/transactions/IncomeCard";
 
 const ProjectedCalculator = () => {
   return (
     <div className="flex">
-      <AccountCard></AccountCard>
+      <AccountCard />
+      <ExpenseCard />
+      <IncomeCard />
     </div>
   );
 };

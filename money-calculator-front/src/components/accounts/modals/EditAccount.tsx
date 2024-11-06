@@ -53,7 +53,7 @@ const EditAccount: React.FC<EditAccountProps> = ({ account, isOpen, onOpenChange
   }, [editStatus, editError, onOpenChange]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    dispatch(editAccount({ id: account._id as number, editedAccount: data }));
+    dispatch(editAccount({ id: account.id as number, editedAccount: data }));
   };
 
   return (

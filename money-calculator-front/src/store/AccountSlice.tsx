@@ -25,7 +25,7 @@ export const addAccount = createAsyncThunk("accounts/addAccount", async (newAcco
 
 export const deleteAccount = createAsyncThunk("accounts/deleteAccount", async (id: number, { rejectWithValue }) => {
   try {
-    const response = await axios.delete(`${BASE_URL}/account/delete/${id}`);
+    const response = await axios.delete(`${BASE_URL}/account/${id}`);
     return response.data;
   } catch (error: any) {
     const errorMessage = error.response?.data || "Failed to delete account";
@@ -37,7 +37,7 @@ export const editAccount = createAsyncThunk(
   "accounts/editAccount",
   async ({ id, editedAccount }: { id: number; editedAccount: Account }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${BASE_URL}/account/update/${id}`, editedAccount);
+      const response = await axios.put(`${BASE_URL}/account/${id}`, editedAccount);
       return response.data;
     } catch (error: any) {
       const errorMessage = error.response?.data || "Failed to edit account";
@@ -100,8 +100,7 @@ const accountSlice = createSlice({
       })
       .addCase(deleteAccount.fulfilled, (state, action) => {
         state.deleteStatus = "succeeded";
-        console.log(action.payload);
-        state.accounts = state.accounts.filter((account) => account._id !== action.payload);
+        state.accounts = state.accounts.filter((account) => account.id !== action.payload);
       })
       .addCase(deleteAccount.rejected, (state, action) => {
         state.deleteStatus = "failed";
@@ -117,7 +116,7 @@ const accountSlice = createSlice({
       .addCase(editAccount.fulfilled, (state, action) => {
         state.editStatus = "succeeded";
         const updatedAccount = action.payload; // assuming action.payload contains the edited account
-        state.accounts = state.accounts.map((account) => (account._id === updatedAccount._id ? updatedAccount : account));
+        state.accounts = state.accounts.map((account) => (account.id === updatedAccount._id ? updatedAccount : account));
       })
       .addCase(editAccount.rejected, (state, action) => {
         state.editStatus = "failed";

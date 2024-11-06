@@ -37,9 +37,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccount(Integer _id, Account account) {
-        Account existingAccount = accountRepository.findById(_id)
-                .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + _id));
+    public Account updateAccount(Integer id, Account account) {
+        Account existingAccount = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + id));
 
         existingAccount.setLabel(account.getLabel());
         existingAccount.setFee(account.getFee());
@@ -49,11 +49,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteAccount(Integer _id) {
-        if (!accountRepository.existsById(_id)) {
-            throw new EntityNotFoundException("Account not found with ID: " + _id);
+    public void deleteAccount(Integer id) {
+        if (!accountRepository.existsById(id)) {
+            throw new EntityNotFoundException("Account not found with ID: " + id);
         }
-        accountRepository.deleteById(_id);
+        accountRepository.deleteById(id);
     }
 
 

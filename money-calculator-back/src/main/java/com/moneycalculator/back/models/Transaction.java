@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "accounts")
-public class Account {
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@Table(name = "transactions")
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,14 @@ public class Account {
 
     private String label;
 
-    private Double fee;
+    private Double amount;
 
     private Boolean isDelete = false;
+
+    @Column(name = "type", insertable = false, updatable = false)
+    private String type;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "_id", nullable = false)
+    private Account account;
 }

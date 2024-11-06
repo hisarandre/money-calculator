@@ -50,7 +50,7 @@ public class AccountController {
         }
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateAccount(@PathVariable Integer id, @Valid @RequestBody Account account) {
         logger.info("Updating account with ID: " + id);
 
@@ -67,7 +67,7 @@ public class AccountController {
 
     //TODO : add restriction if account used in transaction
     //TODO : do a soft delete instead
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAccount(@PathVariable Integer id) {
         logger.info("Deleting account with ID: " + id);
 

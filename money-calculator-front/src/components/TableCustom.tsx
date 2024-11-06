@@ -17,12 +17,14 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data, total, canDele
   const lastColIndex = columns.length - 1;
   const totalPrice = `${total}€`;
 
+  console.log(columns);
+  console.log(data);
   return (
     <Table>
       <TableHeader>
         <TableRow>
           {columns.map((col, colIndex) => (
-            <TableHead key={col} className={colIndex === lastColIndex ? "text-right" : ""}>
+            <TableHead key={`${col}-${colIndex}`} className={colIndex === lastColIndex ? "text-right" : ""}>
               {col.charAt(0).toUpperCase() + col.slice(1)}
             </TableHead>
           ))}
@@ -30,10 +32,10 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data, total, canDele
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row) => (
-          <TableRow key={row._id}>
-            {columns.map((col, index) => (
-              <TableCell key={col} className={index === lastColIndex ? "text-right" : ""}>
+        {data.map((row, rowIndex) => (
+          <TableRow key={row.id || `row-${rowIndex}`}>
+            {columns.map((col, colIndex) => (
+              <TableCell key={`${col}-${rowIndex}-${colIndex}`} className={colIndex === lastColIndex ? "text-right" : ""}>
                 {row[col]}
               </TableCell>
             ))}
@@ -41,13 +43,13 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data, total, canDele
               <TableCell>
                 <div className="flex space-x-2">
                   {canEdit && (
-                    <Button variant="ghost" size="icon" onClick={() => onEdit(row)}>
+                    <Button variant="outline" size="icon" onClick={() => onEdit(row)}>
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">Edit</span>
                     </Button>
                   )}
                   {canDelete && (
-                    <Button variant="ghost" size="icon" onClick={() => onDelete(row._id)}>
+                    <Button variant="outline" size="icon" onClick={() => onDelete(row.id)}>
                       <Trash className="h-4 w-4" />
                       <span className="sr-only">Delete</span>
                     </Button>
