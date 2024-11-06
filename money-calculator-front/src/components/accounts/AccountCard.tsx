@@ -9,6 +9,7 @@ import { fetchAccounts } from "@/store/AccountSlice";
 import { Button } from "@/components/ui/button";
 import DeleteAccount from "./modals/DeleteAccount";
 import { Account } from "@/models/Account";
+import EditAccount from "./modals/EditAccount";
 
 const AccountCard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,7 +18,7 @@ const AccountCard = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [accountId, setAccountId] = useState<number>(0);
-  const [account, setAccount] = useState<Account>();
+  const [account, setAccount] = useState<Account>({ label: "", fee: 0 });
 
   useEffect(() => {
     if (fetchStatus === "idle") {
@@ -35,7 +36,7 @@ const AccountCard = () => {
   const mappedData = accounts.map((d) => ({
     _id: d._id,
     label: d.label,
-    fee: d.fee + "%",
+    fee: d.fee,
   }));
 
   const onDelete = (id: number) => {
@@ -60,6 +61,7 @@ const AccountCard = () => {
 
           <AddAccount isOpen={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
           <DeleteAccount accountId={accountId} isOpen={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} />
+          <EditAccount account={account} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} />
         </>
       )}
       {fetchStatus === "loading" && <p>Loading accounts...</p>}

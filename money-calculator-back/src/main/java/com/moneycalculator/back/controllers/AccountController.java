@@ -51,7 +51,7 @@ public class AccountController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateAccount(@PathVariable Long id, @Valid @RequestBody Account account) {
+    public ResponseEntity<?> updateAccount(@PathVariable Integer id, @Valid @RequestBody Account account) {
         logger.info("Updating account with ID: " + id);
 
         try {
@@ -64,15 +64,18 @@ public class AccountController {
         }
     }
 
-    @DeleteMapping("/delete/{_id}")
-    public ResponseEntity<?> deleteAccount(@PathVariable Integer _id) {
-        logger.info("Deleting account with ID: " + _id);
+
+    //TODO : add restriction if account used in transaction
+    //TODO : do a soft delete instead
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Integer id) {
+        logger.info("Deleting account with ID: " + id);
 
         try {
-            accountService.deleteAccount(_id);
-            return ResponseEntity.ok(_id);
+            accountService.deleteAccount(id);
+            return ResponseEntity.ok(id);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found with ID: " + _id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found with ID: " + id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting account");
         }

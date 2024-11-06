@@ -1,5 +1,5 @@
 export interface Account {
-  _id?: number | null;
+  _id?: number;
   label: string;
   fee: number;
 }
