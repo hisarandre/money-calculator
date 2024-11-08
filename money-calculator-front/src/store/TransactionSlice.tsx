@@ -23,7 +23,7 @@ export const fetchIncomes = createAsyncThunk("/type/income", async (_, { rejectW
   }
 });
 
-export const addAccount = createAsyncThunk("transactions/addTransaction", async (newTransaction: Transaction, { rejectWithValue }) => {
+export const addTransaction = createAsyncThunk("transactions/addTransaction", async (newTransaction: Transaction, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${BASE_URL}/transaction/add`, newTransaction);
     return response.data;
@@ -33,7 +33,7 @@ export const addAccount = createAsyncThunk("transactions/addTransaction", async 
   }
 });
 
-export const deleteAccount = createAsyncThunk("transactions/deleteTransaction", async (id: number, { rejectWithValue }) => {
+export const deleteTransaction = createAsyncThunk("transactions/deleteTransaction", async (id: number, { rejectWithValue }) => {
   try {
     const response = await axios.delete(`${BASE_URL}/transaction/${id}`);
     return response.data;
@@ -107,11 +107,11 @@ const transactionSlice = createSlice({
 
     // addTransaction reducers
     builder
-      .addCase(addAccount.pending, (state) => {
+      .addCase(addTransaction.pending, (state) => {
         state.addStatus = "loading";
         state.addError = null;
       })
-      .addCase(addAccount.fulfilled, (state, action) => {
+      .addCase(addTransaction.fulfilled, (state, action) => {
         state.addStatus = "succeeded";
         if (action.payload.type === TransactionType.EXPENSE) {
           state.expenses.push(action.payload);
@@ -119,18 +119,18 @@ const transactionSlice = createSlice({
           state.incomes.push(action.payload);
         }
       })
-      .addCase(addAccount.rejected, (state, action) => {
+      .addCase(addTransaction.rejected, (state, action) => {
         state.addStatus = "failed";
         state.addError = (action.payload as string) || "Failed to add transaction";
       });
 
     // deleteAccount reducers
     builder
-      .addCase(deleteAccount.pending, (state) => {
+      .addCase(deleteTransaction.pending, (state) => {
         state.deleteStatus = "loading";
         state.deletedError = null;
       })
-      .addCase(deleteAccount.fulfilled, (state, action) => {
+      .addCase(deleteTransaction.fulfilled, (state, action) => {
         state.deleteStatus = "succeeded";
         if (action.payload.type === TransactionType.EXPENSE) {
           state.expenses = state.expenses.filter((transaction: Expense) => transaction.id !== action.payload);
@@ -138,7 +138,7 @@ const transactionSlice = createSlice({
           state.incomes = state.incomes.filter((transaction: Income) => transaction.id !== action.payload);
         }
       })
-      .addCase(deleteAccount.rejected, (state, action) => {
+      .addCase(deleteTransaction.rejected, (state, action) => {
         state.deleteStatus = "failed";
         state.deletedError = (action.payload as string) || "Failed to delete transaction";
       });

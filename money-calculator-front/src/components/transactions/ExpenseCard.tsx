@@ -5,8 +5,12 @@ import { toast } from "@/hooks/use-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store/Store";
 import { fetchExpenses } from "@/store/TransactionSlice";
-import { Button } from "@/components/ui/button";
-import { log } from "console";
+// import { Button } from "@/components/ui/button";
+// import { Expense } from "@/models/Transaction";
+// import { AddTransaction } from "@/components/transactions/modals/AddTransaction";
+// import { DeleteTransaction } from "@/components/transactions/modals/DeleteTransaction";
+// import { EditTransaction } from "@/components/transactions/modals/EditTransaction";
+import { Account } from "@/models/Account";
 
 const ExpenseCard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +38,7 @@ const ExpenseCard = () => {
     id: i.id,
     label: i.label,
     amount: i.amount,
-    account: i.account.label,
+    account: (i.account as Account).label,
     type: i.type,
   }));
 
@@ -52,7 +56,7 @@ const ExpenseCard = () => {
     <CardCustom title="Expenses" description="All expenses per month">
       {fetchExpenseStatus === "succeeded" && (
         <>
-          <TableCustom columns={columns} data={mappedData} total={0} />
+          <TableCustom columns={columns} data={mappedData} showFooter={true} total={0} />
 
           {/* <Button variant="outline" onClick={() => setIsAddDialogOpen(true)}>
             Add Account

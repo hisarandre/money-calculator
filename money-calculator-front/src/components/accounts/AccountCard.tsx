@@ -34,7 +34,7 @@ const AccountCard = () => {
 
   const columns = ["label", "fee"];
   const mappedData = accounts.map((d) => ({
-    _id: d.id,
+    id: d.id,
     label: d.label,
     fee: d.fee,
   }));

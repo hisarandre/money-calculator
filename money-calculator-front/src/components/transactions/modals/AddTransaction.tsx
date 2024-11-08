@@ -1,4 +1,3 @@
-import { Account } from "@/models/Account";
 import DialogCustom from "@/components/DialogCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -8,68 +7,68 @@ import { Button } from "@/components/ui/button";
 import FormFieldCustom from "@/components/FormFieldCustom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store/Store";
-import { editAccount } from "@/store/AccountSlice";
+import { addTransaction } from "@/store/TransactionSlice";
 import { toast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-interface EditAccountProps {
-  account: Account;
+import { TransactionType } from "@/models/Transaction";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+interface AddTransactionProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }
 
-const EditAccount: React.FC<EditAccountProps> = ({ account, isOpen, onOpenChange }) => {
+const AddTransaction: React.FC<AddTransactionProps> = ({ isOpen, onOpenChange }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { editStatus, editError } = useSelector((state: RootState) => state.accounts);
+  const { addStatus, addError } = useSelector((state: RootState) => state.accounts);
 
   const formSchema = z.object({
     label: z.string().min(1, { message: "Label is required" }),
-    fee: z.preprocess((val) => Number(val), z.number({ required_error: "Fee is required" })),
+    amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
+    type: z.nativeEnum(TransactionType).default(TransactionType.INCOME),
+    account: z.number(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      label: account.label,
-      fee: account.fee,
+      label: "",
+      amount: 0,
+      type: TransactionType.INCOME,
+      account: 0,
     },
   });
 
   useEffect(() => {
-    if (account) {
-      form.reset({
-        label: account.label,
-        fee: account.fee,
-      });
-    }
-  }, [account, form]);
-
-  useEffect(() => {
-    if (editStatus === "failed") {
+    if (addStatus === "failed") {
       toast({
-        description: editError,
+        description: addError,
         variant: "destructive",
       });
     }
 
-    if (editStatus === "succeeded") {
+    if (addStatus === "succeeded") {
       onOpenChange(false);
     }
-  }, [editStatus, editError, onOpenChange]);
+  }, [addStatus, addError, onOpenChange]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    dispatch(editAccount({ id: account.id as number, editedAccount: data }));
+    await dispatch(addTransaction(data));
   };
 
   return (
-    <DialogCustom title="Edit account" isOpen={isOpen} onOpenChange={onOpenChange}>
+    <DialogCustom title="Add a new account" isOpen={isOpen} onOpenChange={onOpenChange}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormFieldCustom form={form} inputName="label" />
-          <FormFieldCustom form={form} inputName="fee" type="number" />
+          <FormFieldCustom form={form} inputName="amount" type="number" />
+          <FormFieldCustom form={form} inputName="account" />
+
           <Button type="submit">Submit</Button>
         </form>
       </Form>
     </DialogCustom>
   );
 };
-export default EditAccount;
+
+export default AddTransaction;

@@ -115,8 +115,8 @@ const accountSlice = createSlice({
       })
       .addCase(editAccount.fulfilled, (state, action) => {
         state.editStatus = "succeeded";
-        const updatedAccount = action.payload; // assuming action.payload contains the edited account
-        state.accounts = state.accounts.map((account) => (account.id === updatedAccount._id ? updatedAccount : account));
+        const updatedAccount = action.payload;
+        state.accounts = state.accounts.map((account) => (account.id === updatedAccount.id ? updatedAccount : account));
       })
       .addCase(editAccount.rejected, (state, action) => {
         state.editStatus = "failed";

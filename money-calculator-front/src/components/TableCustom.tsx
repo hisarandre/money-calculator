@@ -7,18 +7,26 @@ interface TableCustomProps {
   columns: string[];
   data: Record<string, any>[];
   total?: number;
+  showFooter?: boolean;
   canDelete?: boolean;
   canEdit?: boolean;
   onDelete?: any;
   onEdit?: any;
 }
 
-const TableCustom: React.FC<TableCustomProps> = ({ columns, data, total, canDelete = false, canEdit = false, onDelete, onEdit }) => {
+const TableCustom: React.FC<TableCustomProps> = ({
+  columns,
+  data,
+  total,
+  showFooter = false,
+  canDelete = false,
+  canEdit = false,
+  onDelete,
+  onEdit,
+}) => {
   const lastColIndex = columns.length - 1;
   const totalPrice = `${total}€`;
 
-  console.log(columns);
-  console.log(data);
   return (
     <Table>
       <TableHeader>
@@ -60,7 +68,7 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data, total, canDele
           </TableRow>
         ))}
       </TableBody>
-      {total && (
+      {showFooter && (
         <TableFooter>
           <TableRow>
             <TableCell colSpan={columns.length - 1}>Total</TableCell>

@@ -6,10 +6,10 @@ export enum TransactionType {
 }
 
 export interface Transaction {
-  id: number;
+  id?: number;
   label: string;
   amount: number;
-  account: Account;
+  account?: Account | number;
   type: TransactionType;
 }
 
