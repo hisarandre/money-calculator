@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "transactions")
 public class Transaction {
@@ -22,8 +23,6 @@ public class Transaction {
     private String label;
 
     private Double amount;
-
-    private Boolean isDelete = false;
 
     @Column(name = "type", insertable = false, updatable = false)
     private String type;

@@ -1,7 +1,7 @@
-INSERT INTO accounts (label, fee, isDelete) VALUES ('Wise', 2.20, false);
-INSERT INTO accounts (label, fee, isDelete) VALUES ('Revolut', 2.5, false);
-INSERT INTO accounts (label, fee, isDelete) VALUES ('Bank - saving', 2.2, false);
-INSERT INTO accounts (label, fee, isDelete) VALUES ('Bank', 0, false);
+INSERT INTO accounts (label, fee) VALUES ('Wise', 2.20);
+INSERT INTO accounts (label, fee) VALUES ('Revolut', 2.5);
+INSERT INTO accounts (label, fee) VALUES ('Bank - saving', 2.2);
+INSERT INTO accounts (label, fee) VALUES ('Bank', 0);
 
-INSERT INTO transactions (label, amount, type, account_id, isDelete) VALUES ('phone', 20, 'expense', 4, false);
-INSERT INTO transactions (label, amount, type, account_id, isDelete) VALUES ('salary', 1815, 'income', 4, false);
+INSERT INTO transactions (label, amount, type, account_id) VALUES ('phone', 20, 'expense', 4);
+INSERT INTO transactions (label, amount, type, account_id) VALUES ('salary', 1815, 'income', 4);
