@@ -32,7 +32,7 @@ const TableCustom: React.FC<TableCustomProps> = ({
     onEdit,
 }) => {
     const lastColIndex = columns.length - 1;
-    const totalPrice = `${total}€`;
+    const totalPrice = `${total} €`;
 
     return (
         <Table>

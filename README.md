@@ -36,4 +36,19 @@ npm run dev
 
 ## Endpoints
 
-Swagger : TODO
+Swagger : http://localhost:8081/swagger-ui/index.html
+
+## Git
+
+**To push on the repo**
+1. Have your own branch clean:
+    1. Commit all your changes: `git commit` or via the IDE
+    2. OR stash your changes: `git stash` (and later `git stash pop` to retrieve them)
+2. `git fetch origin`
+3. **If there are downloads**: `git rebase origin`
+    - There may potentially be conflicts at this stage
+    - If this is the case: resolve the conflicts in the IDE and commit the files
+    - Do `git rebase --continue` to continue until there are no more conflicts
+4. `git push`
+5. Create the Pull Request on Github
+6. Review and/or merge the PR

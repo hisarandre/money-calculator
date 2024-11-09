@@ -6,7 +6,7 @@ import IncomeCard from "@/components/transactions/IncomeCard";
 
 const ProjectedCalculator = () => {
     return (
-        <div className="flex flex-wrap justify-evenly gap-10">
+        <div className="flex flex-wrap justify-evenly gap-6">
             <AccountCard/>
             <ExpenseCard/>
             <IncomeCard/>

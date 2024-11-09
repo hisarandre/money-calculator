@@ -1,22 +1,20 @@
-import { Account } from "@/models/Account";
-
 export enum TransactionType {
-  EXPENSE = "expense",
-  INCOME = "income",
+    EXPENSE = "expense",
+    INCOME = "income",
 }
 
 export interface Transaction {
-  id?: number;
-  label: string;
-  amount: number;
-  account?: Account | number;
-  type: TransactionType;
+    id?: number;
+    label: string;
+    amount: number;
+    accountId: number;
+    type: TransactionType;
 }
 
 export interface Income extends Transaction {
-  type: TransactionType.INCOME;
+    type: TransactionType.INCOME;
 }
 
 export interface Expense extends Transaction {
-  type: TransactionType.EXPENSE;
+    type: TransactionType.EXPENSE;
 }

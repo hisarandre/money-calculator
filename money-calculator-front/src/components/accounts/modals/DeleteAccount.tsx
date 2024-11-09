@@ -6,6 +6,7 @@ import {AppDispatch, RootState} from "@/store/Store";
 import {deleteAccount} from "@/store/AccountSlice";
 import {toast} from "@/hooks/use-toast";
 import {useEffect} from "react";
+import {DialogClose} from "@radix-ui/react-dialog";
 
 interface DeleteAccountProps {
     accountId: number;
@@ -41,10 +42,15 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({accountId, isOpen, onOpenC
             description="Are you sure you want to delete this account?"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
+            preventOutsideInteraction={true}
         >
             <div className="flex justify-end gap-4">
                 <Button variant="destructive" onClick={() => onDelete(accountId)}>Delete</Button>
-                <Button onClick={() => onOpenChange(false)}>Cancel</Button>
+                <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                        Cancel
+                    </Button>
+                </DialogClose>
             </div>
         </DialogCustom>
     );
