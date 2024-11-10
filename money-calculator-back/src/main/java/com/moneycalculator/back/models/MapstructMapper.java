@@ -17,16 +17,9 @@ public interface MapstructMapper {
     @Mapping(source = "total", target = "total")
     TransactionIdTypeTotalDTO transactionToTransactionIdTypeTotalDTO(Integer id, String type, Double total);
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "date", source = "date")
-    @Mapping(target = "total", source = "total")
-    @Mapping(target = "accountBalances", source = "accountBalances")
-    @Mapping(target = "earning", source = "earning")
-    AccountBalanceHistoryDTO accountBalanceHistoryToDto(AccountBalanceHistory accountBalanceHistory);
-
-    @Mapping(target = "id", source = "id")
     @Mapping(target = "account", source = "account")
+    @Mapping(target = "accountBalanceHistoryId", source = "accountBalanceHistoryId")
     @Mapping(target = "amount", source = "amount")
-    AccountBalanceDTO accountBalanceToDto(AccountBalance accountBalance);
+    AccountBalance accountBalanceDtoToAccountBalance(Account account, Integer accountBalanceHistoryId, Double amount);
 
 }

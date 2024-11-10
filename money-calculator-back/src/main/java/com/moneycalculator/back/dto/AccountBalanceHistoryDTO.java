@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -13,13 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AccountBalanceHistoryDTO {
 
-    private Integer id;
-
     private LocalDate date;
-
-    private Double total;
-
-    private Double earning;
 
     private List<AccountBalanceDTO> accountBalances;
 }

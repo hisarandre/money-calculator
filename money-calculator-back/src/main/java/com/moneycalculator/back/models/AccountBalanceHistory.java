@@ -29,7 +29,7 @@ public class AccountBalanceHistory {
     private Double total;
     private Double earning;
 
-    @OneToMany(mappedBy = "accountBalanceHistory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "accountBalanceHistoryId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountBalance> accountBalances;
 
     public LocalDate getDate() {

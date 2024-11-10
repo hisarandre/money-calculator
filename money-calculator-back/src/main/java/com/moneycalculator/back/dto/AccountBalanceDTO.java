@@ -1,6 +1,5 @@
 package com.moneycalculator.back.dto;
 
-import com.moneycalculator.back.models.Account;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountBalanceDTO {
 
-    private Integer id;
-
-    private Account account;
+    private Integer accountId;
 
     private Double amount;
 }

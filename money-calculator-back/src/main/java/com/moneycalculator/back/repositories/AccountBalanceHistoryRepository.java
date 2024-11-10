@@ -16,4 +16,9 @@ public interface AccountBalanceHistoryRepository extends JpaRepository<AccountBa
     @Query("SELECT h FROM AccountBalanceHistory h WHERE h.date >= :startDate")
     List<AccountBalanceHistory> findAllFromLast12Months(@Param("startDate") LocalDate startDate);
 
+    int countByDate(LocalDate date);
+
+    AccountBalanceHistory findByDate(LocalDate date);
+
+    AccountBalanceHistory findFirstByOrderByDateDesc();
 }
