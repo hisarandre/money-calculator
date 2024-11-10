@@ -20,5 +20,5 @@ public interface TransactionService {
 
     TransactionIdTypeTotalDTO deleteTransaction(Integer id);
 
-    BigDecimal calculateTotalAmount(List<Transaction> transactions);
+    Double calculateTotalAmount(List<Transaction> transactions);
 }

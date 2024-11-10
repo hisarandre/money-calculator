@@ -1,5 +1,8 @@
 package com.moneycalculator.back.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,9 +24,8 @@ public class AccountBalance {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "account_balance_history_id")
-    private AccountBalanceHistory accountBalanceHistory;
+    @Column(name = "account_balance_history_id", insertable = true, updatable = true)
+    private Integer accountBalanceHistoryId;
 
     private Double amount;
 }

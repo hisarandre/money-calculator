@@ -2,13 +2,13 @@ package com.moneycalculator.back.services;
 
 import com.moneycalculator.back.dto.AccountLabelFeeDTO;
 import com.moneycalculator.back.models.Account;
+import com.moneycalculator.back.models.MapstructMapper;
 import com.moneycalculator.back.repositories.AccountRepository;
 import com.moneycalculator.back.utils.BigDecimalUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +17,7 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final MapstructMapper mapper = Mappers.getMapper(MapstructMapper.class);
 
     @Autowired
     public AccountServiceImpl(AccountRepository accountRepository) {
@@ -37,11 +38,10 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("An account with this label already exists.");
         }
 
-        BigDecimal roundedFee = BigDecimalUtils.roundToTwoDecimalPlaces(accountLabelFeeDTO.getFee());
+        Double roundedFee = BigDecimalUtils.roundToTwoDecimalPlaces(accountLabelFeeDTO.getFee());
+        accountLabelFeeDTO.setFee(roundedFee);
 
-        Account account = new Account();
-        account.setLabel(accountLabelFeeDTO.getLabel());
-        account.setFee(roundedFee.doubleValue());
+        Account account = mapper.accountLabelFeeDTOToAccount(accountLabelFeeDTO);
 
         return accountRepository.save(account);
     }
@@ -51,10 +51,10 @@ public class AccountServiceImpl implements AccountService {
         Account existingAccount = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + id));
 
-        BigDecimal roundedFee = BigDecimalUtils.roundToTwoDecimalPlaces(account.getFee());
+        Double roundedFee = BigDecimalUtils.roundToTwoDecimalPlaces(account.getFee());
 
         existingAccount.setLabel(account.getLabel());
-        existingAccount.setFee(roundedFee.doubleValue());
+        existingAccount.setFee(roundedFee);
 
         return accountRepository.save(existingAccount);
     }
