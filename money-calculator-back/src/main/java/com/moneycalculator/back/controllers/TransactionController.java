@@ -1,7 +1,7 @@
 package com.moneycalculator.back.controllers;
 
 import com.moneycalculator.back.dto.TransactionDTO;
-import com.moneycalculator.back.dto.TransactionIdTotalDTO;
+import com.moneycalculator.back.dto.TransactionIdTypeTotalDTO;
 import com.moneycalculator.back.dto.TransactionListTotalDTO;
 import com.moneycalculator.back.dto.TransactionTotalDTO;
 import com.moneycalculator.back.models.Transaction;
@@ -113,7 +113,7 @@ public class TransactionController {
     })
     public ResponseEntity<?> deleteTransaction(@PathVariable Integer id) {
         try {
-            TransactionIdTotalDTO transaction = transactionService.deleteTransaction(id);
+            TransactionIdTypeTotalDTO transaction = transactionService.deleteTransaction(id);
             return ResponseEntity.ok(transaction);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transaction not found with ID: " + id);

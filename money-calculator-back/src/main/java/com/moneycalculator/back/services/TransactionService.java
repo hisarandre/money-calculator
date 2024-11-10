@@ -1,6 +1,6 @@
 package com.moneycalculator.back.services;
 import com.moneycalculator.back.dto.TransactionDTO;
-import com.moneycalculator.back.dto.TransactionIdTotalDTO;
+import com.moneycalculator.back.dto.TransactionIdTypeTotalDTO;
 import com.moneycalculator.back.dto.TransactionListTotalDTO;
 import com.moneycalculator.back.dto.TransactionTotalDTO;
 import com.moneycalculator.back.models.Transaction;
@@ -18,7 +18,7 @@ public interface TransactionService {
 
     TransactionTotalDTO updateTransaction(Integer id, TransactionDTO transaction);
 
-    TransactionIdTotalDTO deleteTransaction(Integer id);
+    TransactionIdTypeTotalDTO deleteTransaction(Integer id);
 
     BigDecimal calculateTotalAmount(List<Transaction> transactions);
 }

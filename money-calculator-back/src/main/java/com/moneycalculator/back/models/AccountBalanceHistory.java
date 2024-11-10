@@ -15,6 +15,7 @@ public class AccountBalanceHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "_id")
     private Integer id;
 
     @Column(name = "sent", nullable = false)
