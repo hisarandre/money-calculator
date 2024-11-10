@@ -1,7 +1,7 @@
 package com.moneycalculator.back.services;
 
 import com.moneycalculator.back.dto.TransactionDTO;
-import com.moneycalculator.back.dto.TransactionIdTotalDTO;
+import com.moneycalculator.back.dto.TransactionIdTypeTotalDTO;
 import com.moneycalculator.back.dto.TransactionListTotalDTO;
 import com.moneycalculator.back.dto.TransactionTotalDTO;
 import com.moneycalculator.back.models.Account;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import java.util.Collections;
 import java.util.List;
@@ -130,7 +129,7 @@ public class TransactionServiceImpl implements TransactionService{
         return transactionTotal;
     }
 
-    public TransactionIdTotalDTO deleteTransaction(Integer id) {
+    public TransactionIdTypeTotalDTO deleteTransaction(Integer id) {
 
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
@@ -144,8 +143,9 @@ public class TransactionServiceImpl implements TransactionService{
 
         BigDecimal totalAmount = calculateTotalAmount(transactions);
 
-        TransactionIdTotalDTO transactionIdTotal = new TransactionIdTotalDTO();
+        TransactionIdTypeTotalDTO transactionIdTotal = new TransactionIdTypeTotalDTO();
         transactionIdTotal.setId(id);
+        transactionIdTotal.setType(transactionType);
         transactionIdTotal.setTotal(totalAmount.doubleValue());
 
         return transactionIdTotal;

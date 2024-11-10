@@ -32,11 +32,11 @@ CREATE TABLE account_balance_histories (
 );
 
 CREATE TABLE account_balances (
-    _id INT NOT NULL AUTO_INCREMENT,
-    amount DECIMAL(10, 2) NOT NULL,
-    account_balance_history_id INT,
-    account_id INT,
-    PRIMARY KEY (_id),
-    FOREIGN KEY (account_id) REFERENCES accounts(_id),
-    FOREIGN KEY (account_balance_history_id) REFERENCES account_balance_histories(_id)
+    _id INT NOT NULL AUTO_INCREMENT,  -- Unique ID (not part of composite primary key)
+    account_id INT NOT NULL,  -- Foreign key referencing the accounts table
+    account_balance_history_id INT NOT NULL,  -- Foreign key referencing the account_balance_histories table
+    amount DECIMAL(10, 2) NOT NULL,  -- Balance amount
+    PRIMARY KEY (_id),  -- Unique constraint on id column
+    FOREIGN KEY (account_id) REFERENCES accounts(_id),  -- Reference to accounts table
+    FOREIGN KEY (account_balance_history_id) REFERENCES account_balance_histories(_id)  -- Reference to account_balance_histories table
 );

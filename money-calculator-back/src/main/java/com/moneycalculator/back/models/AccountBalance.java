@@ -14,6 +14,7 @@ public class AccountBalance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "_id")
     private Integer id;
 
     @ManyToOne
