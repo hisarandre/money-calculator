@@ -13,6 +13,7 @@ import {useEffect} from "react";
 import {TransactionType} from "@/models/Transaction";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Account} from "@/models/Account.tsx";
+import {createTransactionFormSchema} from "@/utils/formSchemas.ts";
 
 interface AddTransactionProps {
     isOpen: boolean;
@@ -25,12 +26,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({isOpen, onOpenChange, ty
     const dispatch = useDispatch<AppDispatch>();
     const {addStatus, addError} = useSelector((state: RootState) => state.transactions);
 
-    const formSchema = z.object({
-        label: z.string().min(1, {message: "Label is required"}),
-        amount: z.preprocess((val) => Number(val), z.number({required_error: "Amount is required"})),
-        type: z.nativeEnum(TransactionType).default(type),
-        accountId: z.preprocess((val) => Number(val), z.number()),
-    });
+    const formSchema = createTransactionFormSchema(type);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

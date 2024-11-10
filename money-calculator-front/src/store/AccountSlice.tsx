@@ -1,11 +1,11 @@
-import {createSlice, createAsyncThunk, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
-import {BASE_URL} from "@/utils/api";
+import {ACCOUNT_URL} from "@/utils/api";
 import {Account} from "@/models/Account";
 
 export const fetchAccounts = createAsyncThunk("account/fetchAccounts", async (_, {rejectWithValue}) => {
     try {
-        const response = await axios.get(`${BASE_URL}/account/all`);
+        const response = await axios.get(`${ACCOUNT_URL}/all`);
         return response.data;
     } catch (error) {
         return rejectWithValue("Failed to fetch accounts");
@@ -14,7 +14,7 @@ export const fetchAccounts = createAsyncThunk("account/fetchAccounts", async (_,
 
 export const addAccount = createAsyncThunk("accounts/addAccount", async (newAccount: Account, {rejectWithValue}) => {
     try {
-        const response = await axios.post(`${BASE_URL}/account/add`, newAccount);
+        const response = await axios.post(`${ACCOUNT_URL}/add`, newAccount);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data || "Failed to add account";
@@ -24,7 +24,7 @@ export const addAccount = createAsyncThunk("accounts/addAccount", async (newAcco
 
 export const deleteAccount = createAsyncThunk("accounts/deleteAccount", async (id: number, {rejectWithValue}) => {
     try {
-        const response = await axios.delete(`${BASE_URL}/account/${id}`);
+        const response = await axios.delete(`${ACCOUNT_URL}/${id}`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data || "Failed to delete account";
@@ -36,7 +36,7 @@ export const editAccount = createAsyncThunk(
     "accounts/editAccount",
     async ({id, editedAccount}: { id: number; editedAccount: Account }, {rejectWithValue}) => {
         try {
-            const response = await axios.put(`${BASE_URL}/account/${id}`, editedAccount);
+            const response = await axios.put(`${ACCOUNT_URL}/${id}`, editedAccount);
             return response.data;
         } catch (error: any) {
             const errorMessage = error.response?.data || "Failed to edit account";

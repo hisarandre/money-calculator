@@ -10,6 +10,7 @@ import {RootState, AppDispatch} from "@/store/Store";
 import {addAccount} from "@/store/AccountSlice";
 import {toast} from "@/hooks/use-toast";
 import {useEffect} from "react";
+import {accountFormSchema} from "@/utils/formSchemas.ts";
 
 interface AddAccountProps {
     isOpen: boolean;
@@ -20,10 +21,7 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onOpenChange}) => {
     const dispatch = useDispatch<AppDispatch>();
     const {addStatus, addError} = useSelector((state: RootState) => state.accounts);
 
-    const formSchema = z.object({
-        label: z.string().min(1, {message: "Label is required"}),
-        fee: z.preprocess((val) => Number(val), z.number({required_error: "Fee is required"})),
-    });
+    const formSchema = accountFormSchema;
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

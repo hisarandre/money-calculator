@@ -1,12 +1,12 @@
-import {createSlice, createAsyncThunk, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
-import {BASE_URL} from "@/utils/api";
+import {TRANSACTION_URL} from "@/utils/api";
 import {Transaction, TransactionType} from "@/models/Transaction";
 import {Expense, Income} from "@/models/Transaction";
 
 export const fetchExpenses = createAsyncThunk("/type/expense", async (_, {rejectWithValue}) => {
     try {
-        const response = await axios.get(`${BASE_URL}/transaction/type/expense`);
+        const response = await axios.get(`${TRANSACTION_URL}/type/expense`);
         return response.data;
     } catch (error) {
         return rejectWithValue("Failed to fetch expenses");
@@ -15,7 +15,7 @@ export const fetchExpenses = createAsyncThunk("/type/expense", async (_, {reject
 
 export const fetchIncomes = createAsyncThunk("/type/income", async (_, {rejectWithValue}) => {
     try {
-        const response = await axios.get(`${BASE_URL}/transaction/type/income`);
+        const response = await axios.get(`${TRANSACTION_URL}/type/income`);
         return response.data;
     } catch (error) {
         return rejectWithValue("Failed to fetch incomes");
@@ -24,7 +24,7 @@ export const fetchIncomes = createAsyncThunk("/type/income", async (_, {rejectWi
 
 export const addTransaction = createAsyncThunk("transactions/addTransaction", async (newTransaction: Transaction, {rejectWithValue}) => {
     try {
-        const response = await axios.post(`${BASE_URL}/transaction/add`, newTransaction);
+        const response = await axios.post(`${TRANSACTION_URL}/add`, newTransaction);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data || "Failed to add transaction";
@@ -34,7 +34,7 @@ export const addTransaction = createAsyncThunk("transactions/addTransaction", as
 
 export const deleteTransaction = createAsyncThunk("transactions/deleteTransaction", async (id: number, {rejectWithValue}) => {
     try {
-        const response = await axios.delete(`${BASE_URL}/transaction/${id}`);
+        const response = await axios.delete(`${TRANSACTION_URL}/${id}`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data || "Failed to delete transaction";
@@ -46,7 +46,7 @@ export const editTransaction = createAsyncThunk(
     "transaction/editTransaction",
     async ({id, editedTransaction}: { id: number; editedTransaction: Transaction }, {rejectWithValue}) => {
         try {
-            const response = await axios.put(`${BASE_URL}/transaction/${id}`, editedTransaction);
+            const response = await axios.put(`${TRANSACTION_URL}/${id}`, editedTransaction);
             return response.data;
         } catch (error: any) {
             const errorMessage = error.response?.data || "Failed to edit transaction";

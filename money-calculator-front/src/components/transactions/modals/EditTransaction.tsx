@@ -13,6 +13,7 @@ import FormFieldCustom from "@/components/FormFieldCustom.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Account} from "@/models/Account.tsx";
+import {createTransactionFormSchema} from "@/utils/formSchemas.ts";
 
 interface EditTransactionProps {
     transaction: Transaction;
@@ -25,12 +26,7 @@ const EditTransaction: React.FC<EditTransactionProps> = ({transaction, isOpen, o
     const dispatch = useDispatch<AppDispatch>();
     const {editStatus, editError} = useSelector((state: RootState) => state.transactions);
 
-    const formSchema = z.object({
-        label: z.string().min(1, {message: "Label is required"}),
-        amount: z.preprocess((val) => Number(val), z.number({required_error: "Amount is required"})),
-        type: z.nativeEnum(TransactionType).default(transaction.type),
-        accountId: z.preprocess((val) => Number(val), z.number()),
-    });
+    const formSchema = createTransactionFormSchema(transaction.type);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
