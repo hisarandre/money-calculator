@@ -5,14 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionTotalDTO {
+public class TransactionIdTotalDTO {
 
-    private Transaction transaction;
+    private Integer id;
 
     private Double total;
-
 }
