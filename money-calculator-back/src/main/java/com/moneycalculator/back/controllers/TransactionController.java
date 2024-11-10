@@ -1,8 +1,9 @@
 package com.moneycalculator.back.controllers;
 
 import com.moneycalculator.back.dto.TransactionDTO;
+import com.moneycalculator.back.dto.TransactionIdTotalDTO;
+import com.moneycalculator.back.dto.TransactionListTotalDTO;
 import com.moneycalculator.back.dto.TransactionTotalDTO;
-import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.Transaction;
 import com.moneycalculator.back.services.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,10 +54,10 @@ public class TransactionController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/type/{type}")
-    public ResponseEntity<TransactionTotalDTO> getTransactionsByType(@PathVariable String type) {
+    public ResponseEntity<TransactionListTotalDTO> getTransactionsByType(@PathVariable String type) {
         logger.info("Get all transactions by type: " + type);
 
-        TransactionTotalDTO transactionsTotal = transactionService.getTransactionsByType(type);
+        TransactionListTotalDTO transactionsTotal = transactionService.getTransactionsByType(type);
 
         return ResponseEntity.ok(transactionsTotal);
     }
@@ -71,7 +72,7 @@ public class TransactionController {
     public ResponseEntity<?> addTransaction(@Valid @RequestBody TransactionDTO transaction) {
         logger.info("Adding new transaction: " + transaction);
         try {
-            Transaction newTransaction = transactionService.addTransaction(transaction);
+            TransactionTotalDTO newTransaction = transactionService.addTransaction(transaction);
             return ResponseEntity.status(201).body(newTransaction);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -92,7 +93,7 @@ public class TransactionController {
     public ResponseEntity<?> updateTransaction(@PathVariable Integer id,@Valid @RequestBody TransactionDTO transaction) {
         logger.info("Updating transaction with ID: " + id);
         try {
-            Transaction updatedTransaction = transactionService.updateTransaction(id, transaction);
+            TransactionTotalDTO updatedTransaction = transactionService.updateTransaction(id, transaction);
             return ResponseEntity.ok(updatedTransaction);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -112,8 +113,8 @@ public class TransactionController {
     })
     public ResponseEntity<?> deleteTransaction(@PathVariable Integer id) {
         try {
-            transactionService.deleteTransaction(id);
-            return ResponseEntity.ok(id);
+            TransactionIdTotalDTO transaction = transactionService.deleteTransaction(id);
+            return ResponseEntity.ok(transaction);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transaction not found with ID: " + id);
         } catch (DataIntegrityViolationException e) {

@@ -9,9 +9,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionTotalDTO {
+public class TransactionListTotalDTO {
 
-    private Transaction transaction;
+    private List<Transaction> transactions;
 
     private Double total;
 

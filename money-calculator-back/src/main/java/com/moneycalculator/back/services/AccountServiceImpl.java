@@ -3,6 +3,7 @@ package com.moneycalculator.back.services;
 import com.moneycalculator.back.dto.AccountLabelFeeDTO;
 import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.repositories.AccountRepository;
+import com.moneycalculator.back.utils.BigDecimalUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,9 +37,7 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("An account with this label already exists.");
         }
 
-        //round fee
-        BigDecimal roundedFee = new BigDecimal(accountLabelFeeDTO.getFee())
-                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal roundedFee = BigDecimalUtils.roundToTwoDecimalPlaces(accountLabelFeeDTO.getFee());
 
         Account account = new Account();
         account.setLabel(accountLabelFeeDTO.getLabel());
@@ -52,9 +51,7 @@ public class AccountServiceImpl implements AccountService {
         Account existingAccount = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + id));
 
-        //round fee
-        BigDecimal roundedFee = new BigDecimal(account.getFee())
-                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal roundedFee = BigDecimalUtils.roundToTwoDecimalPlaces(account.getFee());
 
         existingAccount.setLabel(account.getLabel());
         existingAccount.setFee(roundedFee.doubleValue());

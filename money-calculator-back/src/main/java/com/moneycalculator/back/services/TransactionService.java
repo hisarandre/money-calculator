@@ -1,19 +1,24 @@
 package com.moneycalculator.back.services;
 import com.moneycalculator.back.dto.TransactionDTO;
+import com.moneycalculator.back.dto.TransactionIdTotalDTO;
+import com.moneycalculator.back.dto.TransactionListTotalDTO;
 import com.moneycalculator.back.dto.TransactionTotalDTO;
 import com.moneycalculator.back.models.Transaction;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransactionService {
 
     List<Transaction> getAllTransactions();
 
-    TransactionTotalDTO getTransactionsByType(String type);
+    TransactionListTotalDTO getTransactionsByType(String type);
 
-    Transaction addTransaction(TransactionDTO transaction);
+    TransactionTotalDTO addTransaction(TransactionDTO transaction);
 
-    Transaction updateTransaction(Integer id, TransactionDTO transaction);
+    TransactionTotalDTO updateTransaction(Integer id, TransactionDTO transaction);
 
-    void deleteTransaction(Integer id);
+    TransactionIdTotalDTO deleteTransaction(Integer id);
+
+    BigDecimal calculateTotalAmount(List<Transaction> transactions);
 }
