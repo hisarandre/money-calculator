@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, {ReactNode} from 'react';
 import {
     Card,
     CardContent,
@@ -6,33 +6,45 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card";
+} from "@/components/ui/card";
+import {Button} from "@/components/ui/button.tsx";
+import {Plus} from "lucide-react";
 
 interface CardProps {
     title: string;
     description?: string;
+    addAction?: () => void;
     children: ReactNode;
     footer?: string;
-  }
+}
 
-const CardCustom: React.FC<CardProps> = ({ title, description, children, footer }) => {
+const CardCustom: React.FC<CardProps> = ({title, description, addAction, children, footer}) => {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>{title}</CardTitle>
-                <CardDescription>{description}</CardDescription>
+                <div className="space-y-1.5">
+                    <CardTitle>{title}</CardTitle>
+                    <CardDescription>{description}</CardDescription>
+                </div>
+
+                {addAction && (
+                    <Button variant="outline" size="icon" onClick={() => addAction && addAction()}>
+                        <Plus className="h-4 w-4"/>
+                        <span className="sr-only">Add</span>
+                    </Button>
+                )}
             </CardHeader>
             <CardContent>
                 {children}
             </CardContent>
-            { footer && (
+            {footer && (
                 <CardFooter>
                     {footer}
                 </CardFooter>
             )
             }
-            </Card>
-        );
+        </Card>
+    );
 }
 
 export default CardCustom
