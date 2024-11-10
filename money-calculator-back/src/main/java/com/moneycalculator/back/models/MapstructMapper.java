@@ -1,9 +1,6 @@
 package com.moneycalculator.back.models;
 
-import com.moneycalculator.back.dto.AccountLabelFeeDTO;
-import com.moneycalculator.back.dto.TransactionDTO;
-import com.moneycalculator.back.dto.TransactionIdTypeTotalDTO;
-import com.moneycalculator.back.dto.TransactionTotalDTO;
+import com.moneycalculator.back.dto.*;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
@@ -19,4 +16,17 @@ public interface MapstructMapper {
     @Mapping(source = "type", target = "type")
     @Mapping(source = "total", target = "total")
     TransactionIdTypeTotalDTO transactionToTransactionIdTypeTotalDTO(Integer id, String type, Double total);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "date", source = "date")
+    @Mapping(target = "total", source = "total")
+    @Mapping(target = "accountBalances", source = "accountBalances")
+    @Mapping(target = "earning", source = "earning")
+    AccountBalanceHistoryDTO accountBalanceHistoryToDto(AccountBalanceHistory accountBalanceHistory);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "account", source = "account")
+    @Mapping(target = "amount", source = "amount")
+    AccountBalanceDTO accountBalanceToDto(AccountBalance accountBalance);
+
 }

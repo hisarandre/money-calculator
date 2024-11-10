@@ -8,9 +8,7 @@ import com.moneycalculator.back.utils.BigDecimalUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
 import org.mapstruct.factory.Mappers;
-import java.math.RoundingMode;
 
 import java.util.List;
 import java.util.Optional;
