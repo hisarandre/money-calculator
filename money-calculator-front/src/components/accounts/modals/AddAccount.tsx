@@ -54,8 +54,8 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onOpenChange}) => {
         <DialogCustom title="Add a new account" isOpen={isOpen} onOpenChange={onOpenChange}>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <FormFieldCustom form={form} inputName="label"/>
-                    <FormFieldCustom form={form} inputName="fee" type="number"/>
+                    <FormFieldCustom form={form} inputName="label" label="label"/>
+                    <FormFieldCustom form={form} inputName="fee" label="fee" type="number"/>
 
                     <div className="flex justify-end">
                         <Button type="submit">Submit</Button>

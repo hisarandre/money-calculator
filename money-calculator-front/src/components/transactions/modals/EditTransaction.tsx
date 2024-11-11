@@ -70,8 +70,8 @@ const EditTransaction: React.FC<EditTransactionProps> = ({transaction, isOpen, o
         <DialogCustom title={`Edit ${transaction.type}`} isOpen={isOpen} onOpenChange={onOpenChange}>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <FormFieldCustom form={form} inputName="label"/>
-                    <FormFieldCustom form={form} inputName="amount" type="number"/>
+                    <FormFieldCustom form={form} inputName="label" label="label"/>
+                    <FormFieldCustom form={form} inputName="amount" label="amount" type="number"/>
                     <FormField
                         control={form.control}
                         name="accountId"

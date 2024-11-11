@@ -3,7 +3,9 @@ import axios from "axios";
 import {ACCOUNT_URL} from "@/utils/api";
 import {Account} from "@/models/Account";
 
-export const fetchAccounts = createAsyncThunk("account/fetchAccounts", async (_, {rejectWithValue}) => {
+const PREFIX = "accounts";
+
+export const fetchAccounts = createAsyncThunk(`${PREFIX}/fetchAccounts`, async (_, {rejectWithValue}) => {
     try {
         const response = await axios.get(`${ACCOUNT_URL}/all`);
         return response.data;
@@ -12,7 +14,7 @@ export const fetchAccounts = createAsyncThunk("account/fetchAccounts", async (_,
     }
 });
 
-export const addAccount = createAsyncThunk("accounts/addAccount", async (newAccount: Account, {rejectWithValue}) => {
+export const addAccount = createAsyncThunk(`${PREFIX}/addAccount`, async (newAccount: Account, {rejectWithValue}) => {
     try {
         const response = await axios.post(`${ACCOUNT_URL}/add`, newAccount);
         return response.data;
@@ -22,7 +24,7 @@ export const addAccount = createAsyncThunk("accounts/addAccount", async (newAcco
     }
 });
 
-export const deleteAccount = createAsyncThunk("accounts/deleteAccount", async (id: number, {rejectWithValue}) => {
+export const deleteAccount = createAsyncThunk(`${PREFIX}/deleteAccount`, async (id: number, {rejectWithValue}) => {
     try {
         const response = await axios.delete(`${ACCOUNT_URL}/${id}`);
         return response.data;
@@ -33,7 +35,7 @@ export const deleteAccount = createAsyncThunk("accounts/deleteAccount", async (i
 });
 
 export const editAccount = createAsyncThunk(
-    "accounts/editAccount",
+    `${PREFIX}/editAccount`,
     async ({id, editedAccount}: { id: number; editedAccount: Account }, {rejectWithValue}) => {
         try {
             const response = await axios.put(`${ACCOUNT_URL}/${id}`, editedAccount);
@@ -47,7 +49,7 @@ export const editAccount = createAsyncThunk(
 
 // Slice definition
 const accountSlice = createSlice({
-    name: "accounts",
+    name: "account",
     initialState: {
         accounts: [] as Account[],
         fetchStatus: "idle",
