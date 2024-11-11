@@ -9,6 +9,8 @@ import com.moneycalculator.back.repositories.AccountRepository;
 import com.moneycalculator.back.repositories.TransactionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.mapstruct.factory.Mappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import static com.moneycalculator.back.utils.BigDecimalUtils.roundToTwoDecimalPl
 @Service
 public class AccountBalanceHistoryServiceImpl implements AccountBalanceHistoryService{
 
+    private static final Logger log = LoggerFactory.getLogger(AccountBalanceHistoryServiceImpl.class);
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final AccountBalanceRepository accountBalanceRepository;
@@ -91,21 +94,25 @@ public class AccountBalanceHistoryServiceImpl implements AccountBalanceHistorySe
         accountBalanceHistory.setTotal(total);
         accountBalanceHistory.setEarning(earning);
 
-        accountBalanceHistory = accountBalanceHistoryRepository.save(accountBalanceHistory);
 
+        accountBalanceHistory = accountBalanceHistoryRepository.save(accountBalanceHistory);
         List<AccountBalance> accountBalances = new ArrayList<>();
 
         for (AccountBalanceDTO dto : accountBalanceDTOs) {
             Account account = accountRepository.findById(dto.getAccountId())
                     .orElseThrow(() -> new EntityNotFoundException("Account not found"));
 
-            AccountBalance accountBalance = mapper.accountBalanceDtoToAccountBalance(account,accountBalanceHistory.getId(),dto.getAmount());
+            AccountBalance accountBalance = new AccountBalance();
+            accountBalance.setAccountBalanceHistoryId(accountBalanceHistory.getId());
+            accountBalance.setAccount(account);
+            accountBalance.setAmount(roundToTwoDecimalPlaces(dto.getAmount()));
 
             accountBalances.add(accountBalance);
             accountBalanceRepository.save(accountBalance);
         }
 
         accountBalanceHistory.setAccountBalances(accountBalances);
+
         return accountBalanceHistory;
     }
 
@@ -133,51 +140,54 @@ public class AccountBalanceHistoryServiceImpl implements AccountBalanceHistorySe
 
     @Override
     public Double calculateProjectedAmount(LocalDate date) {
-        // Step 1: Find the last AccountBalanceHistory (most recent month)
         AccountBalanceHistory lastBalanceHistory = accountBalanceHistoryRepository.findFirstByOrderByDateDesc();
 
         if (lastBalanceHistory == null) {
             throw new EntityNotFoundException("No previous AccountBalanceHistory found.");
         }
 
-        Double total = lastBalanceHistory.getTotal();
         LocalDate currentMonth = lastBalanceHistory.getDate();
+        List<AccountBalance> accountBalances = lastBalanceHistory.getAccountBalances();
+        List<Transaction> transactions = transactionRepository.findAll();
 
-        // Step 2: Loop through each month from the lastBalanceHistory until the provided date
         while (currentMonth.isBefore(date)) {
-            // Step 3a: Calculate the savings from the fee for the current month
-            List<AccountBalance> accountBalances = lastBalanceHistory.getAccountBalances();
 
-            Double savings = 0.0;
+            // Calculate the savings from the fee
             for (AccountBalance accountBalance : accountBalances) {
                 Double fee = accountBalance.getAccount().getFee();
                 Double amount = accountBalance.getAmount();
-                savings += amount * (fee / 100); // Calculate savings from fee
+                accountBalance.setAmount(amount + (amount * (fee / 100)));
             }
 
-            total += savings; // Add savings to the total
-
-            // Step 3b: Subtract all expenses for the current month
-            LocalDate startOfMonth = currentMonth.withDayOfMonth(1);
-            LocalDate endOfMonth = currentMonth.withDayOfMonth(currentMonth.lengthOfMonth());
-
-            List<Transaction> transactions = transactionRepository.findAll();
+            // Subtract all expenses
             for (Transaction transaction : transactions) {
-                if ("income".equals(transaction.getType())) {
-                    total += transaction.getAmount(); // Add incomes to the total
+                if ("expense".equals(transaction.getType())) {
+                    for (AccountBalance accountBalance : accountBalances) {
+                        if (accountBalance.getAccount().getId().equals(transaction.getAccount().getId())) {
+                            accountBalance.setAmount(accountBalance.getAmount() - transaction.getAmount());
+                        }
+                    }
                 }
 
-                if ("expense".equals(transaction.getType())) {
-                    total -= transaction.getAmount(); // Add incomes to the total
+                if ("income".equals(transaction.getType())) {
+                    for (AccountBalance accountBalance : accountBalances) {
+                        if (accountBalance.getAccount().getId().equals(transaction.getAccount().getId())) {
+                            accountBalance.setAmount(accountBalance.getAmount() + transaction.getAmount());
+                        }
+                    }
                 }
             }
 
-            // Step 3d: Move to the next month
-            currentMonth = currentMonth.plusMonths(1); // Proceed to the next month
+            // Move to the next month
+            currentMonth = currentMonth.plusMonths(1);
         }
 
-        // After finishing the loop, total will have the final value
-        return total;
-    }
+        double total = 0.0;
 
+        for (AccountBalance accountBalance : accountBalances) {
+            total += accountBalance.getAmount();
+        }
+
+        return roundToTwoDecimalPlaces(total);
+    }
 }

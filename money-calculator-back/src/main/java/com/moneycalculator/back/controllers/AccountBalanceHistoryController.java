@@ -1,12 +1,8 @@
 package com.moneycalculator.back.controllers;
 
 import com.moneycalculator.back.dto.AccountBalanceDTO;
-import com.moneycalculator.back.dto.AccountBalanceHistoryDTO;
-import com.moneycalculator.back.dto.AccountLabelFeeDTO;
-import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.AccountBalanceHistory;
 import com.moneycalculator.back.services.AccountBalanceHistoryServiceImpl;
-import com.moneycalculator.back.services.AccountServiceImpl;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
