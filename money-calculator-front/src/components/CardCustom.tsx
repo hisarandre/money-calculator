@@ -16,11 +16,12 @@ interface CardProps {
     addAction?: () => void;
     children: ReactNode;
     footer?: string;
+    className?: string;
 }
 
-const CardCustom: React.FC<CardProps> = ({title, description, addAction, children, footer}) => {
+const CardCustom: React.FC<CardProps> = ({title, description, addAction, children, footer, className}) => {
     return (
-        <Card>
+        <Card className={className}>
             <CardHeader>
                 <div className="space-y-1.5">
                     <CardTitle>{title}</CardTitle>
