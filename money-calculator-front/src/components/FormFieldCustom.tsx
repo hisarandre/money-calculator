@@ -14,16 +14,17 @@ interface FormFieldProps {
     placeHolder?: string;
     type?: string;
     label?: string;
+    className?: string;
 }
 
-const FormFieldCustom: React.FC<FormFieldProps> = ({form, inputName, placeHolder, type = "text", label}) => {
+const FormFieldCustom: React.FC<FormFieldProps> = ({form, inputName, placeHolder, type = "text", label, className}) => {
 
     return (
         <FormField
             control={form.control}
             name={inputName}
             render={({field}) => (
-                <FormItem>
+                <FormItem className={className}>
                     <FormLabel className="capitalize">{label ? label : ""}</FormLabel>
                     <FormControl>
                         <Input type={type} placeholder={placeHolder} {...field} />

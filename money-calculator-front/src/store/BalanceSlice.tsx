@@ -12,7 +12,7 @@ export const fetchHistory = createAsyncThunk(
             const response = await axios.get(`${BALANCE_URL}/all`);
             return response.data;
         } catch (error) {
-            return rejectWithValue("Failed to fetch history");
+            return rejectWithValue("Failed to fetch balance");
         }
 });
 
@@ -40,18 +40,34 @@ export const addBalance = createAsyncThunk(
     }
 );
 
+export const calculate = createAsyncThunk(
+    `${PREFIX}/calculate`,
+    async (date: string, {rejectWithValue}) => {
+        try {
+            const response = await axios.post(`${BALANCE_URL}/calculate/${date}`);
+            return response.data;
+        } catch (error: any) {
+            const errorMessage = error.response?.data || "Failed to calculate";
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
+
 // Slice definition
 const balanceSlice = createSlice({
     name: "balance",
     initialState: {
         history: [] as History[],
         monthlyDone: null as boolean | null,
+        calculResult: 0,
         fetchStatus: "idle",
         monthlyDoneStatus: "idle",
         addStatus: "idle",
+        calculateStatus: "idle",
         fetchError: null as string | null,
         monthlyDoneError: null as string | null,
         addError: null as string | null,
+        calculateError: null as string | null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -67,7 +83,7 @@ const balanceSlice = createSlice({
             })
             .addCase(fetchHistory.rejected, (state, action) => {
                 state.fetchStatus = "failed";
-                state.fetchError = action.error.message || "Failed to fetch history";
+                state.fetchError = action.error.message || "Failed to fetch balance";
             });
 
         // fetchMonthlyDone reducers
@@ -97,6 +113,21 @@ const balanceSlice = createSlice({
             .addCase(addBalance.rejected, (state, action) => {
                 state.addStatus = "failed";
                 state.addError = (action.payload as string) || "Failed to add balance";
+            });
+
+        // calculate reducers
+        builder
+            .addCase(calculate.pending, (state) => {
+                state.calculateStatus = "loading";
+                state.calculateError = null;
+            })
+            .addCase(calculate.fulfilled, (state, action) => {
+                state.calculateStatus = "succeeded";
+                state.calculResult = action.payload;
+            })
+            .addCase(calculate.rejected, (state, action) => {
+                state.calculateStatus = "failed";
+                state.calculateError = (action.payload as string) || "Failed to calculate";
             });
     },
 });

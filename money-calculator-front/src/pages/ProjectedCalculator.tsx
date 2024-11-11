@@ -3,8 +3,9 @@ import React from "react";
 import AccountCard from "@/components/accounts/AccountCard";
 import ExpenseCard from "@/components/transactions/ExpenseCard";
 import IncomeCard from "@/components/transactions/IncomeCard";
-import HistoryCard from "@/components/history/HistoryCard.tsx";
-import BalanceOverviewCard from "@/components/history/BalanceOverviewCard.tsx";
+import HistoryCard from "@/components/balance/HistoryCard.tsx";
+import BalanceOverviewCard from "@/components/balance/BalanceOverviewCard.tsx";
+import CalculateCard from "@/components/balance/CalculateCard.tsx";
 
 const ProjectedCalculator = () => {
     return (
@@ -13,6 +14,7 @@ const ProjectedCalculator = () => {
             <ExpenseCard/>
             <IncomeCard/>
             <BalanceOverviewCard/>
+            <CalculateCard/>
             <HistoryCard/>
         </div>
     );
