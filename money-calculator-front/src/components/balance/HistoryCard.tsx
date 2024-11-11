@@ -51,8 +51,8 @@ const HistoryCard = () => {
     if (fetchStatus === "loading") return <p>Loading history data...</p>;
 
     return (
-        <div className="flex w-screen gap-6">
-            <CardCustom title="History" description="History per month" className="flex-1">
+        <>
+            <CardCustom title="History" description="History per month" className="md:col-span-2">
                 {fetchStatus === "succeeded" && (
                     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
                         <LineChart data={history} margin={{top: 5, right: 10, left: 10, bottom: 0}}>
@@ -78,7 +78,7 @@ const HistoryCard = () => {
                 )}
             </CardCustom>
 
-            <CardCustom title="History Detail" description="Details per month per account">
+            <CardCustom title="History Detail" description="Details per month per account" className="lg:row-span-2">
                 {fetchStatus === "succeeded" && (
                     <Accordion type="single" collapsible>
                         {history.slice().reverse().map((hist) => (
@@ -112,7 +112,7 @@ const HistoryCard = () => {
                     </Accordion>
                 )}
             </CardCustom>
-        </div>
+        </>
     );
 };
 

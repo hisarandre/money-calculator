@@ -70,7 +70,7 @@ const CalculateCard = () => {
     };
 
     return (
-        <CardCustom title="Projected Calculation" description="Estimate the future total amount based on current data">
+        <CardCustom title="Projected Calculation" description="Estimate the future total amount based on current data" className="md:col-start-2 md:row-start-2 lg:col-auto lg:row-auto">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField
