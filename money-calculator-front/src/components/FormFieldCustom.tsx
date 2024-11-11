@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Form,
     FormControl,
     FormField,
     FormItem,
@@ -14,17 +13,19 @@ interface FormFieldProps {
     inputName: string;
     placeHolder?: string;
     type?: string;
+    label?: string;
+    className?: string;
 }
 
-const FormFieldCustom: React.FC<FormFieldProps> = ({form, inputName, placeHolder, type = "text"}) => {
+const FormFieldCustom: React.FC<FormFieldProps> = ({form, inputName, placeHolder, type = "text", label, className}) => {
 
     return (
         <FormField
             control={form.control}
             name={inputName}
             render={({field}) => (
-                <FormItem>
-                    <FormLabel className="capitalize">{inputName}</FormLabel>
+                <FormItem className={className}>
+                    <FormLabel className="capitalize">{label ? label : ""}</FormLabel>
                     <FormControl>
                         <Input type={type} placeholder={placeHolder} {...field} />
                     </FormControl>

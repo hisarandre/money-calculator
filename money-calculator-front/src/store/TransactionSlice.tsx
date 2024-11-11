@@ -4,7 +4,9 @@ import {TRANSACTION_URL} from "@/utils/api";
 import {Transaction, TransactionType} from "@/models/Transaction";
 import {Expense, Income} from "@/models/Transaction";
 
-export const fetchExpenses = createAsyncThunk("/type/expense", async (_, {rejectWithValue}) => {
+const PREFIX = "transactions";
+
+export const fetchExpenses = createAsyncThunk(`${PREFIX}/type/expense`, async (_, {rejectWithValue}) => {
     try {
         const response = await axios.get(`${TRANSACTION_URL}/type/expense`);
         return response.data;
@@ -13,7 +15,7 @@ export const fetchExpenses = createAsyncThunk("/type/expense", async (_, {reject
     }
 });
 
-export const fetchIncomes = createAsyncThunk("/type/income", async (_, {rejectWithValue}) => {
+export const fetchIncomes = createAsyncThunk(`${PREFIX}/type/income`, async (_, {rejectWithValue}) => {
     try {
         const response = await axios.get(`${TRANSACTION_URL}/type/income`);
         return response.data;
@@ -22,7 +24,7 @@ export const fetchIncomes = createAsyncThunk("/type/income", async (_, {rejectWi
     }
 });
 
-export const addTransaction = createAsyncThunk("transactions/addTransaction", async (newTransaction: Transaction, {rejectWithValue}) => {
+export const addTransaction = createAsyncThunk(`${PREFIX}/addTransaction`, async (newTransaction: Transaction, {rejectWithValue}) => {
     try {
         const response = await axios.post(`${TRANSACTION_URL}/add`, newTransaction);
         return response.data;
@@ -32,7 +34,7 @@ export const addTransaction = createAsyncThunk("transactions/addTransaction", as
     }
 });
 
-export const deleteTransaction = createAsyncThunk("transactions/deleteTransaction", async (id: number, {rejectWithValue}) => {
+export const deleteTransaction = createAsyncThunk(`${PREFIX}/deleteTransaction`, async (id: number, {rejectWithValue}) => {
     try {
         const response = await axios.delete(`${TRANSACTION_URL}/${id}`);
         return response.data;
@@ -43,7 +45,7 @@ export const deleteTransaction = createAsyncThunk("transactions/deleteTransactio
 });
 
 export const editTransaction = createAsyncThunk(
-    "transaction/editTransaction",
+    `${PREFIX}/editTransaction`,
     async ({id, editedTransaction}: { id: number; editedTransaction: Transaction }, {rejectWithValue}) => {
         try {
             const response = await axios.put(`${TRANSACTION_URL}/${id}`, editedTransaction);
