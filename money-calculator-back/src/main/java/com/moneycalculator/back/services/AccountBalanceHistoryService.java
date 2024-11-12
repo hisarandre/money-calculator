@@ -1,6 +1,5 @@
 package com.moneycalculator.back.services;
 import com.moneycalculator.back.dto.AccountBalanceDTO;
-import com.moneycalculator.back.dto.AccountBalanceHistoryDTO;
 import com.moneycalculator.back.models.AccountBalanceHistory;
 
 import java.time.LocalDate;

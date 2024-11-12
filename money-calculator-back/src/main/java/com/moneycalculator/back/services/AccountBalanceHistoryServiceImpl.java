@@ -1,7 +1,6 @@
 package com.moneycalculator.back.services;
 
 import com.moneycalculator.back.dto.AccountBalanceDTO;
-import com.moneycalculator.back.dto.AccountBalanceHistoryDTO;
 import com.moneycalculator.back.models.*;
 import com.moneycalculator.back.repositories.AccountBalanceHistoryRepository;
 import com.moneycalculator.back.repositories.AccountBalanceRepository;
@@ -12,7 +11,6 @@ import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

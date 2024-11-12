@@ -3,6 +3,9 @@ package com.moneycalculator.back.controllers;
 import com.moneycalculator.back.dto.AccountBalanceDTO;
 import com.moneycalculator.back.models.AccountBalanceHistory;
 import com.moneycalculator.back.services.AccountBalanceHistoryServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,12 @@ public class AccountBalanceHistoryController {
         this.accountBalanceHistoryService = accountBalanceHistoryService;
     }
 
+    @Operation(summary = "Retrieve all account balance histories",
+            description = "Returns a list of all account balance histories. If no history exists, a 204 No Content response is returned.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of account balance histories"),
+            @ApiResponse(responseCode = "204", description = "No account balance histories found")
+    })
     @GetMapping("/all")
     public ResponseEntity<List<AccountBalanceHistory>> getAllAccountBalanceHistories() {
         logger.info("Get all account balance histories");
@@ -39,11 +48,20 @@ public class AccountBalanceHistoryController {
         return ResponseEntity.ok(accountBalanceHistories);
     }
 
+    @Operation(summary = "Check if monthly process is done",
+            description = "Returns a boolean indicating whether the monthly account balance process has been completed.")
+    @ApiResponse(responseCode = "200", description = "Monthly process status retrieved successfully")
     @GetMapping("/monthly-done")
     public boolean checkMonthlyDone() {
         return accountBalanceHistoryService.checkMonthlyDone();
     }
 
+    @Operation(summary = "Add new account balance histories",
+            description = "Creates a new account balance history record for each account balance in the provided list.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Account balance histories created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping("/add")
     public ResponseEntity<?> createAccountBalanceHistory(@Valid @RequestBody List<AccountBalanceDTO> accountBalancesDTO) {
         logger.info("Add new account balance histories: " + accountBalancesDTO);
@@ -53,6 +71,13 @@ public class AccountBalanceHistoryController {
     }
 
     @PostMapping("/calculate/{date}")
+    @Operation(summary = "Calculate projected amount",
+            description = "Calculates the projected account balance up to the specified date based on past data.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Projected amount calculated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid date format"),
+            @ApiResponse(responseCode = "404", description = "No previous AccountBalanceHistory found")
+    })
     public Double calculateProjectedAmount(@PathVariable LocalDate date) {
         logger.info("Calculate projecting money : " + date);
         return accountBalanceHistoryService.calculateProjectedAmount(date);
