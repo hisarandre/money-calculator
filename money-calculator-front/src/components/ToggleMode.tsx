@@ -1,6 +1,5 @@
-import {Moon, Sun} from "lucide-react"
+import {ChevronDown, Moon, Sun} from "lucide-react"
 
-import {Button} from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,6 +7,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {useTheme} from "@/services/ThemeProvider"
+import {SidebarMenuButton} from "@/components/ui/sidebar.tsx";
 
 export function ToggleMode() {
     const {setTheme} = useTheme()
@@ -15,15 +15,16 @@ export function ToggleMode() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="absolute right-6 md:right-10 top-6 md:top-10">
+                <SidebarMenuButton>
                     <Sun
                         className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"/>
                     <Moon
                         className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"/>
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
+                    Select theme
+                    <ChevronDown className="ml-auto" />
+                </SidebarMenuButton>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
                 <DropdownMenuItem onClick={() => setTheme("light")}>
                     Light
                 </DropdownMenuItem>

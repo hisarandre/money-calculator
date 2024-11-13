@@ -1,15 +1,9 @@
-import {ThemeProvider} from "@/services/ThemeProvider"
-import ProjectedCalculator from "@/pages/ProjectedCalculator"
-import {ToggleMode} from "@/components/ToggleMode"
-
+import ProjectedCalculator from "@/pages/ProjectedCalculator";
 
 function App() {
 
     return (
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <ToggleMode></ToggleMode>
-            <ProjectedCalculator></ProjectedCalculator>
-        </ThemeProvider>
+        <ProjectedCalculator/>
     )
 }
 
