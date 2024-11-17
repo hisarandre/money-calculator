@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 import {ToggleMode} from "@/components/ToggleMode.tsx";
 import {Calculator, House} from "lucide-react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 export function AppSidebar() {
     return (

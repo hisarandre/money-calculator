@@ -7,18 +7,25 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
+import {UseFormReturn} from "react-hook-form";
 
-interface FormFieldProps {
-    form: any;
-    inputName: string;
+interface FormFieldProps<T> {
+    form: UseFormReturn<T>;
+    inputName: keyof T;
     placeHolder?: string;
     type?: string;
     label?: string;
     className?: string;
 }
 
-const FormFieldCustom: React.FC<FormFieldProps> = ({form, inputName, placeHolder, type = "text", label, className}) => {
-
+const FormFieldCustom = <T,>({
+    form,
+    inputName,
+    placeHolder,
+    type = "text",
+    label,
+    className,
+}: FormFieldProps<T>): React.ReactElement => {
     return (
         <FormField
             control={form.control}

@@ -12,20 +12,22 @@ export const fetchHistory = createAsyncThunk(
             const response = await axios.get(`${BALANCE_URL}/all`);
             return response.data;
         } catch (error) {
-            return rejectWithValue("Failed to fetch balance");
+            const errorMessage = error.response?.data || "Failed to fetch history";
+            return rejectWithValue(errorMessage);
         }
-});
+    });
 
 export const fetchMonthlyDone = createAsyncThunk(
     `${PREFIX}/fetchMonthlyDone`,
-    async (_, {rejectWithValue})=> {
+    async (_, {rejectWithValue}) => {
         try {
             const response = await axios.get(`${BALANCE_URL}/monthly-done`);
             return response.data;
         } catch (error) {
-            return rejectWithValue("Failed to fetch monthly done");
+            const errorMessage = error.response?.data || "Failed to fetch monthly done";
+            return rejectWithValue(errorMessage);
         }
-});
+    });
 
 export const addBalance = createAsyncThunk(
     `${PREFIX}/add`,
@@ -33,7 +35,7 @@ export const addBalance = createAsyncThunk(
         try {
             const response = await axios.post(`${BALANCE_URL}/add`, balances);
             return response.data;
-        } catch (error: any) {
+        } catch (error) {
             const errorMessage = error.response?.data || "Failed to add balance";
             return rejectWithValue(errorMessage);
         }
@@ -46,7 +48,7 @@ export const calculate = createAsyncThunk(
         try {
             const response = await axios.post(`${BALANCE_URL}/calculate/${date}`);
             return response.data;
-        } catch (error: any) {
+        } catch (error) {
             const errorMessage = error.response?.data || "Failed to calculate";
             return rejectWithValue(errorMessage);
         }
@@ -107,7 +109,7 @@ const balanceSlice = createSlice({
                 state.addStatus = "loading";
                 state.addError = null;
             })
-            .addCase(addBalance.fulfilled, (state, action) => {
+            .addCase(addBalance.fulfilled, (state) => {
                 state.addStatus = "succeeded";
             })
             .addCase(addBalance.rejected, (state, action) => {

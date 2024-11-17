@@ -23,9 +23,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/store/Store.tsx";
+import {AppDispatch, RootState} from "@/store/Store.ts";
 import {toast} from "@/hooks/use-toast.ts";
-import {fetchHistory} from "@/store/BalanceSlice.tsx";
+import {fetchHistory} from "@/store/BalanceSlice.ts";
 
 const formatDate = (date: string | Date, monthFormat: 'short' | 'long') => {
     return new Intl.DateTimeFormat('en', {month: monthFormat, year: 'numeric'}).format(new Date(date));

@@ -6,7 +6,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {useTheme} from "@/services/ThemeProvider"
+import {useTheme} from "@/services/useTheme"
 import {SidebarMenuButton} from "@/components/ui/sidebar.tsx";
 
 export function ToggleMode() {
@@ -21,7 +21,7 @@ export function ToggleMode() {
                     <Moon
                         className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"/>
                     Select theme
-                    <ChevronDown className="ml-auto" />
+                    <ChevronDown className="ml-auto"/>
                 </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[--radix-popper-anchor-width]">

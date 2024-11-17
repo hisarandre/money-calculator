@@ -3,8 +3,8 @@ import CardCustom from "@/components/CardCustom";
 import TableCustom from "../TableCustom";
 import {toast} from "@/hooks/use-toast";
 import {useSelector, useDispatch} from "react-redux";
-import {RootState, AppDispatch} from "@/store/Store";
-import {fetchExpenses} from "@/store/TransactionSlice";
+import {RootState, AppDispatch} from "@/store/Store.ts";
+import {fetchExpenses} from "@/store/TransactionSlice.ts";
 import {Account} from "@/models/Account";
 import {Expense, TransactionType} from "@/models/Transaction.tsx";
 import AddTransaction from "@/components/transactions/modals/AddTransaction.tsx";
@@ -77,7 +77,7 @@ const ExpenseCard = () => {
                     addAction={() => setIsExpenseAddDialogOpen(true)}>
             {fetchExpenseStatus === "succeeded" && (
                 <>
-                    <TableCustom
+                    <TableCustom<Expense>
                         columns={columns}
                         data={mappedData}
                         showFooter={true}

@@ -3,7 +3,7 @@ import {createRoot} from 'react-dom/client'
 import '@/styles/index.css'
 import App from '@/App.tsx'
 import {Provider} from 'react-redux';
-import Store from '@/store/Store';
+import Store from '@/store/Store.ts';
 import {ThemeProvider} from "@/services/ThemeProvider.tsx";
 import {
     createBrowserRouter,
@@ -17,15 +17,15 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <App/>,
-        errorElement: <Error />,
+        errorElement: <Error/>,
         children: [
             {
                 path: "/",
-                element: <ProjectedCalculator />,
+                element: <ProjectedCalculator/>,
             },
             {
                 path: "/daily-budget",
-                element: <DailyBudget />,
+                element: <DailyBudget/>,
             },
         ],
     },
@@ -35,7 +35,7 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <Provider store={Store}>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <RouterProvider router={router} />
+                <RouterProvider router={router}/>
             </ThemeProvider>
         </Provider>
     </StrictMode>,

@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import CardCustom from "@/components/CardCustom.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/store/Store.tsx";
+import {AppDispatch, RootState} from "@/store/Store.ts";
 import {
     Table,
     TableHeader,
@@ -17,7 +17,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import FormFieldCustom from "@/components/FormFieldCustom.tsx";
 import {Form} from "@/components/ui/form.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {addBalance, fetchHistory, fetchMonthlyDone} from "@/store/BalanceSlice.tsx";
+import {addBalance, fetchHistory, fetchMonthlyDone} from "@/store/BalanceSlice.ts";
 import {toast} from "@/hooks/use-toast.ts";
 
 const BalanceOverviewCard = () => {

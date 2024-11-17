@@ -28,9 +28,9 @@ export const createBalanceOverviewFormSchema = (accounts: Account[]) => {
 }
 
 export const calculateFormSchema = z.object({
-    month: z.string().min(1, { message: "Month is required" }),
-    year: z.string().min(1, { message: "Year is required" }),
-}).refine(({ month, year }) => {
+    month: z.string().min(1, {message: "Month is required"}),
+    year: z.string().min(1, {message: "Year is required"}),
+}).refine(({month, year}) => {
     const inputDate = new Date(Number(year), Number(month) - 1);
     const currentDate = new Date();
     currentDate.setDate(1);

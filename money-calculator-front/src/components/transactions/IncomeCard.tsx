@@ -3,8 +3,8 @@ import CardCustom from "@/components/CardCustom";
 import TableCustom from "../TableCustom";
 import {toast} from "@/hooks/use-toast";
 import {useSelector, useDispatch} from "react-redux";
-import {RootState, AppDispatch} from "@/store/Store";
-import {fetchIncomes} from "@/store/TransactionSlice";
+import {RootState, AppDispatch} from "@/store/Store.ts";
+import {fetchIncomes} from "@/store/TransactionSlice.ts";
 import {Income, TransactionType} from "@/models/Transaction";
 import AddTransaction from "@/components/transactions/modals/AddTransaction";
 import DeleteTransaction from "@/components/transactions/modals/DeleteTransaction";
@@ -77,7 +77,7 @@ const IncomeCard = () => {
                     addAction={() => setIsIncomeAddDialogOpen(true)}>
             {fetchIncomeStatus === "succeeded" && (
                 <>
-                    <TableCustom
+                    <TableCustom<Income>
                         columns={columns}
                         data={mappedData}
                         showFooter={true}

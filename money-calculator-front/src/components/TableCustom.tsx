@@ -10,15 +10,15 @@ import {
 import {Button} from "@/components/ui/button";
 import {Trash, Edit, MoreHorizontal} from "lucide-react";
 
-interface TableCustomProps {
+interface TableCustomProps<T = unknown> {
     columns: string[];
-    data: Record<string, any>[];
+    data: Record<string, T>[];
     total?: number;
     showFooter?: boolean;
     canDelete?: boolean;
     canEdit?: boolean;
-    onDelete?: any;
-    onEdit?: any;
+    onDelete?: (id: number) => void;
+    onEdit?: (item: T) => void;
 }
 
 const TableCustom: React.FC<TableCustomProps> = ({
@@ -61,19 +61,21 @@ const TableCustom: React.FC<TableCustomProps> = ({
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="h-8 w-8 p-0">
                                             <span className="sr-only">Open menu</span>
-                                            <MoreHorizontal className="h-4 w-4" />
+                                            <MoreHorizontal className="h-4 w-4"/>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                         {canEdit && (
                                             <DropdownMenuItem className="cursor-pointer" onClick={() => onEdit(row)}>
-                                                <Edit className="h-4 w-4" /> Edit
+                                                <Edit className="h-4 w-4"/> Edit
                                             </DropdownMenuItem>
                                         )}
                                         {canDelete && (
-                                            <DropdownMenuItem className="cursor-pointer text-destructive focus:bg-destructive focus:text-destructive-foreground" onClick={() => onDelete(row.id)}>
-                                                <Trash className="h-4 w-4" /> Delete
+                                            <DropdownMenuItem
+                                                className="cursor-pointer text-destructive focus:bg-destructive focus:text-destructive-foreground"
+                                                onClick={() => onDelete(row.id)}>
+                                                <Trash className="h-4 w-4"/> Delete
                                             </DropdownMenuItem>
                                         )}
                                     </DropdownMenuContent>

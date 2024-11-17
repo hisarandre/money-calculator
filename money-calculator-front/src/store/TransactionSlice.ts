@@ -11,7 +11,8 @@ export const fetchExpenses = createAsyncThunk(`${PREFIX}/type/expense`, async (_
         const response = await axios.get(`${TRANSACTION_URL}/type/expense`);
         return response.data;
     } catch (error) {
-        return rejectWithValue("Failed to fetch expenses");
+        const errorMessage = error.response?.data || "Failed to fetch expenses";
+        return rejectWithValue(errorMessage);
     }
 });
 
@@ -20,7 +21,8 @@ export const fetchIncomes = createAsyncThunk(`${PREFIX}/type/income`, async (_, 
         const response = await axios.get(`${TRANSACTION_URL}/type/income`);
         return response.data;
     } catch (error) {
-        return rejectWithValue("Failed to fetch incomes");
+        const errorMessage = error.response?.data || "Failed to fetch incomes";
+        return rejectWithValue(errorMessage);
     }
 });
 
@@ -28,7 +30,7 @@ export const addTransaction = createAsyncThunk(`${PREFIX}/addTransaction`, async
     try {
         const response = await axios.post(`${TRANSACTION_URL}/add`, newTransaction);
         return response.data;
-    } catch (error: any) {
+    } catch (error) {
         const errorMessage = error.response?.data || "Failed to add transaction";
         return rejectWithValue(errorMessage);
     }
@@ -38,7 +40,7 @@ export const deleteTransaction = createAsyncThunk(`${PREFIX}/deleteTransaction`,
     try {
         const response = await axios.delete(`${TRANSACTION_URL}/${id}`);
         return response.data;
-    } catch (error: any) {
+    } catch (error) {
         const errorMessage = error.response?.data || "Failed to delete transaction";
         return rejectWithValue(errorMessage);
     }
@@ -50,7 +52,7 @@ export const editTransaction = createAsyncThunk(
         try {
             const response = await axios.put(`${TRANSACTION_URL}/${id}`, editedTransaction);
             return response.data;
-        } catch (error: any) {
+        } catch (error) {
             const errorMessage = error.response?.data || "Failed to edit transaction";
             return rejectWithValue(errorMessage);
         }

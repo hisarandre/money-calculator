@@ -1,12 +1,12 @@
 import React, {useEffect} from "react";
-import {Transaction, TransactionType} from "@/models/Transaction.tsx";
+import {Transaction} from "@/models/Transaction.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/store/Store.tsx";
+import {AppDispatch, RootState} from "@/store/Store.ts";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {toast} from "@/hooks/use-toast.ts";
-import {editTransaction} from "@/store/TransactionSlice.tsx";
+import {editTransaction} from "@/store/TransactionSlice.ts";
 import DialogCustom from "@/components/DialogCustom.tsx";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
 import FormFieldCustom from "@/components/FormFieldCustom.tsx";
@@ -75,7 +75,7 @@ const EditTransaction: React.FC<EditTransactionProps> = ({transaction, isOpen, o
                     <FormField
                         control={form.control}
                         name="accountId"
-                        render={({ field }) => {
+                        render={({field}) => {
                             const selectedAccount = accounts.find(account => account.id === field.value);
 
                             return (
@@ -100,7 +100,7 @@ const EditTransaction: React.FC<EditTransactionProps> = ({transaction, isOpen, o
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             );
                         }}
