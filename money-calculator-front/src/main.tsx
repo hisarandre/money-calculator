@@ -4,30 +4,38 @@ import '@/styles/index.css'
 import App from '@/App.tsx'
 import {Provider} from 'react-redux';
 import Store from '@/store/Store';
-import {Toaster} from "@/components/ui/toaster"
-import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar.tsx";
-import {AppSidebar} from "@/components/AppSidebar.tsx";
 import {ThemeProvider} from "@/services/ThemeProvider.tsx";
-import {Separator} from "@/components/ui/separator.tsx";
+import {
+    createBrowserRouter,
+    RouterProvider,
+} from "react-router-dom";
+import Error from "@/pages/Error.tsx";
+import ProjectedCalculator from "@/pages/ProjectedCalculator.tsx";
+import DailyBudget from "@/pages/DailyBudget.tsx";
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <App/>,
+        errorElement: <Error />,
+        children: [
+            {
+                path: "/",
+                element: <ProjectedCalculator />,
+            },
+            {
+                path: "/daily-budget",
+                element: <DailyBudget />,
+            },
+        ],
+    },
+]);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <Provider store={Store}>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <SidebarProvider>
-                    <AppSidebar />
-                    <main className="flex-1 p-6 space-y-6">
-                        <div className="h-6 flex items-center gap-4">
-                            <SidebarTrigger />
-                            <Separator orientation="vertical" />
-                            <span className="text-sm font-bold">Money Calculator</span>
-                        </div>
-
-                        <App/>
-
-                        <Toaster/>
-                    </main>
-                </SidebarProvider>
+                <RouterProvider router={router} />
             </ThemeProvider>
         </Provider>
     </StrictMode>,

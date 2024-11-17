@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 import {ToggleMode} from "@/components/ToggleMode.tsx";
 import {Calculator, House} from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function AppSidebar() {
     return (
@@ -26,18 +27,18 @@ export function AppSidebar() {
                         <SidebarMenu>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
-                                    <a href="/">
+                                    <Link to={`/`}>
                                         <Calculator/>
                                         <span>Projected Calculation</span>
-                                    </a>
+                                    </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
-                                    <a href="/">
+                                    <Link to={`/daily-budget`}>
                                         <House/>
                                         <span>Korea</span>
-                                    </a>
+                                    </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         </SidebarMenu>
