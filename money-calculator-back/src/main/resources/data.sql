@@ -9,3 +9,10 @@ INSERT INTO transactions (label, amount, type, account_id) VALUES ('salary', 100
 
 INSERT INTO account_balance_histories (sent, total, earning) VALUES ('2024-10-01', 1000.00, 100.00);
 INSERT INTO account_balances (account_id, account_balance_history_id, amount) VALUES (1, 1, 500.00), (2, 1, 500.00);
+
+
+INSERT INTO budgets (label, amount, start_date, end_date, conversion, main_currency, secondary_currency)
+VALUES ('Monthly Budget', 1500.00, '2024-01-01', '2024-03-01', 1, 'KRW', 'EUR');
+
+INSERT INTO fixed_expenses (label, amount, frequency, budget_id)
+VALUES ('Internet Subscription', 50.00, 1, 1);

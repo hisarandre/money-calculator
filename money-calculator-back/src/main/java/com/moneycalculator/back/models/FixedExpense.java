@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "accounts")
-public class Account {
+@Table(name = "fixed_expenses")
+public class FixedExpense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,15 @@ public class Account {
     @Size(min = 1, message = "Label cannot be empty")
     private String label;
 
-    @NotNull(message = "Fee is required")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Fee must be zero or greater")
-    private Double fee;
+    @NotNull(message = "Amount is required")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Amount must be zero or greater")
+    private Double amount;
+
+    @NotNull(message = "Frequency is required")
+    @DecimalMin(value = "1", inclusive = true, message = "Frequency must be one or greater")
+    private int frequency;
+
+    @ManyToOne
+    @JoinColumn(name = "budget_id", referencedColumnName = "_id", nullable = false)
+    private Budget budget;
 }
