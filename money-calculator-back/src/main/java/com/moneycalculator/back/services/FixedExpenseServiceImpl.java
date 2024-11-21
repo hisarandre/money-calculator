@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,11 +39,21 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
     @Override
     public FixedExpenseListEstimatedBudgetDTO getAllFixedExpenses() {
 
-        // Fetch all fixed expenses
         List<FixedExpense> expenses = fixedExpenseRepository.findAll();
+
+        if (expenses.isEmpty()) {
+            FixedExpenseListEstimatedBudgetDTO emptyData = new FixedExpenseListEstimatedBudgetDTO();
+            emptyData.setFixedExpenses(new ArrayList<>());
+            emptyData.setEstimatedBudget(0.0);
+            emptyData.setMainCurrencyTotalExpenses(0.0);
+            emptyData.setSecondaryCurrencyTotalExpenses(null);
+            return emptyData;
+        }
+
         List<FixedExpenseDTO> expenseDTOS = mapper.listFixedExpenseToDTOs(expenses);
 
-        // Determine the budget (assume at least one expense has a non-null budget)
+
+        // Determine the budget
         Budget budget = expenses.stream()
                 .map(FixedExpense::getBudget)
                 .findFirst()
@@ -50,29 +61,13 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
 
         // Process each expense and calculate the secondary currency amount
         expenseDTOS.forEach(expense -> {
-            if (budget.getConversion()) {
-                Double convertedAmount = currencyConversionService.getConvertedAmount(
-                        budget.getMainCurrency(),
-                        budget.getSecondaryCurrency(),
-                        expense.getMainCurrencyAmount()
-                );
-                expense.setSecondaryCurrencyAmount(convertedAmount);
-            } else {
-                expense.setSecondaryCurrencyAmount(null);
-            }
+            Double convertedAmount = calculateConvertedAmountFromBudget(budget, expense.getMainCurrencyAmount());
+            expense.setSecondaryCurrencyAmount(convertedAmount);
         });
 
         // Calculate totals
         Double mainCurrencyTotal = calculateTotalExpense(budget, expenses);
-
-        Double secondaryCurrencyTotal = null;
-        if (budget.getConversion()) {
-            secondaryCurrencyTotal = currencyConversionService.getConvertedAmount(
-                    budget.getMainCurrency(),
-                    budget.getSecondaryCurrency(),
-                    mainCurrencyTotal
-            );
-        }
+        Double secondaryCurrencyTotal = calculateConvertedAmountFromBudget(budget, mainCurrencyTotal);
 
         // Calculate the estimated budget per day
         Double estimatedBudgetPerDay = calculateEstimatedBudgetPerDay(budget, mainCurrencyTotal);
@@ -89,7 +84,7 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
 
     @Override
     public FixedExpenseTotalDTO addFixedExpense(FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO) {
-        // Check for duplicates
+        // Check duplicates
         Optional<FixedExpense> existingExpense = fixedExpenseRepository.findByLabel(fixedExpenseLabelAmountFrequencyDTO.getLabel());
 
         if (existingExpense.isPresent()) {
@@ -102,69 +97,48 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
 
         FixedExpense fixedExpense = mapper.fixedExpenseDTOToFixedExpense(fixedExpenseLabelAmountFrequencyDTO);
         fixedExpense.setBudget(budget);
+        Double roundedAmount = BigDecimalUtils.roundToTwoDecimalPlaces(fixedExpense.getAmount());
+        fixedExpense.setAmount(roundedAmount);
 
         fixedExpense = fixedExpenseRepository.save(fixedExpense);
 
-        FixedExpenseDTO fixedExpenseDTO = mapper.fixedExpenseToDTO(fixedExpense);
-
-        if (budget.getConversion()) {
-            Double convertedAmount = currencyConversionService.getConvertedAmount(
-                    budget.getMainCurrency(),
-                    budget.getSecondaryCurrency(),
-                    fixedExpenseDTO.getMainCurrencyAmount()
-            );
-            fixedExpenseDTO.setSecondaryCurrencyAmount(convertedAmount);
-        } else {
-            fixedExpenseDTO.setSecondaryCurrencyAmount(null);
-        }
-
-        List<FixedExpense> expenses = fixedExpenseRepository.findAll();
-
-        // Calculate totals
-        Double mainCurrencyTotal = calculateTotalExpense(budget, expenses);
-
-        Double secondaryCurrencyTotal = null;
-        if (budget.getConversion()) {
-            secondaryCurrencyTotal = currencyConversionService.getConvertedAmount(
-                    budget.getMainCurrency(),
-                    budget.getSecondaryCurrency(),
-                    mainCurrencyTotal
-            );
-        }
-
-        // Calculate the estimated budget per day
-        Double estimatedBudgetPerDay = calculateEstimatedBudgetPerDay(budget, mainCurrencyTotal);
-        estimatedBudgetPerDay = BigDecimalUtils.roundToTwoDecimalPlaces(estimatedBudgetPerDay);
-
-        FixedExpenseTotalDTO fixedExpenseTotalDTO = new FixedExpenseTotalDTO();
-        fixedExpenseTotalDTO.setFixedExpense(fixedExpenseDTO);
-        fixedExpenseTotalDTO.setEstimatedBudget(estimatedBudgetPerDay);
-        fixedExpenseTotalDTO.setMainCurrencyTotalExpenses(mainCurrencyTotal);
-        fixedExpenseTotalDTO.setSecondaryCurrencyTotalExpenses(secondaryCurrencyTotal);
-
-        return fixedExpenseTotalDTO;
-    }
-/*
-    @Override
-    public Account updateAccount(Integer id, Account account) {
-        Account existingAccount = fixedExpenseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + id));
-
-        Double roundedFee = BigDecimalUtils.roundToTwoDecimalPlaces(account.getFee());
-
-        existingAccount.setLabel(account.getLabel());
-        existingAccount.setFee(roundedFee);
-
-        return fixedExpenseRepository.save(existingAccount);
+        return convertExpenseToExpenseWithTotal(budget, fixedExpense);
     }
 
     @Override
-    public void deleteAccount(Integer id) {
+    public FixedExpenseTotalDTO updateFixedExpense(Integer id, FixedExpenseLabelAmountFrequencyDTO fixedExpenseDTO) {
+        FixedExpense existingFixedExpense = fixedExpenseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Fixed expense not found with ID: " + id));
+
+        Double roundedAmount = BigDecimalUtils.roundToTwoDecimalPlaces(fixedExpenseDTO.getAmount());
+
+        existingFixedExpense.setLabel(fixedExpenseDTO.getLabel());
+        existingFixedExpense.setAmount(roundedAmount);
+        existingFixedExpense.setFrequency(fixedExpenseDTO.getFrequency());
+
+        FixedExpense fixedExpenseUpdated = fixedExpenseRepository.save(existingFixedExpense);
+
+        return convertExpenseToExpenseWithTotal(fixedExpenseUpdated.getBudget(), fixedExpenseUpdated);
+
+    }
+
+    @Override
+    public FixedExpenseIdEstimatedBudgetDTO deleteFixedExpense(Integer id) {
         if (!fixedExpenseRepository.existsById(id)) {
-            throw new EntityNotFoundException("Account not found");
+            throw new EntityNotFoundException("Fixed expense not found");
         }
         fixedExpenseRepository.deleteById(id);
-    }*/
+
+        FixedExpenseListEstimatedBudgetDTO fixedExpenseListEstimatedBudgetDTO = getAllFixedExpenses();
+
+        FixedExpenseIdEstimatedBudgetDTO fixedExpenseIdEstimatedBudgetDTO = new FixedExpenseIdEstimatedBudgetDTO();
+        fixedExpenseIdEstimatedBudgetDTO.setId(id);
+        fixedExpenseIdEstimatedBudgetDTO.setEstimatedBudget(fixedExpenseListEstimatedBudgetDTO.getEstimatedBudget());
+        fixedExpenseIdEstimatedBudgetDTO.setMainCurrencyTotalExpenses(fixedExpenseListEstimatedBudgetDTO.getMainCurrencyTotalExpenses());
+        fixedExpenseIdEstimatedBudgetDTO.setSecondaryCurrencyTotalExpenses(fixedExpenseListEstimatedBudgetDTO.getSecondaryCurrencyTotalExpenses());
+
+        return fixedExpenseIdEstimatedBudgetDTO;
+    }
 
     @Override
     public Double calculateEstimatedBudgetPerDay(Budget budget, Double totalExpenses){
@@ -205,5 +179,44 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return total.doubleValue();
+    }
+
+    @Override
+    public Double calculateConvertedAmountFromBudget(Budget budget, Double amount){
+        if (budget.getConversion()) {
+            return currencyConversionService.getConvertedAmount(
+                    budget.getMainCurrency(),
+                    budget.getSecondaryCurrency(),
+                    amount
+            );
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public FixedExpenseTotalDTO convertExpenseToExpenseWithTotal(Budget budget, FixedExpense fixedExpense){
+        FixedExpenseDTO fixedExpenseDTO = mapper.fixedExpenseToDTO(fixedExpense);
+
+        Double secondaryCurrencyAmount = calculateConvertedAmountFromBudget(budget, fixedExpenseDTO.getMainCurrencyAmount());
+        fixedExpenseDTO.setSecondaryCurrencyAmount(secondaryCurrencyAmount);
+
+        List<FixedExpense> expenses = fixedExpenseRepository.findAll();
+
+        // Calculate totals
+        Double mainCurrencyTotal = calculateTotalExpense(budget, expenses);
+        Double secondaryCurrencyTotal = calculateConvertedAmountFromBudget(budget, mainCurrencyTotal);
+
+        // Calculate the estimated budget per day
+        Double estimatedBudgetPerDay = calculateEstimatedBudgetPerDay(budget, mainCurrencyTotal);
+        estimatedBudgetPerDay = BigDecimalUtils.roundToTwoDecimalPlaces(estimatedBudgetPerDay);
+
+        FixedExpenseTotalDTO fixedExpenseTotalDTO = new FixedExpenseTotalDTO();
+        fixedExpenseTotalDTO.setFixedExpense(fixedExpenseDTO);
+        fixedExpenseTotalDTO.setEstimatedBudget(estimatedBudgetPerDay);
+        fixedExpenseTotalDTO.setMainCurrencyTotalExpenses(mainCurrencyTotal);
+        fixedExpenseTotalDTO.setSecondaryCurrencyTotalExpenses(secondaryCurrencyTotal);
+
+        return fixedExpenseTotalDTO;
     }
 }

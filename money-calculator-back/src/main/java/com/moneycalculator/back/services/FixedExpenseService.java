@@ -12,15 +12,16 @@ public interface FixedExpenseService {
     FixedExpenseListEstimatedBudgetDTO getAllFixedExpenses();
 
     FixedExpenseTotalDTO addFixedExpense(FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO);
-/*
 
-    Account updateAccount(Integer _id, Account account);
+    FixedExpenseTotalDTO updateFixedExpense(Integer id, FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO);
 
-    void deleteAccount(Integer _id);
-*/
+    FixedExpenseIdEstimatedBudgetDTO deleteFixedExpense(Integer id);
 
     Double calculateEstimatedBudgetPerDay(Budget budget, Double totalExpenses);
 
     Double calculateTotalExpense(Budget budget, List<FixedExpense> expenses);
 
+    Double calculateConvertedAmountFromBudget(Budget budget, Double amount);
+
+    FixedExpenseTotalDTO convertExpenseToExpenseWithTotal(Budget budget, FixedExpense fixedExpense);
 }

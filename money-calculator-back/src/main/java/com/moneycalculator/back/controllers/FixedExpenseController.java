@@ -80,7 +80,7 @@ public class FixedExpenseController {
                     responseCode = "201",
                     description = "Fixed expense created successfully",
                     content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = FixedExpense.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = FixedExpenseTotalDTO.class))
                     }
             ),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
@@ -98,19 +98,18 @@ public class FixedExpenseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-/*
 
     @Operation(
-            summary = "Update an account",
-            description = "Updates the account with the provided ID. The request body should contain the updated account details. Returns the updated account on success."
+            summary = "Update a fixed expense",
+            description = "Updates the fixed expense with the provided ID."
     )
     @ApiResponses(value = {
 
             @ApiResponse(
                     responseCode = "200",
-                    description = "Account updated successfully",
+                    description = "Fixed expense updated successfully",
                     content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Account.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = FixedExpense.class))
                     }
             ),
             @ApiResponse(
@@ -125,41 +124,38 @@ public class FixedExpenseController {
             )
     })
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAccount(@PathVariable Integer id, @Valid @RequestBody Account account) {
-        logger.info("Updating account with ID: " + id);
+    public ResponseEntity<?> updateFixedExpense(@PathVariable Integer id, @Valid @RequestBody FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO) {
+        logger.info("Updating expense with ID: " + id);
 
         try {
-            Account updatedAccount = accountService.updateAccount(id, account);
-            return ResponseEntity.ok(updatedAccount);
+            FixedExpenseTotalDTO fixedExpenseDTO = fixedExpenseService.updateFixedExpense(id, fixedExpenseLabelAmountFrequencyDTO);
+            return ResponseEntity.ok(fixedExpenseDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fixed expense not found");
         }
     }
 
 
-    @Operation(summary = "Delete an account", description = "Deletes the account with the given ID. Handles not found and foreign key constraint violations.")
+    @Operation(summary = "Delete a fixed expense", description = "Deletes the fixed expense with the given ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Account deleted successfully", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Account not found with the given ID"),
-            @ApiResponse(responseCode = "400", description = "Cannot delete account due to dependent transactions"),
+            @ApiResponse(responseCode = "200", description = "Fixed expense deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Fixed expense not found with the given ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAccount(@PathVariable Integer id) {
-        logger.info("Deleting account with ID: " + id);
+        logger.info("Deleting fixed expense with ID: " + id);
 
         try {
-            accountService.deleteAccount(id);
-            return ResponseEntity.ok(id);
+            FixedExpenseIdEstimatedBudgetDTO fixedExpense = fixedExpenseService.deleteFixedExpense(id);
+            return ResponseEntity.ok(fixedExpense);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found with ID: " + id);
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body("Cannot delete account as it has dependent transactions.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fixed expense not found with ID: " + id);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting account");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting fixed expense");
         }
-    }*/
+    }
 
 }
