@@ -37,7 +37,7 @@ public class BudgetController {
                     responseCode = "200",
                     description = "Budget retrieved successfully",
                     content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Budget.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BudgetDTO.class))
                     }
             ),
             @ApiResponse(responseCode = "204", description = "No budget found", content = @Content),
@@ -52,7 +52,7 @@ public class BudgetController {
         return ResponseEntity.ok(budget);
     }
 
-    //create
+    //edit amount
 
     //reset
 
