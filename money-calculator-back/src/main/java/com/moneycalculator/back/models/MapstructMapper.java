@@ -32,4 +32,8 @@ public interface MapstructMapper {
     List<FixedExpenseDTO> listFixedExpenseToDTOs(List<FixedExpense> expenses);
 
     FixedExpense fixedExpenseDTOToFixedExpense(FixedExpenseLabelAmountFrequencyDTO expense);
+
+    DailyExpenseSavingDTO dailyExpenseToDTO(DailyExpense expense);
+
+    List<DailyExpenseSavingDTO> dailyExpenseToDTOs(List<DailyExpense> expenses);
 }

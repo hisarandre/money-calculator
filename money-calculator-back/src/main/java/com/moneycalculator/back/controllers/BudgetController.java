@@ -43,12 +43,10 @@ public class BudgetController {
             @ApiResponse(responseCode = "204", description = "No budget found", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<BudgetDTO> getAllAccounts(@PathVariable Integer id) {
-        logger.info("Get budget id: " + id);
-
-        BudgetDTO budget = budgetService.getBudgetById(id);
-
+    @GetMapping()
+    public ResponseEntity<BudgetDTO> getBudget() {
+        logger.info("Get budget ");
+        BudgetDTO budget = budgetService.getBudget();
         return ResponseEntity.ok(budget);
     }
 

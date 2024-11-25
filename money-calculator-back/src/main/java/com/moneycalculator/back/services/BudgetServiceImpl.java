@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,8 +33,8 @@ public class BudgetServiceImpl implements BudgetService{
     }
 
     @Override
-    public BudgetDTO getBudgetById(Integer id) {
-        Budget budget = budgetRepository.findById(id)
+    public BudgetDTO getBudget() {
+        Budget budget = budgetRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("No budget found."));
 
         BudgetDTO budgetDTO = mapper.budgetToBudgetDto(budget);
@@ -59,4 +61,34 @@ public class BudgetServiceImpl implements BudgetService{
 
         return budgetDTO;
     }
+
+    @Override
+    public Double calculateEstimatedBudgetPerDay(Budget budget, Double totalFixedExpense){
+        // Calculate remaining amount
+        Double totalRemaining = budget.getAmount() - totalFixedExpense;
+
+        // Get the start and end dates
+        LocalDate startDate = budget.getStartDate();
+        LocalDate endDate = budget.getEndDate();
+
+        // Calculate the number of days between the start and end date (inclusive)
+        long daysBetween = Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay()).toDays() + 1; // +1 to include the end date
+
+        // Calculate the estimated budget per day
+        return totalRemaining / daysBetween;
+    };
+
+    @Override
+    public Double calculateConvertedAmountFromBudget(Budget budget, Double amount){
+        if (budget.getConversion()) {
+            return currencyConversionService.getConvertedAmount(
+                    budget.getMainCurrency(),
+                    budget.getSecondaryCurrency(),
+                    amount
+            );
+        } else {
+            return null;
+        }
+    }
+
 }

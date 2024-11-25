@@ -2,6 +2,7 @@ package com.moneycalculator.back.services;
 import com.moneycalculator.back.dto.*;
 import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.Budget;
+import com.moneycalculator.back.models.DailyExpense;
 import com.moneycalculator.back.models.FixedExpense;
 
 import java.math.BigDecimal;
@@ -17,11 +18,11 @@ public interface FixedExpenseService {
 
     FixedExpenseIdEstimatedBudgetDTO deleteFixedExpense(Integer id);
 
-    Double calculateEstimatedBudgetPerDay(Budget budget, Double totalExpenses);
-
     Double calculateTotalExpense(Budget budget, List<FixedExpense> expenses);
 
-    Double calculateConvertedAmountFromBudget(Budget budget, Double amount);
+    FixedExpenseTotalDTO convertExpenseToExpenseWithTotal(FixedExpense fixedExpense);
 
-    FixedExpenseTotalDTO convertExpenseToExpenseWithTotal(Budget budget, FixedExpense fixedExpense);
+    Double calculateCurrentWallet(Double totalExpenses);
+
+    Double calculateTotalDailyExpense(List<DailyExpense> dailyExpenses);
 }

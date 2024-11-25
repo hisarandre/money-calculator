@@ -8,28 +8,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "fixed_expenses")
-public class FixedExpense {
+@Table(name = "daily_expenses")
+public class DailyExpense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "_id")
     private Integer id;
 
-    @NotNull(message = "Label is required")
-    @Size(min = 1, message = "Label cannot be empty")
-    private String label;
+    @NotNull(message = "Date is required")
+    private LocalDate date;
 
     @NotNull(message = "Amount is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Amount must be zero or greater")
     private Double amount;
-
-    @NotNull(message = "Frequency is required")
-    @DecimalMin(value = "1", inclusive = true, message = "Frequency must be one or greater")
-    private int frequency;
 }

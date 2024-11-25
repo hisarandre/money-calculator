@@ -5,5 +5,9 @@ import com.moneycalculator.back.models.Budget;
 
 public interface BudgetService {
 
-    BudgetDTO getBudgetById(Integer id);
+    BudgetDTO getBudget();
+
+    Double calculateEstimatedBudgetPerDay(Budget budget, Double totalFixedExpense);
+
+    Double calculateConvertedAmountFromBudget(Budget budget, Double amount);
 }
