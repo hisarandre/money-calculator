@@ -1,21 +1,22 @@
 package com.moneycalculator.back.dto;
 
+import com.moneycalculator.back.models.DailyExpense;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FixedExpenseTotalDTO {
+public class DailyExpenseListDTO {
 
-    private FixedExpenseDTO fixedExpense;
+    List<DailyExpenseSavingDTO> dailyExpenses;
 
-    private Double estimatedBudget;
+    private Double total;
 
-    private Double mainCurrencyTotalExpenses;
-
-    private Double secondaryCurrencyTotalExpenses;
+    private Double totalSaving;
 
     private Double mainCurrencyCurrentWallet;
 

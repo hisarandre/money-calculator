@@ -11,6 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 public class FixedExpenseIdEstimatedBudgetDTO {
 
+    private Double mainCurrencyCurrentWallet;
+
+    private Double secondaryCurrencyCurrentWallet;
+
     private Double estimatedBudget;
 
     private Double mainCurrencyTotalExpenses;

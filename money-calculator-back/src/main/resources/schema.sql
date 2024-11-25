@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS account_balances;
 DROP TABLE IF EXISTS account_balance_histories;
 DROP TABLE IF EXISTS accounts;
 
+DROP TABLE IF EXISTS daily_expenses;
 DROP TABLE IF EXISTS fixed_expenses;
 DROP TABLE IF EXISTS budgets;
 
@@ -26,11 +27,15 @@ CREATE TABLE fixed_expenses (
     label VARCHAR(50) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     frequency INT NOT NULL,
-    budget_id INT,
-    FOREIGN KEY (budget_id) REFERENCES budgets(_id),
     PRIMARY KEY (_id)
 );
 
+CREATE TABLE daily_expenses (
+    _id INT NOT NULL AUTO_INCREMENT,
+    amount DECIMAL(10, 2) NOT NULL,
+    date DATE NOT NULL,
+    PRIMARY KEY (_id)
+);
 
 CREATE TABLE accounts (
    _id INT NOT NULL AUTO_INCREMENT,
