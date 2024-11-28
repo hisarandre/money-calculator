@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface DailyExpenseService {
 
+    List<DailyExpenseCalendarDTO> getDailyExpenseCalendar();
+
     List<DailyExpense> getAllDailyExpense();
 
     Double calculateTotalExpense(List<DailyExpense> expenses);

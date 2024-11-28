@@ -58,6 +58,13 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
     }
 
     @Override
+    public List<DailyExpenseCalendarDTO> getDailyExpenseCalendar(){
+
+        List<DailyExpense> dailyExpenses = dailyExpenseRepository.findAll();
+        return mapper.dailyExpenseToCalendarDTOs(dailyExpenses);
+    }
+
+    @Override
     public DailyExpenseListDTO getDailyExpensePerWeek(Integer number) {
         Budget budget = budgetRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("No budget found."));
@@ -171,7 +178,4 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
         }
         return emptyExpenses;
     }
-
-
-
 }

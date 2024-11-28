@@ -41,7 +41,7 @@ public class DailyExpenseController {
                     content = {
                             @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = FixedExpenseListEstimatedBudgetDTO.class)  // Updated to return DTO
+                                    schema = @Schema(implementation = DailyExpense.class)
                             )
                     }
             ),
@@ -77,7 +77,7 @@ public class DailyExpenseController {
                     content = {
                             @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = FixedExpenseListEstimatedBudgetDTO.class)  // Updated to return DTO
+                                    schema = @Schema(implementation = DailyExpenseListDTO.class)
                             )
                     }
             ),
@@ -106,8 +106,19 @@ public class DailyExpenseController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
+
+    @GetMapping("/calendar")
+    public ResponseEntity<?> getDailyExpenseCalendar() {
+        logger.info("Get all daily expense expenses");
+        try {
+            List<DailyExpenseCalendarDTO> dailyExpenseCalendars = dailyExpenseService.getDailyExpenseCalendar();
+            return ResponseEntity.ok(dailyExpenseCalendars);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 
 /*   @Operation(

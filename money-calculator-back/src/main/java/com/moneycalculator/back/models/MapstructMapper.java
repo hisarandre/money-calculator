@@ -36,4 +36,12 @@ public interface MapstructMapper {
     DailyExpenseSavingDTO dailyExpenseToDTO(DailyExpense expense);
 
     List<DailyExpenseSavingDTO> dailyExpenseToDTOs(List<DailyExpense> expenses);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "title", expression = "java(String.valueOf(expenses.getAmount()))")
+    @Mapping(target = "start", source = "date")
+    DailyExpenseCalendarDTO dailyExpenseToCalendarDTO (DailyExpense expenses);
+
+    List<DailyExpenseCalendarDTO> dailyExpenseToCalendarDTOs (List<DailyExpense> expenses);
+
 }
