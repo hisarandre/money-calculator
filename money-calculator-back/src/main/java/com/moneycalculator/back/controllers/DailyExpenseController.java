@@ -1,6 +1,7 @@
 package com.moneycalculator.back.controllers;
 
 import com.moneycalculator.back.dto.*;
+import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.DailyExpense;
 import com.moneycalculator.back.models.FixedExpense;
 import com.moneycalculator.back.services.DailyExpenseServiceImpl;
@@ -97,18 +98,21 @@ public class DailyExpenseController {
             )
     })
     @GetMapping("/week/{number}")
-    public ResponseEntity<DailyExpenseListDTO> getDailyExpensePerWeek(@PathVariable Integer number) {
+    public ResponseEntity<?> getDailyExpensePerWeek(@PathVariable Integer number) {
         logger.info("Get all daily expense expenses for current week + " + number);
+        try {
+            DailyExpenseListDTO dailyExpenseList = dailyExpenseService.getDailyExpensePerWeek(number);
+            return ResponseEntity.ok(dailyExpenseList);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
-        DailyExpenseListDTO dailyExpenseList = dailyExpenseService.getDailyExpensePerWeek(number);
-
-        return ResponseEntity.ok(dailyExpenseList);
     }
 
 
-/*    @Operation(
-            summary = "Update a fixed expense",
-            description = "Updates the fixed expense with the provided ID."
+/*   @Operation(
+            summary = "Update a daily expense",
+            description = "Updates the expense amount with the provided ID."
     )
     @ApiResponses(value = {
 
@@ -129,8 +133,8 @@ public class DailyExpenseController {
                     description = "Account not found with specified ID",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
             )
-    })
-    @PostMapping("/week/set-expense")
+    })*/
+/*    @PostMapping("/week/set-expense")
     public ResponseEntity<?> updateFixedExpense(@Valid @RequestBody FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO) {
         logger.info("Updating expense with ID: " + fixedExpenseLabelAmountFrequencyDTO);
 

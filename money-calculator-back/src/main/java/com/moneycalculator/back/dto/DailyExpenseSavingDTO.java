@@ -15,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class DailyExpenseSavingDTO {
 
-    private Integer id;
-
     private LocalDate date;
 
     private Double amount;

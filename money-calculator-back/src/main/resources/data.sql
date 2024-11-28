@@ -12,7 +12,7 @@ INSERT INTO account_balances (account_id, account_balance_history_id, amount) VA
 
 
 INSERT INTO budgets (label, amount, start_date, end_date, conversion, main_currency, secondary_currency)
-VALUES ('Monthly Budget', 1500.00, '2024-01-01', '2024-03-01', 1, 'KRW', 'EUR');
+VALUES ('Monthly Budget', 1500.00, '2024-11-13', '2024-12-11', 1, 'KRW', 'EUR');
 
 INSERT INTO fixed_expenses (label, amount, frequency)
 VALUES ('Internet Subscription', 50.00, 1);
