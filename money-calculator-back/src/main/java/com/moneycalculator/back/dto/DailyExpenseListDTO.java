@@ -21,4 +21,8 @@ public class DailyExpenseListDTO {
     private Double mainCurrencyCurrentWallet;
 
     private Double secondaryCurrencyCurrentWallet;
+
+    private Boolean isNextAvailable;
+
+    private Boolean isPreviousAvailable;
 }

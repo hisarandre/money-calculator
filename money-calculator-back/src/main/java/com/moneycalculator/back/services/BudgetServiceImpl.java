@@ -8,6 +8,8 @@ import com.moneycalculator.back.models.MapstructMapper;
 import com.moneycalculator.back.models.Transaction;
 import com.moneycalculator.back.repositories.AccountRepository;
 import com.moneycalculator.back.repositories.BudgetRepository;
+import com.moneycalculator.back.repositories.DailyExpenseRepository;
+import com.moneycalculator.back.repositories.FixedExpenseRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,19 @@ import java.util.List;
 public class BudgetServiceImpl implements BudgetService{
 
     private final BudgetRepository budgetRepository;
+    private final FixedExpenseRepository fixedExpenseRepository;
+    private final DailyExpenseRepository dailyExpenseRepository;
     private final CurrencyConversionService currencyConversionService;
     private final MapstructMapper mapper = Mappers.getMapper(MapstructMapper.class);
 
     @Autowired
     public BudgetServiceImpl(BudgetRepository budgetRepository,
+                             FixedExpenseRepository fixedExpenseRepository,
+                             DailyExpenseRepository dailyExpenseRepository,
                              CurrencyConversionService currencyConversionService) {
         this.budgetRepository = budgetRepository;
+        this.fixedExpenseRepository = fixedExpenseRepository;
+        this.dailyExpenseRepository = dailyExpenseRepository;
         this.currencyConversionService = currencyConversionService;
     }
 
@@ -63,7 +71,21 @@ public class BudgetServiceImpl implements BudgetService{
     }
 
     @Override
+    public void resetBudget(Budget newBudget) {
+        Budget budget = budgetRepository.findById(1)
+                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+
+        newBudget.setId(1);
+        budgetRepository.save(newBudget);
+
+        dailyExpenseRepository.deleteAll();
+        fixedExpenseRepository.deleteAll();
+    }
+
+    @Override
     public Double calculateEstimatedBudgetPerDay(Budget budget, Double totalFixedExpense){
+
+        System.out.println(totalFixedExpense + "totalFixedExpense");
         // Calculate remaining amount
         Double totalRemaining = budget.getAmount() - totalFixedExpense;
 

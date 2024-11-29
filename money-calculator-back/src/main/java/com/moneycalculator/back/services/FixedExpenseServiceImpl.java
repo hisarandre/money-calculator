@@ -46,22 +46,29 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
     @Override
     public FixedExpenseListEstimatedBudgetDTO getAllFixedExpenses() {
 
+        Budget budget = budgetRepository.findById(1)
+                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+
         List<FixedExpense> expenses = fixedExpenseRepository.findAll();
 
         if (expenses.isEmpty()) {
+            Double emptyEstimatedBudget = budgetService.calculateEstimatedBudgetPerDay(budget, 0.0);
+            emptyEstimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(emptyEstimatedBudget);
+
+            // Calculate current wallet
+            Double emptyMainCurrencyCurrentWallet = calculateCurrentWallet(0.0);
+
             FixedExpenseListEstimatedBudgetDTO emptyData = new FixedExpenseListEstimatedBudgetDTO();
             emptyData.setFixedExpenses(new ArrayList<>());
-            emptyData.setEstimatedBudget(0.0);
+            emptyData.setEstimatedBudget(emptyEstimatedBudget);
+            emptyData.setMainCurrencyCurrentWallet(emptyMainCurrencyCurrentWallet);
+            emptyData.setSecondaryCurrencyCurrentWallet(null);
             emptyData.setMainCurrencyTotalExpenses(0.0);
             emptyData.setSecondaryCurrencyTotalExpenses(null);
             return emptyData;
         }
 
         List<FixedExpenseDTO> expenseDTOS = mapper.listFixedExpenseToDTOs(expenses);
-
-        // Determine the budget
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
 
         // Process each expense and calculate the secondary currency amount
         expenseDTOS.forEach(expense -> {
