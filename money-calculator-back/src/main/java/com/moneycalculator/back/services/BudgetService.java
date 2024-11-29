@@ -7,6 +7,8 @@ public interface BudgetService {
 
     BudgetDTO getBudget();
 
+    void resetBudget(Budget budget);
+
     Double calculateEstimatedBudgetPerDay(Budget budget, Double totalFixedExpense);
 
     Double calculateConvertedAmountFromBudget(Budget budget, Double amount);

@@ -79,6 +79,11 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
         Double totalDailyExpense = calculateTotalExpense(dailyExpenses);
         Double totalFixedExpense = fixedExpenseService.calculateTotalExpense(budget, fixedExpenses);
         Double estimatedBudget = budgetService.calculateEstimatedBudgetPerDay(budget, totalFixedExpense);
+        estimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(estimatedBudget);
+
+        List<DailyExpenseSavingDTO> emptyDailyExpenses = generateEmptyDailyExpense(budget, dailyExpensesDto, dateRange.getFirst(), dateRange.getSecond(), estimatedBudget);
+        dailyExpensesDto.addAll(emptyDailyExpenses);
+        dailyExpensesDto.sort(Comparator.comparing(DailyExpenseSavingDTO::getDate));
 
         Double totalSaving = 0.0;
         for (DailyExpenseSavingDTO expenseDto : dailyExpensesDto) {
@@ -87,9 +92,11 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
             expenseDto.setSaving(saving);
         }
 
-        List<DailyExpenseSavingDTO> emptyDailyExpenses = generateEmptyDailyExpense(budget, dailyExpensesDto, dateRange.getFirst(), dateRange.getSecond());
-        dailyExpensesDto.addAll(emptyDailyExpenses);
-        dailyExpensesDto.sort(Comparator.comparing(DailyExpenseSavingDTO::getDate));
+        for (DailyExpenseSavingDTO emptyExpense : emptyDailyExpenses){
+            totalSaving = totalSaving + emptyExpense.getSaving();
+        }
+
+        totalSaving = BigDecimalUtils.roundToTwoDecimalPlaces(totalSaving);
 
         Double currentWallet = totalDailyExpense + totalFixedExpense;
         Double convertedCurrentWallet = budgetService.calculateConvertedAmountFromBudget(budget, currentWallet);
@@ -155,7 +162,9 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
             Budget budget,
             List<DailyExpenseSavingDTO> existingDailyExpenses,
             LocalDate startOfWeek,
-            LocalDate endOfWeek) {
+            LocalDate endOfWeek,
+            Double estimatedBudget
+    ) {
 
         List<DailyExpenseSavingDTO> emptyExpenses = new ArrayList<>();
 
@@ -171,7 +180,7 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
                 DailyExpenseSavingDTO expense = new DailyExpenseSavingDTO();
                 expense.setDate(localCurrentDate);
                 expense.setAmount(0.0);
-                expense.setSaving(0.0);
+                expense.setSaving(estimatedBudget);
                 emptyExpenses.add(expense);
             }
             currentDate = currentDate.plusDays(1);

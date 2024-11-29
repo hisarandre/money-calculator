@@ -2,6 +2,7 @@ package com.moneycalculator.back.controllers;
 
 import com.moneycalculator.back.dto.AccountLabelFeeDTO;
 import com.moneycalculator.back.dto.BudgetDTO;
+import com.moneycalculator.back.dto.TransactionDTO;
 import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.Budget;
 import com.moneycalculator.back.models.FixedExpense;
@@ -50,8 +51,11 @@ public class BudgetController {
         return ResponseEntity.ok(budget);
     }
 
-    //edit amount
 
-    //reset
-
+    @PostMapping("/reset")
+    public ResponseEntity<Void> resetBudget(@Valid @RequestBody Budget budget) {
+        logger.info("Reset budget");
+        budgetService.resetBudget(budget);
+        return ResponseEntity.noContent().build();
+    }
 }

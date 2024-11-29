@@ -23,6 +23,6 @@ public interface DailyExpenseService {
 
     Pair<Boolean, Boolean> calculateNextAndPreviousWeek(Budget budget,LocalDate startOfWeek, LocalDate endOfWeek);
 
-    List<DailyExpenseSavingDTO> generateEmptyDailyExpense(Budget budget, List<DailyExpenseSavingDTO> existingDailyExpenses, LocalDate startOfWeek, LocalDate endOfWeek);
+    List<DailyExpenseSavingDTO> generateEmptyDailyExpense(Budget budget, List<DailyExpenseSavingDTO> existingDailyExpenses, LocalDate startOfWeek, LocalDate endOfWeek, Double estimatedBudget);
 
 }
