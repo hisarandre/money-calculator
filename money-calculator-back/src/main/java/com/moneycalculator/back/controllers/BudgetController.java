@@ -2,6 +2,7 @@ package com.moneycalculator.back.controllers;
 
 import com.moneycalculator.back.dto.AccountLabelFeeDTO;
 import com.moneycalculator.back.dto.BudgetDTO;
+import com.moneycalculator.back.dto.BudgetLabelAmountDateDTO;
 import com.moneycalculator.back.dto.TransactionDTO;
 import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.Budget;
@@ -16,6 +17,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,5 +59,16 @@ public class BudgetController {
         logger.info("Reset budget");
         budgetService.resetBudget(budget);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<?> updateBudget(@Valid @RequestBody BudgetLabelAmountDateDTO budget) {
+        try {
+            logger.info("Update budget");
+            budgetService.updateBudget(budget);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

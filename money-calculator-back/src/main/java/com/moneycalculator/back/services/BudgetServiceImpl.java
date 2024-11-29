@@ -1,6 +1,7 @@
 package com.moneycalculator.back.services;
 
 import com.moneycalculator.back.dto.BudgetDTO;
+import com.moneycalculator.back.dto.BudgetLabelAmountDateDTO;
 import com.moneycalculator.back.dto.TransactionListTotalDTO;
 import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.Budget;
@@ -77,6 +78,24 @@ public class BudgetServiceImpl implements BudgetService{
 
         newBudget.setId(1);
         budgetRepository.save(newBudget);
+
+        dailyExpenseRepository.deleteAll();
+        fixedExpenseRepository.deleteAll();
+    }
+
+    @Override
+    public void updateBudget(BudgetLabelAmountDateDTO newBudget) {
+        Budget budget = budgetRepository.findById(1)
+                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+
+        if (newBudget.getEndDate().isBefore(budget.getEndDate())){
+            throw new IllegalArgumentException("The end date must be before the original end date.");
+        }
+
+        budget.setLabel(newBudget.getLabel());
+        budget.setEndDate(newBudget.getEndDate());
+        budget.setAmount(newBudget.getAmount());
+        budgetRepository.save(budget);
 
         dailyExpenseRepository.deleteAll();
         fixedExpenseRepository.deleteAll();
