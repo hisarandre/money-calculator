@@ -6,13 +6,13 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {Button} from "@/components/ui/button";
 import FormFieldCustom from "@/components/FormFieldCustom";
 import {useSelector, useDispatch} from "react-redux";
-import {RootState, AppDispatch} from "@/store/Store";
-import {addTransaction} from "@/store/TransactionSlice";
+import {RootState, AppDispatch} from "@/store/Store.ts";
+import {addTransaction} from "@/store/TransactionSlice.ts";
 import {toast} from "@/hooks/use-toast";
 import {useEffect} from "react";
 import {TransactionType} from "@/models/Transaction";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Account} from "@/models/Account.tsx";
+import {Account} from "@/models/Account";
 import {createTransactionFormSchema} from "@/utils/formSchemas.ts";
 
 interface AddTransactionProps {
@@ -51,7 +51,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({isOpen, onOpenChange, ty
             onOpenChange(false);
             toast({description: "Transaction added successfully!", variant: "positive"});
         }
-    }, [addStatus, addError, onOpenChange]);
+    }, [addStatus, addError, form, onOpenChange]);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         await dispatch(addTransaction(data));
@@ -66,22 +66,23 @@ const AddTransaction: React.FC<AddTransactionProps> = ({isOpen, onOpenChange, ty
                     <FormField
                         control={form.control}
                         name="accountId"
-                        render={({ field }) => (
+                        render={({field}) => (
                             <FormItem>
                                 <FormLabel>Account</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} defaultValue={String(field.value)}>
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select an account" />
+                                            <SelectValue placeholder="Select an account"/>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
                                         {accounts.map((account) => (
-                                            <SelectItem key={account.id} value={String(account.id)}>{account.label}</SelectItem>
+                                            <SelectItem key={account.id}
+                                                        value={String(account.id)}>{account.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <FormMessage />
+                                <FormMessage/>
                             </FormItem>
                         )}
                     />

@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import CardCustom from "@/components/CardCustom";
 import TableCustom from "../TableCustom";
 import {toast} from "@/hooks/use-toast";
 import {useSelector, useDispatch} from "react-redux";
-import {RootState, AppDispatch} from "@/store/Store";
-import {fetchExpenses} from "@/store/TransactionSlice";
-import {Account} from "@/models/Account";
-import {Expense, TransactionType} from "@/models/Transaction.tsx";
+import {RootState, AppDispatch} from "@/store/Store.ts";
+import {fetchExpenses} from "@/store/TransactionSlice.ts";
+import {Expense, TransactionType} from "@/models/Transaction.ts";
 import AddTransaction from "@/components/transactions/modals/AddTransaction.tsx";
 import EditTransaction from "@/components/transactions/modals/EditTransaction.tsx";
 import DeleteTransaction from "@/components/transactions/modals/DeleteTransaction.tsx";
@@ -25,10 +24,11 @@ const ExpenseCard = () => {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [expenseId, setExpenseId] = useState<number>(0);
     const [expense, setExpense] = useState<Expense>({
+        id: 0,
         label: "",
         amount: 0,
         type: TransactionType.EXPENSE,
-        accountId: 0 as number,
+        account: {id: 0, label: "", fee: 0},
     });
 
     useEffect(() => {
@@ -48,7 +48,7 @@ const ExpenseCard = () => {
         id: i.id,
         label: i.label,
         amount: i.amount,
-        account: (i.account as Account).label,
+        account: i.account,
         type: i.type,
     }));
 
@@ -57,15 +57,13 @@ const ExpenseCard = () => {
         setIsDeleteDialogOpen(true);
     };
 
-    const onEdit = (expense) => {
-        const accountId = accounts.find(account => account.label === expense.account)?.id;
-
+    const onEdit = (expense: Expense) => {
         const updatedExpense: Expense = {
             id: expense.id,
             label: expense.label,
             amount: expense.amount,
             type: expense.type,
-            accountId: accountId ?? null,
+            account: expense.account,
         };
 
         setExpense(updatedExpense);
@@ -73,11 +71,14 @@ const ExpenseCard = () => {
     };
 
     return (
-        <CardCustom title="Expenses" description="All fixed expenses per month"
-                    addAction={() => setIsExpenseAddDialogOpen(true)}>
+        <CardCustom
+            title="Expenses"
+            description="All fixed expenses per month"
+            addAction={() => setIsExpenseAddDialogOpen(true)}
+        >
             {fetchExpenseStatus === "succeeded" && (
                 <>
-                    <TableCustom
+                    <TableCustom<Expense>
                         columns={columns}
                         data={mappedData}
                         showFooter={true}
@@ -88,12 +89,24 @@ const ExpenseCard = () => {
                         onEdit={onEdit}
                     />
 
-                    <AddTransaction isOpen={isExpenseAddDialogOpen} onOpenChange={setIsExpenseAddDialogOpen}
-                                    type={TransactionType.EXPENSE} accounts={accounts}/>
-                    <EditTransaction transaction={expense} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}
-                                     accounts={accounts}/>
-                    <DeleteTransaction transactionId={expenseId} isOpen={isDeleteDialogOpen}
-                                       onOpenChange={setIsDeleteDialogOpen} type={TransactionType.EXPENSE}/>
+                    <AddTransaction
+                        isOpen={isExpenseAddDialogOpen}
+                        onOpenChange={setIsExpenseAddDialogOpen}
+                        type={TransactionType.EXPENSE}
+                        accounts={accounts}
+                    />
+                    <EditTransaction
+                        transaction={expense}
+                        isOpen={isEditDialogOpen}
+                        onOpenChange={setIsEditDialogOpen}
+                        accounts={accounts}
+                    />
+                    <DeleteTransaction
+                        transactionId={expenseId}
+                        isOpen={isDeleteDialogOpen}
+                        onOpenChange={setIsDeleteDialogOpen}
+                        type={TransactionType.EXPENSE}
+                    />
                 </>
             )}
             {fetchExpenseStatus === "loading" && <p>Loading expenses...</p>}

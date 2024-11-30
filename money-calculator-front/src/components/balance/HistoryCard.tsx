@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import CardCustom from "@/components/CardCustom.tsx";
 import {CartesianGrid, Line, LineChart, XAxis, YAxis} from "recharts";
 import {
@@ -23,13 +23,10 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/store/Store.tsx";
+import {AppDispatch, RootState} from "@/store/Store.ts";
 import {toast} from "@/hooks/use-toast.ts";
-import {fetchHistory} from "@/store/BalanceSlice.tsx";
-
-const formatDate = (date: string | Date, monthFormat: 'short' | 'long') => {
-    return new Intl.DateTimeFormat('en', {month: monthFormat, year: 'numeric'}).format(new Date(date));
-};
+import {fetchHistory} from "@/store/BalanceSlice.ts";
+import {formatDate} from "@/utils/utils.ts";
 
 const chartConfig: ChartConfig = {
     total: {label: "Total per month"},

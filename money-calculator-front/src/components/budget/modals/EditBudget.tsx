@@ -1,4 +1,3 @@
-import {Account} from "@/models/Account";
 import DialogCustom from "@/components/DialogCustom";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
@@ -8,39 +7,43 @@ import {Button} from "@/components/ui/button";
 import FormFieldCustom from "@/components/FormFieldCustom";
 import {useSelector, useDispatch} from "react-redux";
 import {RootState, AppDispatch} from "@/store/Store.ts";
-import {editAccount} from "@/store/AccountSlice.ts";
 import {toast} from "@/hooks/use-toast";
 import {useEffect} from "react";
-import {accountFormSchema} from "@/utils/formSchemas.ts";
+import {budgetFormSchema} from "@/utils/formSchemas.ts";
+import {Budget} from "@/models/Budget";
+import {editBudget} from "@/store/BudgetSlice.ts";
+import {getCurrencySymbol} from "@/utils/utils.ts";
 
-interface EditAccountProps {
-    account: Account;
+interface EditBudgetProps {
+    budget: Budget;
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
 }
 
-const EditAccount: React.FC<EditAccountProps> = ({account, isOpen, onOpenChange}) => {
+const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) => {
     const dispatch = useDispatch<AppDispatch>();
-    const {editStatus, editError} = useSelector((state: RootState) => state.accounts);
+    const {editStatus, editError} = useSelector((state: RootState) => state.budget);
 
-    const formSchema = accountFormSchema;
+    const formSchema = budgetFormSchema;
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            label: account.label,
-            fee: account.fee,
+            label: budget.label,
+            endDate: budget.endDate,
+            amount: budget.mainCurrencyAmount,
         },
     });
 
     useEffect(() => {
-        if (account) {
+        if (budget) {
             form.reset({
-                label: account.label,
-                fee: account.fee,
+                label: budget.label,
+                endDate: budget.endDate,
+                amount: budget.mainCurrencyAmount,
             });
         }
-    }, [account, form]);
+    }, [budget, form]);
 
     useEffect(() => {
         if (editStatus === "failed") {
@@ -56,15 +59,17 @@ const EditAccount: React.FC<EditAccountProps> = ({account, isOpen, onOpenChange}
     }, [editStatus, editError, onOpenChange]);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        dispatch(editAccount({id: account.id as number, editedAccount: data}));
+        console.log(data);
+        dispatch(editBudget(data));
     };
 
     return (
-        <DialogCustom title="Edit account" isOpen={isOpen} onOpenChange={onOpenChange}>
+        <DialogCustom title="Edit budget" isOpen={isOpen} onOpenChange={onOpenChange}>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormFieldCustom form={form} inputName="label" label="label"/>
-                    <FormFieldCustom form={form} inputName="fee" label="fee" type="number"/>
+                    <FormFieldCustom form={form} inputName="endDate" label="end date" type="date"/>
+                    <FormFieldCustom form={form} inputName="amount" label={`amount (${budget.mainCurrency} - ${getCurrencySymbol(budget.mainCurrency)})`} type="number"/>
 
                     <div className="flex justify-end">
                         <Button type="submit">Submit</Button>
@@ -75,4 +80,4 @@ const EditAccount: React.FC<EditAccountProps> = ({account, isOpen, onOpenChange}
     );
 };
 
-export default EditAccount;
+export default EditBudget;

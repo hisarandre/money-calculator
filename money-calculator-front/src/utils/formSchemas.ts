@@ -1,6 +1,6 @@
 import {z} from "zod";
-import {TransactionType} from "@/models/Transaction.tsx";
-import {Account} from "@/models/Account.tsx";
+import {TransactionType} from "@/models/Transaction";
+import {Account} from "@/models/Account";
 
 export const createTransactionFormSchema = (type: TransactionType) => {
     return z.object({
@@ -28,9 +28,9 @@ export const createBalanceOverviewFormSchema = (accounts: Account[]) => {
 }
 
 export const calculateFormSchema = z.object({
-    month: z.string().min(1, { message: "Month is required" }),
-    year: z.string().min(1, { message: "Year is required" }),
-}).refine(({ month, year }) => {
+    month: z.string().min(1, {message: "Month is required"}),
+    year: z.string().min(1, {message: "Year is required"}),
+}).refine(({month, year}) => {
     const inputDate = new Date(Number(year), Number(month) - 1);
     const currentDate = new Date();
     currentDate.setDate(1);
@@ -39,4 +39,10 @@ export const calculateFormSchema = z.object({
 }, {
     message: "Please select a future month.",
     path: ["month"],
+});
+
+export const budgetFormSchema = z.object({
+    label: z.string().min(1, {message: "Label is required"}),
+    endDate: z.string().min(1, {message: "End date is required"}),
+    amount: z.preprocess((val) => Number(val), z.number({required_error: "Amount is required"})),
 });

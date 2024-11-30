@@ -1,4 +1,4 @@
-import {Account} from "@/models/Account.tsx";
+import {Account} from "@/models/Account";
 
 export interface Balance {
     id: number;

@@ -1,15 +1,14 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import CardCustom from "@/components/CardCustom";
 import TableCustom from "../TableCustom";
 import {toast} from "@/hooks/use-toast";
 import {useSelector, useDispatch} from "react-redux";
-import {RootState, AppDispatch} from "@/store/Store";
-import {fetchIncomes} from "@/store/TransactionSlice";
+import {RootState, AppDispatch} from "@/store/Store.ts";
+import {fetchIncomes} from "@/store/TransactionSlice.ts";
 import {Income, TransactionType} from "@/models/Transaction";
 import AddTransaction from "@/components/transactions/modals/AddTransaction";
 import DeleteTransaction from "@/components/transactions/modals/DeleteTransaction";
 import EditTransaction from "@/components/transactions/modals/EditTransaction";
-import {Account} from "@/models/Account";
 
 const IncomeCard = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -25,10 +24,11 @@ const IncomeCard = () => {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [incomeId, setIncomeId] = useState<number>(0);
     const [income, setIncome] = useState<Income>({
+        id: 0,
         label: "",
         amount: 0,
         type: TransactionType.INCOME,
-        accountId: 0 as number,
+        account: {id: 0, label: "", fee: 0},
     });
 
     useEffect(() => {
@@ -48,7 +48,7 @@ const IncomeCard = () => {
         id: i.id,
         label: i.label,
         amount: i.amount,
-        account: (i.account as Account).label,
+        account: i.account,
         type: i.type,
     }));
 
@@ -57,15 +57,13 @@ const IncomeCard = () => {
         setIsDeleteDialogOpen(true);
     };
 
-    const onEdit = (income) => {
-        const accountId = accounts.find(account => account.label === income.account)?.id;
-
+    const onEdit = (income: Income) => {
         const updatedIncome: Income = {
             id: income.id,
             label: income.label,
             amount: income.amount,
             type: income.type,
-            accountId: accountId ?? null,
+            account: income.account,
         };
 
         setIncome(updatedIncome);
@@ -73,11 +71,14 @@ const IncomeCard = () => {
     };
 
     return (
-        <CardCustom title="Incomes" description="All fixed incomes per month"
-                    addAction={() => setIsIncomeAddDialogOpen(true)}>
+        <CardCustom
+            title="Incomes"
+            description="All fixed incomes per month"
+            addAction={() => setIsIncomeAddDialogOpen(true)}
+        >
             {fetchIncomeStatus === "succeeded" && (
                 <>
-                    <TableCustom
+                    <TableCustom<Income>
                         columns={columns}
                         data={mappedData}
                         showFooter={true}
@@ -88,12 +89,24 @@ const IncomeCard = () => {
                         onEdit={onEdit}
                     />
 
-                    <AddTransaction isOpen={isIncomeAddDialogOpen} onOpenChange={setIsIncomeAddDialogOpen}
-                                    type={TransactionType.INCOME} accounts={accounts}/>
-                    <EditTransaction transaction={income} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}
-                                     accounts={accounts}/>
-                    <DeleteTransaction transactionId={incomeId} isOpen={isDeleteDialogOpen}
-                                       onOpenChange={setIsDeleteDialogOpen} type={TransactionType.INCOME}/>
+                    <AddTransaction
+                        isOpen={isIncomeAddDialogOpen}
+                        onOpenChange={setIsIncomeAddDialogOpen}
+                        type={TransactionType.INCOME}
+                        accounts={accounts}
+                    />
+                    <EditTransaction
+                        transaction={income}
+                        isOpen={isEditDialogOpen}
+                        onOpenChange={setIsEditDialogOpen}
+                        accounts={accounts}
+                    />
+                    <DeleteTransaction
+                        transactionId={incomeId}
+                        isOpen={isDeleteDialogOpen}
+                        onOpenChange={setIsDeleteDialogOpen}
+                        type={TransactionType.INCOME}
+                    />
                 </>
             )}
             {fetchIncomeStatus === "loading" && <p>Loading incomes...</p>}

@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import CardCustom from "@/components/CardCustom";
 import TableCustom from "../TableCustom";
 import AddAccount from "./modals/AddAccount";
 import {toast} from "@/hooks/use-toast";
 import {useSelector, useDispatch} from "react-redux";
-import {RootState, AppDispatch} from "@/store/Store";
-import {fetchAccounts} from "@/store/AccountSlice";
-import {Button} from "@/components/ui/button";
+import {RootState, AppDispatch} from "@/store/Store.ts";
+import {fetchAccounts} from "@/store/AccountSlice.ts";
 import DeleteAccount from "./modals/DeleteAccount";
 import {Account} from "@/models/Account";
 import EditAccount from "./modals/EditAccount";
@@ -18,7 +17,7 @@ const AccountCard = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [accountId, setAccountId] = useState<number>(0);
-    const [account, setAccount] = useState<Account>({label: "", fee: 0});
+    const [account, setAccount] = useState<Account>({id: 0, label: "", fee: 0});
 
     useEffect(() => {
         if (fetchStatus === "idle") {
@@ -53,7 +52,7 @@ const AccountCard = () => {
         <CardCustom title="Accounts" description="All available accounts" addAction={() => setIsAddDialogOpen(true)}>
             {fetchStatus === "succeeded" && (
                 <>
-                    <TableCustom
+                    <TableCustom<Account>
                         columns={columns}
                         data={mappedData}
                         canDelete={true}
@@ -64,7 +63,8 @@ const AccountCard = () => {
 
                     <AddAccount isOpen={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}/>
                     <EditAccount account={account} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>
-                    <DeleteAccount accountId={accountId} isOpen={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}/>
+                    <DeleteAccount accountId={accountId} isOpen={isDeleteDialogOpen}
+                                   onOpenChange={setIsDeleteDialogOpen}/>
                 </>
             )}
             {fetchStatus === "loading" && <p>Loading accounts...</p>}

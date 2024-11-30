@@ -1,5 +1,3 @@
-import React from "react";
-
 import AccountCard from "@/components/accounts/AccountCard";
 import ExpenseCard from "@/components/transactions/ExpenseCard";
 import IncomeCard from "@/components/transactions/IncomeCard";

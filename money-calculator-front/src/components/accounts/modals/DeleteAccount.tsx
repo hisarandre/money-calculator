@@ -1,9 +1,8 @@
-import React from "react";
 import DialogCustom from "@/components/DialogCustom";
 import {Button} from "@/components/ui/button";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/store/Store";
-import {deleteAccount} from "@/store/AccountSlice";
+import {AppDispatch, RootState} from "@/store/Store.ts";
+import {deleteAccount} from "@/store/AccountSlice.ts";
 import {toast} from "@/hooks/use-toast";
 import {useEffect} from "react";
 import {DialogClose} from "@radix-ui/react-dialog";

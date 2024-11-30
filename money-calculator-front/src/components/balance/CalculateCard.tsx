@@ -20,10 +20,10 @@ import {
 import {Button} from "@/components/ui/button.tsx";
 import FormFieldCustom from "@/components/FormFieldCustom.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/store/Store.tsx";
+import {AppDispatch, RootState} from "@/store/Store.ts";
 import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
-import {calculate} from "@/store/BalanceSlice.tsx";
+import {calculate} from "@/store/BalanceSlice.ts";
 import {calculateFormSchema} from "@/utils/formSchemas.ts";
 
 const months = [
@@ -70,7 +70,8 @@ const CalculateCard = () => {
     };
 
     return (
-        <CardCustom title="Projected Calculation" description="Estimate the future total amount based on current data" className="md:col-start-2 md:row-start-2 lg:col-auto lg:row-auto">
+        <CardCustom title="Projected Calculation" description="Estimate the future total amount based on current data"
+                    className="md:col-start-2 md:row-start-2 lg:col-auto lg:row-auto">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField

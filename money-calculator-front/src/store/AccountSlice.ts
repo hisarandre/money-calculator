@@ -10,16 +10,26 @@ export const fetchAccounts = createAsyncThunk(`${PREFIX}/fetchAccounts`, async (
         const response = await axios.get(`${ACCOUNT_URL}/all`);
         return response.data;
     } catch (error) {
-        return rejectWithValue("Failed to fetch accounts");
+        const errorMessage =
+            axios.isAxiosError(error) && error.response?.data
+                ? error.response.data
+                : "Failed to fetch accounts";
+        return rejectWithValue(errorMessage);
     }
 });
 
-export const addAccount = createAsyncThunk(`${PREFIX}/addAccount`, async (newAccount: Account, {rejectWithValue}) => {
+export const addAccount = createAsyncThunk(`${PREFIX}/addAccount`, async (newAccount: {
+    label: string,
+    fee: number
+}, {rejectWithValue}) => {
     try {
         const response = await axios.post(`${ACCOUNT_URL}/add`, newAccount);
         return response.data;
-    } catch (error: any) {
-        const errorMessage = error.response?.data || "Failed to add account";
+    } catch (error) {
+        const errorMessage =
+            axios.isAxiosError(error) && error.response?.data
+                ? error.response.data
+                : "Failed to add account";
         return rejectWithValue(errorMessage);
     }
 });
@@ -28,20 +38,26 @@ export const deleteAccount = createAsyncThunk(`${PREFIX}/deleteAccount`, async (
     try {
         const response = await axios.delete(`${ACCOUNT_URL}/${id}`);
         return response.data;
-    } catch (error: any) {
-        const errorMessage = error.response?.data || "Failed to delete account";
+    } catch (error) {
+        const errorMessage =
+            axios.isAxiosError(error) && error.response?.data
+                ? error.response.data
+                : "Failed to delete account";
         return rejectWithValue(errorMessage);
     }
 });
 
 export const editAccount = createAsyncThunk(
     `${PREFIX}/editAccount`,
-    async ({id, editedAccount}: { id: number; editedAccount: Account }, {rejectWithValue}) => {
+    async ({id, editedAccount}: { id: number; editedAccount: { label: string, fee: number } }, {rejectWithValue}) => {
         try {
             const response = await axios.put(`${ACCOUNT_URL}/${id}`, editedAccount);
             return response.data;
-        } catch (error: any) {
-            const errorMessage = error.response?.data || "Failed to edit account";
+        } catch (error) {
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to edit account";
             return rejectWithValue(errorMessage);
         }
     }

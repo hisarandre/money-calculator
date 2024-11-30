@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 import {
     Dialog,
     DialogContent,
@@ -16,7 +16,14 @@ interface DialogProps {
     preventOutsideInteraction?: boolean;
 }
 
-const DialogCustom: React.FC<DialogProps> = ({title, description, children, isOpen, onOpenChange, preventOutsideInteraction = false}) => {
+const DialogCustom: React.FC<DialogProps> = ({
+                                                 title,
+                                                 description,
+                                                 children,
+                                                 isOpen,
+                                                 onOpenChange,
+                                                 preventOutsideInteraction = false
+                                             }) => {
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent

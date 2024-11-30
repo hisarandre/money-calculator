@@ -1,7 +1,7 @@
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import CardCustom from "@/components/CardCustom.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/store/Store.tsx";
+import {AppDispatch, RootState} from "@/store/Store.ts";
 import {
     Table,
     TableHeader,
@@ -17,8 +17,9 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import FormFieldCustom from "@/components/FormFieldCustom.tsx";
 import {Form} from "@/components/ui/form.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {addBalance, fetchHistory, fetchMonthlyDone} from "@/store/BalanceSlice.tsx";
+import {addBalance, fetchHistory, fetchMonthlyDone} from "@/store/BalanceSlice.ts";
 import {toast} from "@/hooks/use-toast.ts";
+import {formatDate} from "@/utils/utils.ts";
 
 const BalanceOverviewCard = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -30,7 +31,7 @@ const BalanceOverviewCard = () => {
         addStatus,
         addError
     } = useSelector((state: RootState) => state.balances);
-    const currentMonth = new Intl.DateTimeFormat('en', {month: 'long', year: 'numeric'}).format(new Date());
+    const currentMonth = formatDate(new Date(), 'long');
 
     useEffect(() => {
         if (monthlyDoneStatus === "idle") dispatch(fetchMonthlyDone());
@@ -47,10 +48,11 @@ const BalanceOverviewCard = () => {
     }, [monthlyDoneStatus, monthlyDoneError, addStatus, addError]);
 
     const formSchema = createBalanceOverviewFormSchema(accounts);
-    const {reset, ...form} = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: Object.fromEntries(accounts.map((account) => [String(account.id), 0])),
     });
+    const { reset } = form;
 
     useEffect(() => {
         reset(Object.fromEntries(accounts.map((account) => [String(account.id), 0])));
