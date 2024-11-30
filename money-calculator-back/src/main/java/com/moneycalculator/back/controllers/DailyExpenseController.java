@@ -108,6 +108,12 @@ public class DailyExpenseController {
         }
     }
 
+    @Operation(summary = "Get daily expense calendar", description = "Retrieves a calendar view of daily expenses.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Calendar data retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DailyExpenseCalendarDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
+    })
     @GetMapping("/calendar")
     public ResponseEntity<?> getDailyExpenseCalendar() {
         logger.info("Get all daily expense expenses");
@@ -119,6 +125,12 @@ public class DailyExpenseController {
         }
     }
 
+    @Operation(summary = "Set daily expense", description = "Sets a daily expense for a specific date.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Expense set successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DailyExpenseListDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
     @PostMapping("/week/set-expense")
     public ResponseEntity<?> setDailyExpense(@Valid @RequestBody DailyExpenseAmountDateDTO dailyExpenseAmountDateDTO) {
         logger.info("Adding expense: " + dailyExpenseAmountDateDTO);
