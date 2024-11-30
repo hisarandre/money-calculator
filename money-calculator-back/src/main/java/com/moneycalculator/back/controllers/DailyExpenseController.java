@@ -108,6 +108,12 @@ public class DailyExpenseController {
         }
     }
 
+    @Operation(summary = "Get daily expense calendar", description = "Retrieves a calendar view of daily expenses.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Calendar data retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DailyExpenseCalendarDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
+    })
     @GetMapping("/calendar")
     public ResponseEntity<?> getDailyExpenseCalendar() {
         logger.info("Get all daily expense expenses");
@@ -119,44 +125,22 @@ public class DailyExpenseController {
         }
     }
 
-
-
-/*   @Operation(
-            summary = "Update a daily expense",
-            description = "Updates the expense amount with the provided ID."
-    )
+    @Operation(summary = "Set daily expense", description = "Sets a daily expense for a specific date.")
     @ApiResponses(value = {
-
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Fixed expense updated successfully",
-                    content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = FixedExpense.class))
-                    }
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Account not found with specified ID",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
-            )
-    })*/
-/*    @PostMapping("/week/set-expense")
-    public ResponseEntity<?> updateFixedExpense(@Valid @RequestBody FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO) {
-        logger.info("Updating expense with ID: " + fixedExpenseLabelAmountFrequencyDTO);
+            @ApiResponse(responseCode = "200", description = "Expense set successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DailyExpenseListDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
+    @PostMapping("/week/set-expense")
+    public ResponseEntity<?> setDailyExpense(@Valid @RequestBody DailyExpenseAmountDateDTO dailyExpenseAmountDateDTO) {
+        logger.info("Adding expense: " + dailyExpenseAmountDateDTO);
 
         try {
-            FixedExpenseTotalDTO fixedExpenseDTO = fixedExpenseService.updateFixedExpense(id, fixedExpenseLabelAmountFrequencyDTO);
-            return ResponseEntity.ok(fixedExpenseDTO);
+            DailyExpenseListDTO dailyExpenseList = dailyExpenseService.setDailyExpense(dailyExpenseAmountDateDTO);
+            return ResponseEntity.ok(dailyExpenseList);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fixed expense not found");
         }
-    }*/
+    }
 
 }

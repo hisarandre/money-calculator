@@ -52,39 +52,47 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
         List<FixedExpense> expenses = fixedExpenseRepository.findAll();
 
         if (expenses.isEmpty()) {
-            Double emptyEstimatedBudget = budgetService.calculateEstimatedBudgetPerDay(budget, 0.0);
-            emptyEstimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(emptyEstimatedBudget);
-
-            // Calculate current wallet
-            Double emptyMainCurrencyCurrentWallet = calculateCurrentWallet(0.0);
-
-            FixedExpenseListEstimatedBudgetDTO emptyData = new FixedExpenseListEstimatedBudgetDTO();
-            emptyData.setFixedExpenses(new ArrayList<>());
-            emptyData.setEstimatedBudget(emptyEstimatedBudget);
-            emptyData.setMainCurrencyCurrentWallet(emptyMainCurrencyCurrentWallet);
-            emptyData.setSecondaryCurrencyCurrentWallet(null);
-            emptyData.setMainCurrencyTotalExpenses(0.0);
-            emptyData.setSecondaryCurrencyTotalExpenses(null);
-            return emptyData;
+            return createEmptyExpenseData(budget);
         }
 
         List<FixedExpenseDTO> expenseDTOS = mapper.listFixedExpenseToDTOs(expenses);
+        processExpenses(expenseDTOS, budget);
 
-        // Process each expense and calculate the secondary currency amount
+        Double mainCurrencyTotal = calculateTotalExpense(budget, expenses);
+        Double secondaryCurrencyTotal = budgetService.calculateConvertedAmountFromBudget(budget, mainCurrencyTotal);
+
+        FixedExpenseListEstimatedBudgetDTO fixedExpenseListEstimatedBudgetDTO = createExpenseListDTO(expenseDTOS, budget, mainCurrencyTotal, secondaryCurrencyTotal);
+
+        return fixedExpenseListEstimatedBudgetDTO;
+    }
+
+    private FixedExpenseListEstimatedBudgetDTO createEmptyExpenseData(Budget budget) {
+        Double emptyEstimatedBudget = budgetService.calculateEstimatedBudgetPerDay(budget, 0.0);
+        emptyEstimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(emptyEstimatedBudget);
+
+        Double emptyMainCurrencyCurrentWallet = calculateCurrentWallet(0.0);
+
+        FixedExpenseListEstimatedBudgetDTO emptyData = new FixedExpenseListEstimatedBudgetDTO();
+        emptyData.setFixedExpenses(new ArrayList<>());
+        emptyData.setEstimatedBudget(emptyEstimatedBudget);
+        emptyData.setMainCurrencyCurrentWallet(emptyMainCurrencyCurrentWallet);
+        emptyData.setSecondaryCurrencyCurrentWallet(null);
+        emptyData.setMainCurrencyTotalExpenses(0.0);
+        emptyData.setSecondaryCurrencyTotalExpenses(null);
+        return emptyData;
+    }
+
+    private void processExpenses(List<FixedExpenseDTO> expenseDTOS, Budget budget) {
         expenseDTOS.forEach(expense -> {
             Double convertedAmount = budgetService.calculateConvertedAmountFromBudget(budget, expense.getMainCurrencyAmount());
             expense.setSecondaryCurrencyAmount(convertedAmount);
         });
+    }
 
-        // Calculate totals
-        Double mainCurrencyTotal = calculateTotalExpense(budget, expenses);
-        Double secondaryCurrencyTotal = budgetService.calculateConvertedAmountFromBudget(budget, mainCurrencyTotal);
-
-        // Calculate the estimated budget per day
+    private FixedExpenseListEstimatedBudgetDTO createExpenseListDTO(List<FixedExpenseDTO> expenseDTOS, Budget budget, Double mainCurrencyTotal, Double secondaryCurrencyTotal) {
         Double estimatedBudgetPerDay = budgetService.calculateEstimatedBudgetPerDay(budget, mainCurrencyTotal);
         estimatedBudgetPerDay = BigDecimalUtils.roundToTwoDecimalPlaces(estimatedBudgetPerDay);
 
-        // Calculate current wallet
         Double mainCurrencyCurrentWallet = calculateCurrentWallet(mainCurrencyTotal);
         Double secondaryCurrencyCurrentWallet = budgetService.calculateConvertedAmountFromBudget(budget, mainCurrencyCurrentWallet);
 
@@ -101,7 +109,6 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
 
     @Override
     public FixedExpenseTotalDTO addFixedExpense(FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO) {
-        // Check duplicates
         Optional<FixedExpense> existingExpense = fixedExpenseRepository.findByLabel(fixedExpenseLabelAmountFrequencyDTO.getLabel());
 
         if (existingExpense.isPresent()) {
