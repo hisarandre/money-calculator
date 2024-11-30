@@ -8,13 +8,16 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class MoneyCalculatorBackApplication {
 
 	public static void main(String[] args) {
-		// Load .env file
-		Dotenv dotenv = Dotenv.configure().load();
+		String activeProfile = System.getenv("SPRING_PROFILES_ACTIVE");
 
-		// Set the DATABASE_URL property in system properties
-		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
-		System.setProperty("DATABASE_PWD", dotenv.get("DATABASE_PWD"));
-		System.setProperty("DATABASE_USERNAME", dotenv.get("DATABASE_USERNAME"));
+		// Only load from .env if not in 'prod' profile
+		if (activeProfile == null || !activeProfile.equals("prod")) {
+			Dotenv dotenv = Dotenv.configure().load();
+
+			System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
+			System.setProperty("DATABASE_PWD", dotenv.get("DATABASE_PWD"));
+			System.setProperty("DATABASE_USERNAME", dotenv.get("DATABASE_USERNAME"));
+		}
 		SpringApplication.run(MoneyCalculatorBackApplication.class, args);
 	}
 }
