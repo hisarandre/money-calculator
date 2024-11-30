@@ -1,4 +1,4 @@
-import {Balance} from "@/models/Balance.tsx";
+import {Balance} from "@/models/Balance";
 
 export interface History {
     id: number;

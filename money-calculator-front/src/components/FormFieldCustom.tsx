@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     FormControl,
     FormField,
@@ -7,9 +6,9 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
-import {UseFormReturn} from "react-hook-form";
+import {UseFormReturn, FieldValues, Path} from "react-hook-form";
 
-interface FormFieldProps<T> {
+interface FormFieldProps<T extends FieldValues> {
     form: UseFormReturn<T>;
     inputName: keyof T;
     placeHolder?: string;
@@ -18,7 +17,7 @@ interface FormFieldProps<T> {
     className?: string;
 }
 
-const FormFieldCustom = <T,>({
+const FormFieldCustom = <T extends FieldValues>({
     form,
     inputName,
     placeHolder,
@@ -29,14 +28,14 @@ const FormFieldCustom = <T,>({
     return (
         <FormField
             control={form.control}
-            name={inputName}
+            name={inputName as Path<T>}
             render={({field}) => (
                 <FormItem className={className}>
                     <FormLabel className="capitalize">{label ? label : ""}</FormLabel>
                     <FormControl>
                         <Input type={type} placeholder={placeHolder} {...field} />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                 </FormItem>
             )}
         />

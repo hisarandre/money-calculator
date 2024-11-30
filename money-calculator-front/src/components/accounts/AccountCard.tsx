@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import CardCustom from "@/components/CardCustom";
 import TableCustom from "../TableCustom";
 import AddAccount from "./modals/AddAccount";
@@ -17,7 +17,7 @@ const AccountCard = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [accountId, setAccountId] = useState<number>(0);
-    const [account, setAccount] = useState<Account>({label: "", fee: 0});
+    const [account, setAccount] = useState<Account>({id: 0, label: "", fee: 0});
 
     useEffect(() => {
         if (fetchStatus === "idle") {

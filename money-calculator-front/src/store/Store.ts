@@ -2,12 +2,14 @@ import {configureStore} from "@reduxjs/toolkit";
 import AccountSlice from "@/store/AccountSlice.ts";
 import TransactionSlice from "@/store/TransactionSlice.ts";
 import BalanceSlide from "@/store/BalanceSlice.ts";
+import BudgetSlice from "@/store/BudgetSlice.ts";
 
 const Store = configureStore({
     reducer: {
         accounts: AccountSlice,
         transactions: TransactionSlice,
         balances: BalanceSlide,
+        budget: BudgetSlice,
     },
 });
 

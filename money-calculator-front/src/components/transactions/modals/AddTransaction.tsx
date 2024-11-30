@@ -12,7 +12,7 @@ import {toast} from "@/hooks/use-toast";
 import {useEffect} from "react";
 import {TransactionType} from "@/models/Transaction";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Account} from "@/models/Account.tsx";
+import {Account} from "@/models/Account";
 import {createTransactionFormSchema} from "@/utils/formSchemas.ts";
 
 interface AddTransactionProps {
@@ -69,7 +69,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({isOpen, onOpenChange, ty
                         render={({field}) => (
                             <FormItem>
                                 <FormLabel>Account</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} defaultValue={String(field.value)}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select an account"/>

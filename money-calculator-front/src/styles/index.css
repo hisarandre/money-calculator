@@ -39,6 +39,12 @@
         --sidebar-accent-foreground: 240 5.9% 10%;
         --sidebar-border: 220 13% 91%;
         --sidebar-ring: 217.2 91.2% 59.8%;
+        --fc-button-bg-color: #27272a;
+        --fc-button-border-color: #27272a;
+        --fc-button-hover-bg-color: #3f3f46;
+        --fc-button-hover-border-color: #3f3f46;
+        --fc-button-active-bg-color: #52525b;
+        --fc-button-active-border-color: #52525b;
     }
 
     .dark {
@@ -76,6 +82,7 @@
         --sidebar-accent-foreground: 240 4.8% 95.9%;
         --sidebar-border: 240 3.7% 15.9%;
         --sidebar-ring: 217.2 91.2% 59.8%;
+        --fc-border-color: #27272a;
     }
 }
 

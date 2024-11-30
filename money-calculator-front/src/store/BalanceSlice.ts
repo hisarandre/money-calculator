@@ -12,7 +12,10 @@ export const fetchHistory = createAsyncThunk(
             const response = await axios.get(`${BALANCE_URL}/all`);
             return response.data;
         } catch (error) {
-            const errorMessage = error.response?.data || "Failed to fetch history";
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to fetch history";
             return rejectWithValue(errorMessage);
         }
     });
@@ -24,7 +27,10 @@ export const fetchMonthlyDone = createAsyncThunk(
             const response = await axios.get(`${BALANCE_URL}/monthly-done`);
             return response.data;
         } catch (error) {
-            const errorMessage = error.response?.data || "Failed to fetch monthly done";
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to fetch monthly done";
             return rejectWithValue(errorMessage);
         }
     });
@@ -36,7 +42,10 @@ export const addBalance = createAsyncThunk(
             const response = await axios.post(`${BALANCE_URL}/add`, balances);
             return response.data;
         } catch (error) {
-            const errorMessage = error.response?.data || "Failed to add balance";
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to add balance";
             return rejectWithValue(errorMessage);
         }
     }
@@ -49,7 +58,10 @@ export const calculate = createAsyncThunk(
             const response = await axios.post(`${BALANCE_URL}/calculate/${date}`);
             return response.data;
         } catch (error) {
-            const errorMessage = error.response?.data || "Failed to calculate";
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to calculate";
             return rejectWithValue(errorMessage);
         }
     }
