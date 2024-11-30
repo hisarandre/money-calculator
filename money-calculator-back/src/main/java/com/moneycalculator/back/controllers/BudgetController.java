@@ -9,6 +9,7 @@ import com.moneycalculator.back.models.Budget;
 import com.moneycalculator.back.models.FixedExpense;
 import com.moneycalculator.back.services.AccountServiceImpl;
 import com.moneycalculator.back.services.BudgetServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,6 +36,7 @@ public class BudgetController {
         this.budgetService = budgetService;
     }
 
+    @Operation(summary = "Retrieve the current budget", description = "Fetches the current budget details.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -54,6 +56,11 @@ public class BudgetController {
     }
 
 
+    @Operation(summary = "Reset the budget", description = "Resets the budget to its initial state.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Budget reset successfully", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid budget input", content = @Content)
+    })
     @PostMapping("/reset")
     public ResponseEntity<Void> resetBudget(@Valid @RequestBody Budget budget) {
         logger.info("Reset budget");
@@ -61,6 +68,12 @@ public class BudgetController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Update the budget", description = "Updates the budget with new label, amount, and date.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Budget updated successfully", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(schema = @Schema(example = "Invalid budget data"))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
     @PutMapping("/edit")
     public ResponseEntity<?> updateBudget(@Valid @RequestBody BudgetLabelAmountDateDTO budget) {
         try {

@@ -2,12 +2,8 @@ package com.moneycalculator.back.services;
 
 import com.moneycalculator.back.dto.BudgetDTO;
 import com.moneycalculator.back.dto.BudgetLabelAmountDateDTO;
-import com.moneycalculator.back.dto.TransactionListTotalDTO;
-import com.moneycalculator.back.models.Account;
 import com.moneycalculator.back.models.Budget;
 import com.moneycalculator.back.models.MapstructMapper;
-import com.moneycalculator.back.models.Transaction;
-import com.moneycalculator.back.repositories.AccountRepository;
 import com.moneycalculator.back.repositories.BudgetRepository;
 import com.moneycalculator.back.repositories.DailyExpenseRepository;
 import com.moneycalculator.back.repositories.FixedExpenseRepository;
@@ -18,8 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
+
 
 @Service
 public class BudgetServiceImpl implements BudgetService{
@@ -89,7 +84,7 @@ public class BudgetServiceImpl implements BudgetService{
                 .orElseThrow(() -> new IllegalArgumentException("No budget found."));
 
         if (newBudget.getEndDate().isBefore(budget.getEndDate())){
-            throw new IllegalArgumentException("The end date must be before the original end date.");
+            throw new IllegalArgumentException("The end date must be after the original end date.");
         }
 
         budget.setLabel(newBudget.getLabel());
@@ -103,8 +98,6 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Override
     public Double calculateEstimatedBudgetPerDay(Budget budget, Double totalFixedExpense){
-
-        System.out.println(totalFixedExpense + "totalFixedExpense");
         // Calculate remaining amount
         Double totalRemaining = budget.getAmount() - totalFixedExpense;
 

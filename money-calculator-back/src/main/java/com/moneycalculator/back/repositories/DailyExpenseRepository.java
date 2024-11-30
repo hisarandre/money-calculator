@@ -15,4 +15,5 @@ public interface DailyExpenseRepository extends JpaRepository<DailyExpense, Inte
 
     List<DailyExpense> findDailyExpensesByDateBetween(LocalDate startDate, LocalDate endDate);
 
+    Optional<DailyExpense> findOneByDate(LocalDate date);
 }

@@ -114,6 +114,20 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
     }
 
     @Override
+    public DailyExpenseListDTO setDailyExpense(DailyExpenseAmountDateDTO dailyExpenseAmountDateDTO) {
+        Optional<DailyExpense> existingDailyExpense = dailyExpenseRepository.findOneByDate(dailyExpenseAmountDateDTO.getDate());
+
+        Double roundedAmount = BigDecimalUtils.roundToTwoDecimalPlaces(dailyExpenseAmountDateDTO.getAmount());
+        DailyExpense dailyExpense = existingDailyExpense.orElseGet(DailyExpense::new);
+
+        dailyExpense.setDate(dailyExpenseAmountDateDTO.getDate());
+        dailyExpense.setAmount(roundedAmount);
+        dailyExpenseRepository.save(dailyExpense);
+
+        return getDailyExpensePerWeek(dailyExpenseAmountDateDTO.getWeekNumber());
+    }
+
+    @Override
     public Pair<LocalDate, LocalDate> calculateStartEndDate(Budget budget, int number) {
         LocalDate startDate = budget.getStartDate();
         LocalDate endDate = budget.getEndDate();

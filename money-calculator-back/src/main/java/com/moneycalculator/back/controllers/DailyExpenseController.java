@@ -119,44 +119,16 @@ public class DailyExpenseController {
         }
     }
 
-
-
-/*   @Operation(
-            summary = "Update a daily expense",
-            description = "Updates the expense amount with the provided ID."
-    )
-    @ApiResponses(value = {
-
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Fixed expense updated successfully",
-                    content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = FixedExpense.class))
-                    }
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Account not found with specified ID",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
-            )
-    })*/
-/*    @PostMapping("/week/set-expense")
-    public ResponseEntity<?> updateFixedExpense(@Valid @RequestBody FixedExpenseLabelAmountFrequencyDTO fixedExpenseLabelAmountFrequencyDTO) {
-        logger.info("Updating expense with ID: " + fixedExpenseLabelAmountFrequencyDTO);
+    @PostMapping("/week/set-expense")
+    public ResponseEntity<?> setDailyExpense(@Valid @RequestBody DailyExpenseAmountDateDTO dailyExpenseAmountDateDTO) {
+        logger.info("Adding expense: " + dailyExpenseAmountDateDTO);
 
         try {
-            FixedExpenseTotalDTO fixedExpenseDTO = fixedExpenseService.updateFixedExpense(id, fixedExpenseLabelAmountFrequencyDTO);
-            return ResponseEntity.ok(fixedExpenseDTO);
+            DailyExpenseListDTO dailyExpenseList = dailyExpenseService.setDailyExpense(dailyExpenseAmountDateDTO);
+            return ResponseEntity.ok(dailyExpenseList);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fixed expense not found");
         }
-    }*/
+    }
 
 }

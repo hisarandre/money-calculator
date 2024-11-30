@@ -15,6 +15,8 @@ public interface DailyExpenseService {
 
     List<DailyExpense> getAllDailyExpense();
 
+    DailyExpenseListDTO setDailyExpense(DailyExpenseAmountDateDTO dailyExpenseAmountDateDTO);
+
     Double calculateTotalExpense(List<DailyExpense> expenses);
 
     DailyExpenseListDTO getDailyExpensePerWeek(Integer number);
