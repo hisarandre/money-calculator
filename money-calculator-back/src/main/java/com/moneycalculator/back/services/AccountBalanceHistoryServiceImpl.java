@@ -125,9 +125,7 @@ public class AccountBalanceHistoryServiceImpl implements AccountBalanceHistorySe
     @Override
     public Double calculateAccountEarningAmount(Double total) {
         LocalDate today = LocalDate.now();
-        LocalDate startOfPreviousMonth = today.minusMonths(1).withDayOfMonth(1);
-
-        AccountBalanceHistory accountBalanceHistory = accountBalanceHistoryRepository.findByDate(startOfPreviousMonth);
+        AccountBalanceHistory accountBalanceHistory = accountBalanceHistoryRepository.findTopByOrderByDateDesc();
 
         if (accountBalanceHistory != null) {
             Double earning = total - accountBalanceHistory.getTotal();
@@ -154,7 +152,8 @@ public class AccountBalanceHistoryServiceImpl implements AccountBalanceHistorySe
             for (AccountBalance accountBalance : accountBalances) {
                 Double fee = accountBalance.getAccount().getFee();
                 Double amount = accountBalance.getAmount();
-                accountBalance.setAmount(amount + (amount * (fee / 100)));
+                double monthlyRate = fee / 12;
+                accountBalance.setAmount(amount + (amount * (monthlyRate / 100)));
             }
 
             // Subtract all expenses
