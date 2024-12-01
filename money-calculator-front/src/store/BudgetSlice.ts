@@ -71,7 +71,7 @@ const budgetSlice = createSlice({
             .addCase(editBudget.fulfilled, (state) => {
                 state.editStatus = "succeeded";
             })
-            .addCase(editBudget.rejected, (state, action) => {
+            .addCase(editBudget.rejected, (state) => {
                 state.editStatus = "failed";
                 state.editError = "Failed to edit budget";
             });
