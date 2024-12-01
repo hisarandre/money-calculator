@@ -2,7 +2,7 @@ import DialogCustom from "@/components/DialogCustom";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
-import {Form} from "@/components/ui/form";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Button} from "@/components/ui/button";
 import FormFieldCustom from "@/components/FormFieldCustom";
 import {useSelector, useDispatch} from "react-redux";
@@ -12,7 +12,12 @@ import {useEffect} from "react";
 import {budgetFormSchema} from "@/utils/formSchemas.ts";
 import {Budget} from "@/models/Budget";
 import {editBudget} from "@/store/BudgetSlice.ts";
-import {getCurrencySymbol} from "@/utils/utils.ts";
+import {getCurrencySymbol, getDayAfter} from "@/utils/utils.ts";
+import {cn} from "@/utils/cn.ts";
+import {CalendarIcon} from "lucide-react";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
+import {format} from "date-fns";
+import {Calendar} from "@/components/ui/calendar.tsx";
 
 interface EditBudgetProps {
     budget: Budget;
@@ -30,7 +35,7 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
         resolver: zodResolver(formSchema),
         defaultValues: {
             label: budget.label,
-            endDate: budget.endDate,
+            endDate: getDayAfter(budget.endDate),
             amount: budget.mainCurrencyAmount,
         },
     });
@@ -39,7 +44,7 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
         if (budget) {
             form.reset({
                 label: budget.label,
-                endDate: budget.endDate,
+                endDate: getDayAfter(budget.endDate),
                 amount: budget.mainCurrencyAmount,
             });
         }
@@ -55,11 +60,11 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
 
         if (editStatus === "succeeded") {
             onOpenChange(false);
+            window.location.reload();
         }
     }, [editStatus, editError, onOpenChange]);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data);
         dispatch(editBudget(data));
     };
 
@@ -68,8 +73,51 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormFieldCustom form={form} inputName="label" label="label"/>
-                    <FormFieldCustom form={form} inputName="endDate" label="end date" type="date"/>
-                    <FormFieldCustom form={form} inputName="amount" label={`amount (${budget.mainCurrency} - ${getCurrencySymbol(budget.mainCurrency)})`} type="number"/>
+                    <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({field}) => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>End date</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "pl-3 text-left font-normal",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                            >
+                                                {field.value ? (
+                                                    format(new Date(field.value), "dd/MM/yyyy")
+                                                ) : (
+                                                    <span>Pick a date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value ? new Date(field.value) : undefined}
+                                            defaultMonth={new Date(field.value)}
+                                            onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                                            disabled={(date) =>
+                                                date < new Date(budget.endDate)
+                                            }
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                    <FormFieldCustom form={form} inputName="amount"
+                                     label={`amount (${budget.mainCurrency} - ${getCurrencySymbol(budget.mainCurrency)})`}
+                                     type="number"/>
 
                     <div className="flex justify-end">
                         <Button type="submit">Submit</Button>
