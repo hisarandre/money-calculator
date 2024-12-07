@@ -53,7 +53,7 @@ const FixedBudgetCard = () => {
                         </TableBody>
                     </Table>
 
-                    <div>
+                    <div className="mt-2">
                         <strong>Currency rate ({budget.mainCurrency} to {budget.secondaryCurrency}):</strong> {budget.currencyRate}
                     </div>
 

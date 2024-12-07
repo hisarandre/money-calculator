@@ -35,6 +35,30 @@ export const editBudget = createAsyncThunk(
     }
 );
 
+export const resetBudget = createAsyncThunk(
+    `${PREFIX}/resetBudget`,
+    async (resetBudget: {
+        id: number,
+        label: string,
+        startDate: string,
+        endDate: string,
+        amount: number,
+        conversion: boolean,
+        mainCurrency: string,
+        secondaryCurrency?: string | undefined
+    }, {rejectWithValue}) => {
+        try {
+            await axios.post(`${BUDGET_URL}/reset`, resetBudget);
+        } catch (error) {
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to reset budget";
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
+
 // Slice definition
 const budgetSlice = createSlice({
     name: "budget",
@@ -42,8 +66,10 @@ const budgetSlice = createSlice({
         budget: null as Budget | null,
         fetchStatus: "idle",
         editStatus: "idle",
+        resetStatus: "idle",
         fetchError: null as string | null,
         editError: null as string | null,
+        resetError: null as string | null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -74,6 +100,20 @@ const budgetSlice = createSlice({
             .addCase(editBudget.rejected, (state) => {
                 state.editStatus = "failed";
                 state.editError = "Failed to edit budget";
+            });
+
+        // resetBudget reducers
+        builder
+            .addCase(resetBudget.pending, (state) => {
+                state.resetStatus = "loading";
+                state.resetError = null;
+            })
+            .addCase(resetBudget.fulfilled, (state) => {
+                state.resetStatus = "succeeded";
+            })
+            .addCase(resetBudget.rejected, (state) => {
+                state.resetStatus = "failed";
+                state.resetError = "Failed to reset budget";
             });
     },
 });

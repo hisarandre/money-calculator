@@ -2,21 +2,7 @@ import CardCustom from "@/components/CardCustom.tsx";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import {Form} from "@/components/ui/form";
 import {Button} from "@/components/ui/button.tsx";
 import FormFieldCustom from "@/components/FormFieldCustom.tsx";
 import {useDispatch, useSelector} from "react-redux";
@@ -74,29 +60,15 @@ const CalculateCard = () => {
                     className="md:col-start-2 md:row-start-2 lg:col-auto lg:row-auto">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                        control={form.control}
-                        name="month"
-                        render={({field}) => (
-                            <FormItem>
-                                <FormLabel>Month</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Month"/>
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {months.map((month) => (
-                                            <SelectItem key={month.value} value={month.value}>
-                                                {month.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
+                    <FormFieldCustom
+                        form={form}
+                        inputName="month"
+                        label="month"
+                        type="select"
+                        options={months}
+                        displayKey="label"
+                        valueKey="value"
+                        placeholder="Month"
                     />
                     <div className="w-full flex items-end gap-4">
                         <FormFieldCustom form={form} type="number" inputName="year" label="Year" className="flex-1"/>
