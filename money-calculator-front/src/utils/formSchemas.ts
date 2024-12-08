@@ -81,3 +81,9 @@ export const resetBudgetFormSchema = z
             path: ["secondaryCurrency"],
         }
     );
+
+export const fixedExpenseFormSchema = z.object({
+    label: z.string().min(1, {message: "Label is required"}),
+    amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
+    frequency: z.preprocess((val) => Number(val), z.number({ required_error: "Frequency is required" })),
+});

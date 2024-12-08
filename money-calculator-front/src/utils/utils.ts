@@ -33,3 +33,12 @@ export const getDayAfter = (date: string): string => {
     parsedDate.setDate(parsedDate.getDate() + 1);
     return format(parsedDate, "yyyy-MM-dd");
 };
+
+// Expense frequency
+export const formatFrequency = (frequency: number): string => {
+    if (frequency === 1) {
+        return 'Each month';
+    } else {
+        return `Every ${frequency} months`;
+    }
+}

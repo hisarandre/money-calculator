@@ -3,6 +3,7 @@ import AccountSlice from "@/store/AccountSlice.ts";
 import TransactionSlice from "@/store/TransactionSlice.ts";
 import BalanceSlide from "@/store/BalanceSlice.ts";
 import BudgetSlice from "@/store/BudgetSlice.ts";
+import FixedExpenseSlice from "@/store/FixedExpenseSlice.ts";
 
 const Store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ const Store = configureStore({
         transactions: TransactionSlice,
         balances: BalanceSlide,
         budget: BudgetSlice,
+        fixedExpense: FixedExpenseSlice,
     },
 });
 

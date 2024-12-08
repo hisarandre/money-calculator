@@ -64,6 +64,8 @@ const budgetSlice = createSlice({
     name: "budget",
     initialState: {
         budget: null as Budget | null,
+        mainCurrency: null as string | null,
+        secondaryCurrency: null as string | null,
         fetchStatus: "idle",
         editStatus: "idle",
         resetStatus: "idle",
@@ -82,6 +84,8 @@ const budgetSlice = createSlice({
             .addCase(fetchBudget.fulfilled, (state, action) => {
                 state.fetchStatus = "succeeded";
                 state.budget = action.payload;
+                state.mainCurrency = action.payload.mainCurrency;
+                state.secondaryCurrency = action.payload.secondaryCurrency;
             })
             .addCase(fetchBudget.rejected, (state, action) => {
                 state.fetchStatus = "failed";
