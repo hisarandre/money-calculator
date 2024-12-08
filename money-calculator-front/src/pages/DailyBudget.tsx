@@ -58,7 +58,6 @@ const DailyBudget = () => {
                 secondaryCurrency={secondaryCurrency}
                 currenciesFetchStatus={currenciesFetchStatus}
                 currenciesFetchError={currenciesFetchError}
-
             />
 
             <Calendar />

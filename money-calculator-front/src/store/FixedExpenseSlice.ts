@@ -39,6 +39,44 @@ export const addFixedExpense = createAsyncThunk(
         }
     });
 
+export const editFixedExpense = createAsyncThunk(
+    `${PREFIX}/editFixedExpense`,
+    async ({id, editedFixedExpense}: {
+        id: number;
+        editedFixedExpense: {
+            label: string,
+            amount: number,
+            frequency: number
+        }
+    }, {rejectWithValue}) => {
+        try {
+            const response = await axios.put(`${FIXED_EXPENSE_URL}/${id}`, editedFixedExpense);
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to edit fixed expense";
+            return rejectWithValue(errorMessage);
+        }
+    });
+
+export const deleteFixedExpense = createAsyncThunk(
+    `${PREFIX}/deleteFixedExpense`,
+    async (id: number,
+           {rejectWithValue}) => {
+        try {
+            const response = await axios.delete(`${FIXED_EXPENSE_URL}/${id}`);
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to delete fixed expense";
+            return rejectWithValue(errorMessage);
+        }
+    });
+
 // Slice definition
 const fixedExpenseSlice = createSlice({
     name: "fixedExpense",
@@ -52,9 +90,11 @@ const fixedExpenseSlice = createSlice({
         fetchStatus: "idle",
         addStatus: "idle",
         editStatus: "idle",
+        deleteStatus: "idle",
         fetchError: null as string | null,
         addError: null as string | null,
         editError: null as string | null,
+        deleteError: null as string | null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -96,6 +136,48 @@ const fixedExpenseSlice = createSlice({
             .addCase(addFixedExpense.rejected, (state, action) => {
                 state.addStatus = "failed";
                 state.addError = (action.payload as string) || "Failed to add account";
+            });
+
+        // editFixedExpense reducers
+        builder
+            .addCase(editFixedExpense.pending, (state) => {
+                state.editStatus = "loading";
+                state.editError = null;
+            })
+            .addCase(editFixedExpense.fulfilled, (state, action) => {
+                state.editStatus = "succeeded";
+                state.mainCurrencyCurrentWallet = action.payload.mainCurrencyCurrentWallet;
+                state.secondaryCurrencyCurrentWallet = action.payload.secondaryCurrencyCurrentWallet;
+                state.estimatedBudget = action.payload.estimatedBudget;
+                state.mainCurrencyTotalExpenses = action.payload.mainCurrencyTotalExpenses;
+                state.secondaryCurrencyTotalExpenses = action.payload.secondaryCurrencyTotalExpenses;
+                const updatedFixedExpense = action.payload.fixedExpense;
+                state.fixedExpenses = state.fixedExpenses.map((fixedExpense) => (fixedExpense.id === updatedFixedExpense.id ? updatedFixedExpense : fixedExpense));
+            })
+            .addCase(editFixedExpense.rejected, (state, action) => {
+                state.editStatus = "failed";
+                state.editError = (action.payload as string) || "Failed to add account";
+            });
+
+        // deleteFixedExpense reducers
+        builder
+            .addCase(deleteFixedExpense.pending, (state) => {
+                state.deleteStatus = "loading";
+                state.deleteError = null;
+            })
+            .addCase(deleteFixedExpense.fulfilled, (state, action) => {
+                state.deleteStatus = "succeeded";
+                state.mainCurrencyCurrentWallet = action.payload.mainCurrencyCurrentWallet;
+                state.secondaryCurrencyCurrentWallet = action.payload.secondaryCurrencyCurrentWallet;
+                state.estimatedBudget = action.payload.estimatedBudget;
+                state.mainCurrencyTotalExpenses = action.payload.mainCurrencyTotalExpenses;
+                state.secondaryCurrencyTotalExpenses = action.payload.secondaryCurrencyTotalExpenses;
+                const fixedExpenseId = action.payload.id;
+                state.fixedExpenses = state.fixedExpenses.filter((fixedExpense) => fixedExpense.id !== fixedExpenseId);
+            })
+            .addCase(deleteFixedExpense.rejected, (state, action) => {
+                state.deleteStatus = "failed";
+                state.deleteError = (action.payload as string) || "Failed to delete fixed expense";
             });
     },
 });

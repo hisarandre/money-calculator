@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
 import {useDispatch} from "react-redux";
@@ -15,7 +16,7 @@ export const useFetchData = ({ fetchStatus, fetchError, fetchAction }: UseFetchD
 
     useEffect(() => {
         if (fetchStatus === "idle") {
-            dispatch(fetchAction);
+            dispatch(fetchAction());
         }
     }, [fetchStatus, dispatch, fetchAction]);
 
