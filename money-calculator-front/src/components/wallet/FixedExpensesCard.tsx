@@ -76,7 +76,7 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
                                     <TableCell className="font-medium">{fe.label}</TableCell>
                                     <TableCell>{formatAmount(mainCurrency, fe.mainCurrencyAmount)}</TableCell>
                                     {secondaryCurrency && (
-                                        <TableCell>{formatAmount(secondaryCurrency, fe.secondaryCurrencyAmount)}</TableCell>
+                                        <TableCell className="text-muted-foreground">{formatAmount(secondaryCurrency, fe.secondaryCurrencyAmount)}</TableCell>
                                     )}
                                     <TableCell>{formatFrequency(fe.frequency)}</TableCell>
                                     <TableCell className="text-right">

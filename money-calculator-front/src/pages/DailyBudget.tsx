@@ -46,12 +46,8 @@ const DailyBudget = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FixedBudgetCard />
 
-            <CurrentWalletCard
-                mainCurrencyCurrentWallet={mainCurrencyCurrentWallet}
-                secondaryCurrencyCurrentWallet={secondaryCurrencyCurrentWallet}
-                estimatedBudget={estimatedBudget}
-                mainCurrencyTotalExpenses={mainCurrencyTotalExpenses}
-                secondaryCurrencyTotalExpenses={secondaryCurrencyTotalExpenses}
+            <FixedExpensesCard
+                fixedExpenses={fixedExpenses}
                 fixedExpensesFetchStatus={fixedExpensesFetchStatus}
                 fixedExpensesFetchError={fixedExpensesFetchError}
                 mainCurrency={mainCurrency}
@@ -68,8 +64,12 @@ const DailyBudget = () => {
                 </Button>
             </div>
 
-            <FixedExpensesCard
-                fixedExpenses={fixedExpenses}
+            <CurrentWalletCard
+                mainCurrencyCurrentWallet={mainCurrencyCurrentWallet}
+                secondaryCurrencyCurrentWallet={secondaryCurrencyCurrentWallet}
+                estimatedBudget={estimatedBudget}
+                mainCurrencyTotalExpenses={mainCurrencyTotalExpenses}
+                secondaryCurrencyTotalExpenses={secondaryCurrencyTotalExpenses}
                 fixedExpensesFetchStatus={fixedExpensesFetchStatus}
                 fixedExpensesFetchError={fixedExpensesFetchError}
                 mainCurrency={mainCurrency}
