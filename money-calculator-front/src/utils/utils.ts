@@ -2,11 +2,12 @@
 import {format} from "date-fns";
 
 export const formatAmount = (currency: string, amount: number) => {
-    if (currency === 'KRW') {
-        return `${amount} ₩`;
-    } else {
-        return `${amount} €`;
-    }
+    const currencyFormatter = new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: currency,
+    });
+
+    return currencyFormatter.format(amount);
 };
 
 export const getCurrencySymbol = (currency: string) => {

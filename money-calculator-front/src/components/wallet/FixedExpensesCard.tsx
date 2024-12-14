@@ -1,7 +1,7 @@
 import CardCustom from "@/components/CardCustom.tsx";
 import {FixedExpense} from "@/models/FixedExpense.ts";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
-import {formatFrequency} from "@/utils/utils.ts";
+import {formatAmount, formatFrequency} from "@/utils/utils.ts";
 import {useState} from "react";
 import AddFixedExpense from "@/components/wallet/modals/AddFixedExpense.tsx";
 import EditFixedExpense from "@/components/wallet/modals/EditFixedExpense.tsx";
@@ -56,7 +56,7 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
             {(fixedExpensesFetchStatus === "loading" || currenciesFetchStatus === 'loading') && <p>Loading fixed expenses...</p>}
             {fixedExpensesFetchStatus === "failed" && fixedExpensesFetchError && <p className="text-red-500">{fixedExpensesFetchError}</p>}
             {currenciesFetchStatus === "failed" && currenciesFetchError && <p className="text-red-500">{currenciesFetchError}</p>}
-            {fixedExpensesFetchStatus === "succeeded" && fixedExpenses.length > 0 && currenciesFetchStatus === 'succeeded' && (
+            {fixedExpensesFetchStatus === "succeeded" && fixedExpenses.length > 0 && mainCurrency && secondaryCurrency && currenciesFetchStatus === 'succeeded' && (
                 <>
                     <Table>
                         <TableHeader>
@@ -74,9 +74,9 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
                             {fixedExpenses.map((fe) => (
                                 <TableRow key={fe.id}>
                                     <TableCell className="font-medium">{fe.label}</TableCell>
-                                    <TableCell>{fe.mainCurrencyAmount}</TableCell>
+                                    <TableCell>{formatAmount(mainCurrency, fe.mainCurrencyAmount)}</TableCell>
                                     {secondaryCurrency && (
-                                        <TableCell>{fe.secondaryCurrencyAmount}</TableCell>
+                                        <TableCell>{formatAmount(secondaryCurrency, fe.secondaryCurrencyAmount)}</TableCell>
                                     )}
                                     <TableCell>{formatFrequency(fe.frequency)}</TableCell>
                                     <TableCell className="text-right">

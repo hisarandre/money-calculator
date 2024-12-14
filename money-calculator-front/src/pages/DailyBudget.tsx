@@ -13,6 +13,11 @@ import {fetchBudget} from "@/store/BudgetSlice.ts";
 
 const DailyBudget = () => {
     const {
+        mainCurrencyCurrentWallet,
+        secondaryCurrencyCurrentWallet,
+        estimatedBudget,
+        mainCurrencyTotalExpenses,
+        secondaryCurrencyTotalExpenses,
         fixedExpenses,
         fetchStatus: fixedExpensesFetchStatus,
         fetchError: fixedExpensesFetchError,
@@ -36,11 +41,24 @@ const DailyBudget = () => {
         fetchAction: fetchBudget,
     });
 
+    // TODO: mettre les fixed expenses en haut en 2 col
     return (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FixedBudgetCard />
 
-            <CurrentWalletCard />
+            <CurrentWalletCard
+                mainCurrencyCurrentWallet={mainCurrencyCurrentWallet}
+                secondaryCurrencyCurrentWallet={secondaryCurrencyCurrentWallet}
+                estimatedBudget={estimatedBudget}
+                mainCurrencyTotalExpenses={mainCurrencyTotalExpenses}
+                secondaryCurrencyTotalExpenses={secondaryCurrencyTotalExpenses}
+                fixedExpensesFetchStatus={fixedExpensesFetchStatus}
+                fixedExpensesFetchError={fixedExpensesFetchError}
+                mainCurrency={mainCurrency}
+                secondaryCurrency={secondaryCurrency}
+                currenciesFetchStatus={currenciesFetchStatus}
+                currenciesFetchError={currenciesFetchError}
+            />
 
             <div className="flex flex-col justify-center items-center text-center gap-4">
                 <h1 className="text-lg">Korea</h1>
