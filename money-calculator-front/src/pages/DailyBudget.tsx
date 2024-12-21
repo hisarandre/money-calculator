@@ -79,6 +79,7 @@ const DailyBudget = () => {
             <Calendar />
 
             <ExpensesPerDayCard
+                estimatedBudget={estimatedBudget}
                 dailyExpenses={dailyExpenses}
                 fetchDailyStatus={fetchDailyStatus}
                 fetchDailyError={fetchDailyError}

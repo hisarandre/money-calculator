@@ -12,13 +12,21 @@ import {useEffect, useRef} from "react";
 
 interface ExpenseFormProps {
     expense: DailyExpense;
+    estimatedBudget: number;
     formSchema: typeof dailyExpenseFormSchema;
     mainCurrency: string;
     weekNumber: number;
     onSubmit: (data: z.infer<typeof dailyExpenseFormSchema>) => void;
 }
 
-const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, formSchema, mainCurrency, weekNumber, onSubmit }) => {
+const ExpenseForm: React.FC<ExpenseFormProps> = ({
+    expense,
+    estimatedBudget,
+    formSchema,
+    mainCurrency,
+    weekNumber,
+    onSubmit
+}) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -63,18 +71,18 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, formSchema, mainCurr
                 </h4>
             </div>
 
-            <div className="flex gap-4 *:w-1/2">
+            <div className="flex gap-4">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-2">
                         <FormFieldCustom form={form} inputName="date" disabled={true} className="hidden" />
-                        <FormFieldCustom form={form} inputName="amount" type="number" />
+                        <FormFieldCustom form={form} inputName="amount" type="number" /> / {formatAmount(mainCurrency, estimatedBudget)}
                         <FormFieldCustom form={form} inputName="weekNumber" type="number" disabled={true} className="hidden" />
                     </form>
                 </Form>
 
-                <div className="text-right text-muted-foreground">
+                <div className="flex-1 text-right text-muted-foreground">
                     <span className="font-medium text-sm">Saving</span>
-                    <p>{formatAmount(mainCurrency, expense.saving)}</p>
+                    <p className={expense.saving < 0 ? 'font-bold text-destructive' : ''}>{formatAmount(mainCurrency, expense.saving)}</p>
                 </div>
             </div>
         </div>

@@ -8,9 +8,11 @@ import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
 import ExpenseForm from "@/components/calendar/ExpenseForm.tsx";
 import {fetchWeek, setWeekNumber, updateDailyExpense} from "@/store/ExpensesSlice.ts";
-import {getWeekDates} from "@/utils/utils.ts";
+import {formatAmount, getWeekDates} from "@/utils/utils.ts";
+import {Separator} from "@/components/ui/separator.tsx";
 
 interface ExpensesPerDayCardProps {
+    estimatedBudget: number;
     dailyExpenses: DailyExpense[];
     fetchDailyStatus: string;
     fetchDailyError?: string | null;
@@ -20,6 +22,7 @@ interface ExpensesPerDayCardProps {
 }
 
 const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
+    estimatedBudget,
     dailyExpenses,
     fetchDailyStatus,
     fetchDailyError,
@@ -28,7 +31,15 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
     currenciesFetchError,
 }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const {weekNumber, isPreviousAvailable, isNextAvailable, updateDailyStatus, updateDailyError} = useSelector((state: RootState) => state.expenses);
+    const {
+        weekNumber,
+        total,
+        totalSaving,
+        isPreviousAvailable,
+        isNextAvailable,
+        updateDailyStatus,
+        updateDailyError
+    } = useSelector((state: RootState) => state.expenses);
 
     const formSchema = dailyExpenseFormSchema;
 
@@ -71,16 +82,34 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
             {fetchDailyStatus === "failed" && <p className="text-red-500">{fetchDailyError}</p>}
             {currenciesFetchStatus === "failed" && <p className="text-red-500">{currenciesFetchError}</p>}
             {fetchDailyStatus === "succeeded" && dailyExpenses.length > 0 && currenciesFetchStatus === "succeeded" && mainCurrency && (
-                dailyExpenses.map((expense, index) => (
-                    <ExpenseForm
-                        key={index}
-                        expense={expense}
-                        formSchema={formSchema}
-                        mainCurrency={mainCurrency}
-                        weekNumber={weekNumber}
-                        onSubmit={onSubmit}
-                    />
-                ))
+                <>
+                    <div className="mb-2 flex justify-between gap-4 *:flex-1">
+                        <div className="border-border border p-3 mb-2 rounded-md">
+                            <span className="text-sm">Total expenses</span><br />
+                            <strong className="text-lg">{formatAmount(mainCurrency, total)}</strong>
+                        </div>
+
+                        <div className="border-border border p-3 mb-2 rounded-md">
+                            <span className="text-sm">Total saving</span><br />
+                            <strong className="text-lg">{formatAmount(mainCurrency, totalSaving)}</strong>
+                        </div>
+                    </div>
+
+                    <Separator className="mb-4" />
+
+                    {dailyExpenses.map((expense, index) => (
+                        <ExpenseForm
+                            key={index}
+                            expense={expense}
+                            estimatedBudget={estimatedBudget}
+                            formSchema={formSchema}
+                            mainCurrency={mainCurrency}
+                            weekNumber={weekNumber}
+                            onSubmit={onSubmit}
+                        />
+                    ))}
+                </>
+
 
             )}
         </CardCustom>
