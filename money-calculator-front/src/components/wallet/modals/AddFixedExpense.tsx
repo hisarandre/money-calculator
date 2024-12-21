@@ -10,7 +10,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
-import {addFixedExpense} from "@/store/FixedExpenseSlice.ts";
+import {addFixedExpense} from "@/store/ExpensesSlice.ts";
 
 interface AddFixedExpenseProps {
     isOpen: boolean;
@@ -19,7 +19,7 @@ interface AddFixedExpenseProps {
 
 const AddFixedExpense: React.FC<AddFixedExpenseProps> = ({isOpen, onOpenChange}) => {
     const dispatch = useDispatch<AppDispatch>();
-    const {addStatus, addError} = useSelector((state: RootState) => state.fixedExpense);
+    const {addStatus, addError} = useSelector((state: RootState) => state.expenses);
 
     const formSchema = fixedExpenseFormSchema;
 

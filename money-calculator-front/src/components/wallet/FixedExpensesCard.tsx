@@ -105,12 +105,13 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
                         </TableBody>
                     </Table>
 
-                    <AddFixedExpense isOpen={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}/>
                     <EditFixedExpense fixedExpense={fixedExpense} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>
                     <DeleteFixedExpense fixedExpenseId={fixedExpenseId} isOpen={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} />
                 </>
             )}
             {fixedExpensesFetchStatus === "succeeded" && fixedExpenses.length === 0 && <p>No fixed expenses found.</p>}
+
+            <AddFixedExpense isOpen={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}/>
         </CardCustom>
     )
 }

@@ -7,6 +7,8 @@ import {toast} from "@/hooks/use-toast.ts";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import {formatAmount, formatFullDateCompact} from "@/utils/utils.ts";
 import EditBudget from "@/components/budget/modals/EditBudget.tsx";
+import {Link} from "react-router-dom";
+import {Button} from "@/components/ui/button.tsx";
 
 const FixedBudgetCard = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -53,8 +55,14 @@ const FixedBudgetCard = () => {
                         </TableBody>
                     </Table>
 
-                    <div className="mt-2">
-                        <strong>Currency rate ({budget.mainCurrency} to {budget.secondaryCurrency}):</strong> {budget.currencyRate}
+                    <div className="mt-2 flex flex-col items-center gap-4">
+                        <p>
+                            <strong>Currency rate ({budget.mainCurrency} to {budget.secondaryCurrency}):</strong> {budget.currencyRate}
+                        </p>
+
+                        <Button asChild>
+                            <Link to="/reset-budget">Reset budget</Link>
+                        </Button>
                     </div>
 
                     <EditBudget budget={budget} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>

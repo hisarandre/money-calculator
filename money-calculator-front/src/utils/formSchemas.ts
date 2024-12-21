@@ -87,3 +87,9 @@ export const fixedExpenseFormSchema = z.object({
     amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
     frequency: z.preprocess((val) => Number(val), z.number({ required_error: "Frequency is required" })),
 });
+
+export const dailyExpenseFormSchema = z.object({
+    date: z.string().min(1, { message: "Date is required" }),
+    amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
+    weekNumber: z.preprocess((val) => Number(val), z.number({ required_error: "Week number is required" })),
+});

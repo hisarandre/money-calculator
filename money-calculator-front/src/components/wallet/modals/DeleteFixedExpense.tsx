@@ -5,7 +5,7 @@ import {AppDispatch, RootState} from "@/store/Store.ts";
 import {toast} from "@/hooks/use-toast";
 import {useEffect} from "react";
 import {DialogClose} from "@radix-ui/react-dialog";
-import {deleteFixedExpense} from "@/store/FixedExpenseSlice.ts";
+import {deleteFixedExpense} from "@/store/ExpensesSlice.ts";
 
 interface DeleteFixedExpenseProps {
     fixedExpenseId: number;
@@ -15,7 +15,7 @@ interface DeleteFixedExpenseProps {
 
 const DeleteFixedExpense: React.FC<DeleteFixedExpenseProps> = ({fixedExpenseId, isOpen, onOpenChange}) => {
     const dispatch = useDispatch<AppDispatch>();
-    const {deleteStatus, deleteError} = useSelector((state: RootState) => state.fixedExpense);
+    const {deleteStatus, deleteError} = useSelector((state: RootState) => state.expenses);
 
     useEffect(() => {
         if (deleteStatus === "failed") {

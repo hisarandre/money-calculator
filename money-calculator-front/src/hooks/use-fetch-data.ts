@@ -5,20 +5,25 @@ import {useDispatch} from "react-redux";
 import {AsyncThunk} from "@reduxjs/toolkit";
 import {AppDispatch} from "@/store/Store.ts";
 
-type UseFetchDataOptions = {
+type UseFetchDataOptions<T = void> = {
     fetchStatus: string;
     fetchError?: string | null;
-    fetchAction: AsyncThunk<any, void, any>;
+    fetchAction: AsyncThunk<any, T, any>;
+    fetchParam?: T;
 };
 
-export const useFetchData = ({ fetchStatus, fetchError, fetchAction }: UseFetchDataOptions) => {
+export const useFetchData = <T = void>({ fetchStatus, fetchError, fetchAction, fetchParam }: UseFetchDataOptions<T>) => {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         if (fetchStatus === "idle") {
-            dispatch(fetchAction());
+            if (fetchParam !== undefined) {
+                dispatch(fetchAction(fetchParam));
+            } else {
+                dispatch(fetchAction() as any);
+            }
         }
-    }, [fetchStatus, dispatch, fetchAction]);
+    }, [fetchStatus, dispatch, fetchAction, fetchParam]);
 
     useEffect(() => {
         if (fetchStatus === "failed" && fetchError) {

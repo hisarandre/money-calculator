@@ -11,7 +11,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
-import {editFixedExpense} from "@/store/FixedExpenseSlice.ts";
+import {editFixedExpense} from "@/store/ExpensesSlice.ts";
 
 interface EditFixedExpenseProps {
     fixedExpense: FixedExpense;
@@ -21,7 +21,7 @@ interface EditFixedExpenseProps {
 
 const EditFixedExpense: React.FC<EditFixedExpenseProps> = ({fixedExpense, isOpen, onOpenChange}) => {
     const dispatch = useDispatch<AppDispatch>();
-    const {editStatus, editError} = useSelector((state: RootState) => state.fixedExpense);
+    const {editStatus, editError} = useSelector((state: RootState) => state.expenses);
 
     const formSchema = fixedExpenseFormSchema;
 
