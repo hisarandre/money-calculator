@@ -30,23 +30,22 @@ const DailyBudget = () => {
         fetchError: currenciesFetchError,
     } = useSelector((state: RootState) => state.budget);
 
-    useFetchData<void>({
+    useFetchData({
         fetchStatus: fetchFixedStatus,
         fetchError: fetchFixedError,
         fetchAction: fetchAllFixedExpenses,
     });
 
-    useFetchData<void>({
+    useFetchData({
         fetchStatus: currenciesFetchStatus,
         fetchError: currenciesFetchError,
         fetchAction: fetchBudget,
     });
 
-    useFetchData<number>({
+    useFetchData({
         fetchStatus: fetchDailyStatus,
         fetchError: fetchDailyError,
         fetchAction: fetchWeek,
-        fetchParam: 0,
     });
 
     return (

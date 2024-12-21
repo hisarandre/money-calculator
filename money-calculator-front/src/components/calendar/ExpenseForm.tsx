@@ -12,7 +12,7 @@ import {useEffect, useRef} from "react";
 
 interface ExpenseFormProps {
     expense: DailyExpense;
-    formSchema: z.ZodType<any>;
+    formSchema: typeof dailyExpenseFormSchema;
     mainCurrency: string;
     onSubmit: (data: z.infer<typeof dailyExpenseFormSchema>) => void;
 }
@@ -38,13 +38,15 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, formSchema, mainCurr
     );
 
     useEffect(() => {
-        if (formState?.amount > 0) {
-            debouncedSubmit.current(formState);
+        const debounced = debouncedSubmit.current;
+
+        if (formState?.amount != null && formState.amount > 0) {
+            debounced(formState);
         }
 
         return () => {
-            if (formState?.amount > 0) {
-                debouncedSubmit.current.cancel();
+            if (formState.amount != null && formState.amount > 0) {
+                debounced.cancel();
             }
         };
     }, [formState]);

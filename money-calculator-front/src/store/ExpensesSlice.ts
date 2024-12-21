@@ -90,7 +90,7 @@ export const fetchWeek = createAsyncThunk(
     `${PREFIX_DE}/fetchWeek`,
     async (_, { getState, rejectWithValue }) => {
         try {
-            const state: RootState = getState();
+            const state = getState() as RootState;
             const weekNumber = state.expenses.weekNumber;
 
             const response = await axios.get(`${DAILY_EXPENSE_URL}/week/${weekNumber}`);
@@ -137,8 +137,8 @@ const expensesSlice = createSlice({
         total: 0,
         totalSaving: 0,
         dailyExpenses: [] as DailyExpense[],
-        isNextAvailable: null as boolean,
-        isPreviousAvailable: null as boolean,
+        isNextAvailable: false,
+        isPreviousAvailable: false,
         weekNumber: 0,
         fetchFixedStatus: "idle",
         fetchDailyStatus: "idle",
