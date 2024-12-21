@@ -74,6 +74,7 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
                         expense={expense}
                         formSchema={formSchema}
                         mainCurrency={mainCurrency}
+                        weekNumber={weekNumber}
                         onSubmit={onSubmit}
                     />
                 ))

@@ -14,16 +14,17 @@ interface ExpenseFormProps {
     expense: DailyExpense;
     formSchema: typeof dailyExpenseFormSchema;
     mainCurrency: string;
+    weekNumber: number;
     onSubmit: (data: z.infer<typeof dailyExpenseFormSchema>) => void;
 }
 
-const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, formSchema, mainCurrency, onSubmit }) => {
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, formSchema, mainCurrency, weekNumber, onSubmit }) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             date: expense.date,
             amount: expense.amount ?? 0,
-            weekNumber: 0,
+            weekNumber,
         },
     });
 
@@ -45,9 +46,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, formSchema, mainCurr
         }
 
         return () => {
-            if (formState.amount != null && formState.amount > 0) {
-                debounced.cancel();
-            }
+            debounced.cancel();
         };
     }, [formState]);
 
