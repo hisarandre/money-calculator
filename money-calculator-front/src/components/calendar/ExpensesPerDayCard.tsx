@@ -8,6 +8,7 @@ import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
 import ExpenseForm from "@/components/calendar/ExpenseForm.tsx";
 import {fetchWeek, setWeekNumber, updateDailyExpense} from "@/store/ExpensesSlice.ts";
+import {getWeekDates} from "@/utils/utils.ts";
 
 interface ExpensesPerDayCardProps {
     dailyExpenses: DailyExpense[];
@@ -55,9 +56,11 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
         dispatch(fetchWeek());
     }
 
+    const {monday, sunday} = getWeekDates(dailyExpenses[0].date);
+
     return (
         <CardCustom
-            title="Week X"
+            title={`Week: ${monday} - ${sunday}`}
             description="Enter the total amount of expenses of the day"
             previousWeekAction={() => getPreviousWeek()}
             nextWeekAction={() => getNextWeek()}

@@ -35,6 +35,23 @@ export const getDayAfter = (date: string): string => {
     return format(parsedDate, "yyyy-MM-dd");
 };
 
+export const getWeekDates = (dateString: string) => {
+    const date = new Date(dateString);
+    const dayOfWeek = date.getDay();
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    const monday = new Date(date);
+    monday.setDate(date.getDate() + diffToMonday);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    return {
+        monday: format(monday, "d MMM, yyyy"),
+        sunday: format(sunday, "d MMM, yyyy"),
+    };
+}
+
 // Expense frequency
 export const formatFrequency = (frequency: number): string => {
     if (frequency === 1) {
