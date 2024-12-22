@@ -80,8 +80,7 @@ const CardCustom: React.FC<CardProps> = ({
                 <CardFooter>
                     {footer}
                 </CardFooter>
-            )
-            }
+            )}
         </Card>
     );
 }

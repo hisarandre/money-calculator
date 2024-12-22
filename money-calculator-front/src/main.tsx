@@ -13,6 +13,7 @@ import Error from "@/pages/Error.tsx";
 import ProjectedCalculator from "@/pages/ProjectedCalculator.tsx";
 import DailyBudget from "@/pages/DailyBudget.tsx";
 import ResetBudget from "@/pages/ResetBudget.tsx";
+import AddBudget from "@/pages/InitializeBudget.tsx";
 
 const router = createBrowserRouter([
     {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
             {
                 path: "/reset-budget",
                 element: <ResetBudget/>,
+            },
+            {
+                path: "/initialize-budget",
+                element: <AddBudget/>,
             },
         ],
     },

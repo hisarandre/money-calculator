@@ -29,7 +29,7 @@ export const formatFullDateCompact = (date: string | Date) => {
     return new Intl.DateTimeFormat('en-GB', {day: '2-digit', month: '2-digit', year: 'numeric'}).format(new Date(date));
 };
 
-export const getDayAfter = (date: string): string => {
+export const getDayAfter = (date: string | Date): string => {
     const parsedDate = new Date(date);
     parsedDate.setDate(parsedDate.getDate() + 1);
     return format(parsedDate, "yyyy-MM-dd");
