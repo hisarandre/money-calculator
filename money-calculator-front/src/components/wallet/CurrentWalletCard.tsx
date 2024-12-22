@@ -32,29 +32,40 @@ const CurrentWalletCard: React.FC<CurrentWalletCardProps> = ({
 
     return (
         <CardCustom title="Current Wallet" description="The actual amount of money possessed">
-            {(fixedExpensesFetchStatus === "loading" || currenciesFetchStatus === "loading") && <p>Loading fixed expenses...</p>}
-            {fixedExpensesFetchStatus === "failed" && fixedExpensesFetchError && <p className="text-red-500">{fixedExpensesFetchError}</p>}
-            {currenciesFetchStatus === "failed" && currenciesFetchError && <p className="text-red-500">{currenciesFetchError}</p>}
-            {fixedExpensesFetchStatus === "succeeded" && currenciesFetchStatus === "succeeded" && mainCurrency && secondaryCurrency && (
-                <div className="flex flex-col gap-6">
-                    <div className="flex items-end justify-between">
-                        <p>
-                            <span className="text-xl">{formatAmount(mainCurrency, mainCurrencyCurrentWallet)}</span>
-                            <span className="text-sm"> / {formatAmount(mainCurrency, mainCurrencyTotalExpenses)}</span>
-                        </p>
+            {currenciesFetchStatus === "failed" && currenciesFetchError && <p>No budget found. <span className="text-muted-foreground italic">(Error: {currenciesFetchError})</span></p>}
 
-                        <p className="text-right text-muted-foreground text-sm">
-                            <strong>{formatAmount(secondaryCurrency, secondaryCurrencyCurrentWallet)}</strong> / {formatAmount(secondaryCurrency, secondaryCurrencyTotalExpenses)}
-                        </p>
-                    </div>
+            {currenciesFetchStatus !== "failed" && (
+                <>
+                    {(fixedExpensesFetchStatus === "loading" || currenciesFetchStatus === "loading") && (
+                        <p>Loading fixed expenses...</p>
+                    )}
 
-                    <Progress value={mainCurrencyCurrentWallet/mainCurrencyTotalExpenses*100}/>
+                    {fixedExpensesFetchStatus === "failed" && fixedExpensesFetchError && (
+                        <p className="text-red-500">{fixedExpensesFetchError}</p>
+                    )}
 
-                    <div className="border-border border p-3 mb-2 rounded-md">
-                        <strong className="text-muted-foreground font-medium uppercase text-sm">Estimated budget</strong><br />
-                        <span className="text-lg">{formatAmount(mainCurrency, estimatedBudget)}</span>
-                    </div>
-                </div>
+                    {fixedExpensesFetchStatus === "succeeded" && currenciesFetchStatus === "succeeded" && mainCurrency && secondaryCurrency && (
+                        <div className="flex flex-col gap-6">
+                            <div className="flex items-end justify-between">
+                                <p>
+                                    <span className="text-xl">{formatAmount(mainCurrency, mainCurrencyCurrentWallet)}</span>
+                                    <span className="text-sm"> / {formatAmount(mainCurrency, mainCurrencyTotalExpenses)}</span>
+                                </p>
+
+                                <p className="text-right text-muted-foreground text-sm">
+                                    <strong>{formatAmount(secondaryCurrency, secondaryCurrencyCurrentWallet)}</strong> / {formatAmount(secondaryCurrency, secondaryCurrencyTotalExpenses)}
+                                </p>
+                            </div>
+
+                            <Progress value={mainCurrencyCurrentWallet/mainCurrencyTotalExpenses*100}/>
+
+                            <div className="border-border border p-3 mb-2 rounded-md">
+                                <strong className="text-muted-foreground font-medium uppercase text-sm">Estimated budget</strong><br />
+                                <span className="text-lg">{formatAmount(mainCurrency, estimatedBudget)}</span>
+                            </div>
+                        </div>
+                    )}
+                </>
             )}
         </CardCustom>
     )

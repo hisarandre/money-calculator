@@ -52,68 +52,111 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
     };
 
     return (
-        <CardCustom title="Fixed Expenses" description="Monthly fixed expenses" addAction={() => setIsAddDialogOpen(true)}>
-            {(fixedExpensesFetchStatus === "loading" || currenciesFetchStatus === 'loading') && <p>Loading fixed expenses...</p>}
-            {fixedExpensesFetchStatus === "failed" && fixedExpensesFetchError && <p className="text-red-500">{fixedExpensesFetchError}</p>}
-            {currenciesFetchStatus === "failed" && currenciesFetchError && <p className="text-red-500">{currenciesFetchError}</p>}
-            {fixedExpensesFetchStatus === "succeeded" && fixedExpenses.length > 0 && mainCurrency && secondaryCurrency && currenciesFetchStatus === 'succeeded' && (
-                <>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[100px]">Label</TableHead>
-                                <TableHead>{mainCurrency}</TableHead>
-                                {secondaryCurrency && (
-                                    <TableHead>{secondaryCurrency}</TableHead>
-                                )}
-                                <TableHead>Frequency</TableHead>
-                                <TableHead />
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {fixedExpenses.map((fe) => (
-                                <TableRow key={fe.id}>
-                                    <TableCell className="font-medium">{fe.label}</TableCell>
-                                    <TableCell>{formatAmount(mainCurrency, fe.mainCurrencyAmount)}</TableCell>
-                                    {secondaryCurrency && (
-                                        <TableCell className="text-muted-foreground">{formatAmount(secondaryCurrency, fe.secondaryCurrencyAmount)}</TableCell>
-                                    )}
-                                    <TableCell>{formatFrequency(fe.frequency)}</TableCell>
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                                    <span className="sr-only">Open menu</span>
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuItem className="cursor-pointer" onClick={() => onEdit(fe)}>
-                                                    <Edit className="h-4 w-4"/> Edit
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    className="cursor-pointer text-destructive focus:bg-destructive focus:text-destructive-foreground"
-                                                    onClick={() => onDelete(fe.id)}>
-                                                    <Trash className="h-4 w-4"/> Delete
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+        <CardCustom
+            title="Fixed Expenses"
+            description="Monthly fixed expenses"
+            addAction={currenciesFetchStatus !== "failed" ? () => setIsAddDialogOpen(true) : undefined}
+        >
+            {currenciesFetchStatus === "failed" && currenciesFetchError && <p>No budget found. <span className="text-muted-foreground italic">(Error: {currenciesFetchError})</span></p>}
 
-                    <EditFixedExpense fixedExpense={fixedExpense} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>
-                    <DeleteFixedExpense fixedExpenseId={fixedExpenseId} isOpen={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} />
+            {currenciesFetchStatus !== "failed" && (
+                <>
+                    {(fixedExpensesFetchStatus === "loading" || currenciesFetchStatus === "loading") && (
+                        <p>Loading fixed expenses...</p>
+                    )}
+
+                    {fixedExpensesFetchStatus === "failed" && fixedExpensesFetchError && (
+                        <p className="text-red-500">{fixedExpensesFetchError}</p>
+                    )}
+
+                    {fixedExpensesFetchStatus === "succeeded" &&
+                        fixedExpenses.length > 0 &&
+                        mainCurrency &&
+                        secondaryCurrency &&
+                        currenciesFetchStatus === "succeeded" && (
+                            <>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-[100px]">Label</TableHead>
+                                            <TableHead>{mainCurrency}</TableHead>
+                                            {secondaryCurrency && <TableHead>{secondaryCurrency}</TableHead>}
+                                            <TableHead>Frequency</TableHead>
+                                            <TableHead />
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {fixedExpenses.map((fe) => (
+                                            <TableRow key={fe.id}>
+                                                <TableCell className="font-medium">{fe.label}</TableCell>
+                                                <TableCell>
+                                                    {formatAmount(mainCurrency, fe.mainCurrencyAmount)}
+                                                </TableCell>
+                                                {secondaryCurrency && (
+                                                    <TableCell className="text-muted-foreground">
+                                                        {formatAmount(secondaryCurrency, fe.secondaryCurrencyAmount)}
+                                                    </TableCell>
+                                                )}
+                                                <TableCell>{formatFrequency(fe.frequency)}</TableCell>
+                                                <TableCell className="text-right">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                className="h-8 w-8 p-0"
+                                                            >
+                                                                <span className="sr-only">Open menu</span>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>
+                                                                Actions
+                                                            </DropdownMenuLabel>
+                                                            <DropdownMenuItem
+                                                                className="cursor-pointer"
+                                                                onClick={() => onEdit(fe)}
+                                                            >
+                                                                <Edit className="h-4 w-4" /> Edit
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                className="cursor-pointer text-destructive focus:bg-destructive focus:text-destructive-foreground"
+                                                                onClick={() => onDelete(fe.id)}
+                                                            >
+                                                                <Trash className="h-4 w-4" /> Delete
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+
+                                <EditFixedExpense
+                                    fixedExpense={fixedExpense}
+                                    isOpen={isEditDialogOpen}
+                                    onOpenChange={setIsEditDialogOpen}
+                                />
+                                <DeleteFixedExpense
+                                    fixedExpenseId={fixedExpenseId}
+                                    isOpen={isDeleteDialogOpen}
+                                    onOpenChange={setIsDeleteDialogOpen}
+                                />
+                            </>
+                        )}
+                    {fixedExpensesFetchStatus === "succeeded" && fixedExpenses.length === 0 && (
+                        <p>No fixed expenses found.</p>
+                    )}
+
+                    <AddFixedExpense
+                        isOpen={isAddDialogOpen}
+                        onOpenChange={setIsAddDialogOpen}
+                    />
                 </>
             )}
-            {fixedExpensesFetchStatus === "succeeded" && fixedExpenses.length === 0 && <p>No fixed expenses found.</p>}
-
-            <AddFixedExpense isOpen={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}/>
         </CardCustom>
-    )
+    );
 }
 
 export default FixedExpensesCard;

@@ -67,7 +67,14 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
         dispatch(fetchWeek());
     }
 
-    const {monday, sunday} = getWeekDates(dailyExpenses[0].date);
+    let monday = "N/A";
+    let sunday = "N/A";
+
+    if (dailyExpenses.length > 0) {
+        const weekDates = getWeekDates(dailyExpenses[0].date);
+        monday = weekDates.monday || "N/A";
+        sunday = weekDates.sunday || "N/A";
+    }
 
     return (
         <CardCustom
@@ -78,39 +85,48 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
             isPreviousAvailable={isPreviousAvailable}
             isNextAvailable={isNextAvailable}
         >
-            {(fetchDailyStatus === "loading" || currenciesFetchStatus === "loading") && <p>Loading daily expenses...</p>}
-            {fetchDailyStatus === "failed" && <p className="text-red-500">{fetchDailyError}</p>}
-            {currenciesFetchStatus === "failed" && <p className="text-red-500">{currenciesFetchError}</p>}
-            {fetchDailyStatus === "succeeded" && dailyExpenses.length > 0 && currenciesFetchStatus === "succeeded" && mainCurrency && (
+            {currenciesFetchStatus === "failed" && currenciesFetchError && <p>No budget found. <span className="text-muted-foreground italic">(Error: {currenciesFetchError})</span></p>}
+
+            {currenciesFetchStatus !== "failed" && (
                 <>
-                    <div className="mb-2 flex justify-between gap-4 *:flex-1">
-                        <div className="border-border border p-3 mb-2 rounded-md">
-                            <span className="text-sm">Total expenses</span><br />
-                            <strong className="text-lg">{formatAmount(mainCurrency, total)}</strong>
-                        </div>
+                    {(fetchDailyStatus === "loading" || currenciesFetchStatus === "loading") && (
+                        <p>Loading daily expenses...</p>
+                    )}
 
-                        <div className="border-border border p-3 mb-2 rounded-md">
-                            <span className="text-sm">Total saving</span><br />
-                            <strong className="text-lg">{formatAmount(mainCurrency, totalSaving)}</strong>
-                        </div>
-                    </div>
+                    {fetchDailyStatus === "failed" && (
+                        <p className="text-red-500">{fetchDailyError}</p>
+                    )}
 
-                    <Separator className="mb-4" />
+                    {fetchDailyStatus === "succeeded" && dailyExpenses.length > 0 && currenciesFetchStatus === "succeeded" && mainCurrency && (
+                        <>
+                            <div className="mb-2 flex justify-between gap-4 *:flex-1">
+                                <div className="border-border border p-3 mb-2 rounded-md">
+                                    <span className="text-sm">Total expenses</span><br />
+                                    <strong className="text-lg">{formatAmount(mainCurrency, total)}</strong>
+                                </div>
 
-                    {dailyExpenses.map((expense, index) => (
-                        <ExpenseForm
-                            key={index}
-                            expense={expense}
-                            estimatedBudget={estimatedBudget}
-                            formSchema={formSchema}
-                            mainCurrency={mainCurrency}
-                            weekNumber={weekNumber}
-                            onSubmit={onSubmit}
-                        />
-                    ))}
+                                <div className="border-border border p-3 mb-2 rounded-md">
+                                    <span className="text-sm">Total saving</span><br />
+                                    <strong className="text-lg">{formatAmount(mainCurrency, totalSaving)}</strong>
+                                </div>
+                            </div>
+
+                            <Separator className="mb-4" />
+
+                            {dailyExpenses.map((expense, index) => (
+                                <ExpenseForm
+                                    key={index}
+                                    expense={expense}
+                                    estimatedBudget={estimatedBudget}
+                                    formSchema={formSchema}
+                                    mainCurrency={mainCurrency}
+                                    weekNumber={weekNumber}
+                                    onSubmit={onSubmit}
+                                />
+                            ))}
+                        </>
+                    )}
                 </>
-
-
             )}
         </CardCustom>
     )

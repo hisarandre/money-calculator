@@ -23,12 +23,16 @@ const FixedBudgetCard = () => {
 
     useEffect(() => {
         if (fetchStatus === "failed") {
-            toast({title: "An error occurred", description: fetchError, variant: "destructive"});
+            toast({title: "An error occurred for the fixed budget", description: fetchError, variant: "destructive"});
         }
     }, [fetchStatus, fetchError]);
 
     return (
-        <CardCustom title={fetchStatus === "succeeded" && budget ? budget.label : "Fixed Budget"} description="" editAction={() => setIsEditDialogOpen(true)}>
+        <CardCustom
+            title={fetchStatus === "succeeded" && budget ? budget.label : "Fixed Budget"}
+            description=""
+            editAction={budget ? () => setIsEditDialogOpen(true) : undefined}
+        >
             {fetchStatus === "succeeded" && budget && (
                 <>
                     <div className="border-border border p-3 mb-2 rounded-md">
@@ -59,16 +63,19 @@ const FixedBudgetCard = () => {
                         <p>
                             <strong>Currency rate ({budget.mainCurrency} to {budget.secondaryCurrency}):</strong> {budget.currencyRate}
                         </p>
-
-                        <Button asChild>
-                            <Link to="/reset-budget">Reset budget</Link>
-                        </Button>
                     </div>
 
                     <EditBudget budget={budget} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>
                 </>
             )}
             {fetchStatus === "loading" && <p>Loading budget...</p>}
+            {fetchStatus === "failed" && (
+                <div className="flex justify-center">
+                    <Button asChild>
+                        <Link to="/initialize-budget">Initialize budget</Link>
+                    </Button>
+                </div>
+            )}
         </CardCustom>
     )
 }
