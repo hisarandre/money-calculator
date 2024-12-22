@@ -176,7 +176,7 @@ const expensesSlice = createSlice({
             })
             .addCase(fetchAllFixedExpenses.rejected, (state, action) => {
                 state.fetchFixedStatus = "failed";
-                state.fetchFixedError = action.error.message || "Failed to fetch all fixed expenses";
+                state.fetchFixedError = (action.payload as string) || "Failed to fetch all fixed expenses";
             });
 
         // addFixedExpense reducers
@@ -259,7 +259,7 @@ const expensesSlice = createSlice({
             })
             .addCase(fetchWeek.rejected, (state, action) => {
                 state.fetchDailyStatus = "failed";
-                state.fetchDailyError = action.error.message || "Failed to fetch week";
+                state.fetchDailyError = (action.payload as string) || "Failed to fetch week";
             });
 
         // updateDailyExpense reducers
@@ -280,7 +280,7 @@ const expensesSlice = createSlice({
             })
             .addCase(updateDailyExpense.rejected, (state, action) => {
                 state.updateDailyStatus = "failed";
-                state.updateDailyError = action.error.message || "Failed to update daily expense";
+                state.updateDailyError = (action.payload as string) || "Failed to update daily expense";
             });
     },
 });
