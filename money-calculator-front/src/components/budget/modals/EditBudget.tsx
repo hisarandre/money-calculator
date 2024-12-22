@@ -12,7 +12,7 @@ import {useEffect} from "react";
 import {budgetFormSchema} from "@/utils/formSchemas.ts";
 import {Budget} from "@/models/Budget";
 import {editBudget} from "@/store/BudgetSlice.ts";
-import {getCurrencySymbol} from "@/utils/utils.ts";
+import {getCurrencySymbol, getDayAfter} from "@/utils/utils.ts";
 
 interface EditBudgetProps {
     budget: Budget;
@@ -30,7 +30,7 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
         resolver: zodResolver(formSchema),
         defaultValues: {
             label: budget.label,
-            endDate: budget.endDate,
+            endDate: getDayAfter(budget.endDate),
             amount: budget.mainCurrencyAmount,
         },
     });
@@ -39,7 +39,7 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
         if (budget) {
             form.reset({
                 label: budget.label,
-                endDate: budget.endDate,
+                endDate: getDayAfter(budget.endDate),
                 amount: budget.mainCurrencyAmount,
             });
         }
@@ -55,11 +55,11 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
 
         if (editStatus === "succeeded") {
             onOpenChange(false);
+            window.location.reload();
         }
     }, [editStatus, editError, onOpenChange]);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data);
         dispatch(editBudget(data));
     };
 
@@ -68,8 +68,10 @@ const EditBudget: React.FC<EditBudgetProps> = ({budget, isOpen, onOpenChange}) =
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormFieldCustom form={form} inputName="label" label="label"/>
-                    <FormFieldCustom form={form} inputName="endDate" label="end date" type="date"/>
-                    <FormFieldCustom form={form} inputName="amount" label={`amount (${budget.mainCurrency} - ${getCurrencySymbol(budget.mainCurrency)})`} type="number"/>
+                    <FormFieldCustom form={form} inputName="endDate" label="end date" type="date" className="flex flex-col" disabledDates={(date) => date < new Date(budget.endDate)}/>
+                    <FormFieldCustom form={form} inputName="amount"
+                                     label={`amount (${budget.mainCurrency} - ${getCurrencySymbol(budget.mainCurrency)})`}
+                                     type="number"/>
 
                     <div className="flex justify-end">
                         <Button type="submit">Submit</Button>

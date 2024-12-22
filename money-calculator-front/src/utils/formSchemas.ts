@@ -46,3 +46,50 @@ export const budgetFormSchema = z.object({
     endDate: z.string().min(1, {message: "End date is required"}),
     amount: z.preprocess((val) => Number(val), z.number({required_error: "Amount is required"})),
 });
+
+export const resetBudgetFormSchema = z
+    .object({
+        id: z.preprocess((val) => Number(val), z.number({ required_error: "Id is required" })),
+        label: z.string().min(1, { message: "Label is required" }),
+        startDate: z.string().min(1, { message: "Start date is required" }),
+        endDate: z.string().min(1, { message: "End date is required" }),
+        amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
+        conversion: z.boolean(),
+        mainCurrency: z.string().min(1, { message: "Main currency is required" }),
+        secondaryCurrency: z.string().optional(),
+    })
+    .refine(
+        (data) => {
+            const startDate = new Date(data.startDate);
+            const endDate = new Date(data.endDate);
+            return !isNaN(startDate.getTime()) && !isNaN(endDate.getTime()) && endDate > startDate;
+        },
+        {
+            message: "End date must be later than start date",
+            path: ["endDate"],
+        }
+    )
+    .refine(
+        (data) => {
+            if (data.conversion) {
+                return data.secondaryCurrency && data.secondaryCurrency.trim().length > 0;
+            }
+            return true;
+        },
+        {
+            message: "Secondary currency is required when conversion is enabled",
+            path: ["secondaryCurrency"],
+        }
+    );
+
+export const fixedExpenseFormSchema = z.object({
+    label: z.string().min(1, {message: "Label is required"}),
+    amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
+    frequency: z.preprocess((val) => Number(val), z.number({ required_error: "Frequency is required" })),
+});
+
+export const dailyExpenseFormSchema = z.object({
+    date: z.string().min(1, { message: "Date is required" }),
+    amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
+    weekNumber: z.preprocess((val) => Number(val), z.number({ required_error: "Week number is required" })),
+});
