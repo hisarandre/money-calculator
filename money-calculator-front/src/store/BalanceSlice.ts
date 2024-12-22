@@ -97,7 +97,7 @@ const balanceSlice = createSlice({
             })
             .addCase(fetchHistory.rejected, (state, action) => {
                 state.fetchStatus = "failed";
-                state.fetchError = action.error.message || "Failed to fetch balance";
+                state.fetchError = (action.payload as string) || "Failed to fetch balance";
             });
 
         // fetchMonthlyDone reducers
@@ -112,7 +112,7 @@ const balanceSlice = createSlice({
             })
             .addCase(fetchMonthlyDone.rejected, (state, action) => {
                 state.monthlyDoneStatus = "failed";
-                state.monthlyDoneError = action.error.message || "Failed to fetch monthly done";
+                state.monthlyDoneError = (action.payload as string) || "Failed to fetch monthly done";
             });
 
         // addBalance reducers

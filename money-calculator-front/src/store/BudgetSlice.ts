@@ -89,7 +89,7 @@ const budgetSlice = createSlice({
             })
             .addCase(fetchBudget.rejected, (state, action) => {
                 state.fetchStatus = "failed";
-                state.fetchError = action.error.message || "Failed to fetch budget";
+                state.fetchError = (action.payload as string) || "Failed to fetch budget";
             });
 
         // editBudget reducers
@@ -101,9 +101,9 @@ const budgetSlice = createSlice({
             .addCase(editBudget.fulfilled, (state) => {
                 state.editStatus = "succeeded";
             })
-            .addCase(editBudget.rejected, (state) => {
+            .addCase(editBudget.rejected, (state, action) => {
                 state.editStatus = "failed";
-                state.editError = "Failed to edit budget";
+                state.editError = (action.payload as string) || "Failed to edit budget";
             });
 
         // resetBudget reducers
@@ -115,9 +115,9 @@ const budgetSlice = createSlice({
             .addCase(resetBudget.fulfilled, (state) => {
                 state.resetStatus = "succeeded";
             })
-            .addCase(resetBudget.rejected, (state) => {
+            .addCase(resetBudget.rejected, (state, action) => {
                 state.resetStatus = "failed";
-                state.resetError = "Failed to reset budget";
+                state.resetError = (action.payload as string) || "Failed to reset budget";
             });
     },
 });

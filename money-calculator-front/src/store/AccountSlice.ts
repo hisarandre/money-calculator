@@ -91,7 +91,7 @@ const accountSlice = createSlice({
             })
             .addCase(fetchAccounts.rejected, (state, action) => {
                 state.fetchStatus = "failed";
-                state.fetchError = action.error.message || "Failed to fetch accounts";
+                state.fetchError = (action.payload as string) || "Failed to fetch accounts";
             });
 
         // addAccount reducers

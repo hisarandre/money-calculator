@@ -107,7 +107,7 @@ const transactionSlice = createSlice({
             })
             .addCase(fetchIncomes.rejected, (state, action) => {
                 state.fetchIncomeStatus = "failed";
-                state.fetchIncomeError = action.error.message || "Failed to fetch transactions";
+                state.fetchIncomeError = (action.payload as string) || "Failed to fetch transactions";
             });
 
         // fetchexpensesreducers
@@ -123,7 +123,7 @@ const transactionSlice = createSlice({
             })
             .addCase(fetchExpenses.rejected, (state, action) => {
                 state.fetchExpenseStatus = "failed";
-                state.fetchExpenseError = action.error.message || "Failed to fetch transactions";
+                state.fetchExpenseError = (action.payload as string) || "Failed to fetch transactions";
             });
 
         // addTransaction reducers
