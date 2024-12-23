@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Service
@@ -38,8 +39,9 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Override
     public BudgetDTO getBudget() {
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        List<Budget> budgets = budgetRepository.findAll();
+
+        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
 
         BudgetDTO budgetDTO = mapper.budgetToBudgetDto(budget);
 
@@ -68,20 +70,17 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Override
     public void resetBudget(Budget newBudget) {
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
-
-        newBudget.setId(1);
+        budgetRepository.deleteAll();
         budgetRepository.save(newBudget);
-
         dailyExpenseRepository.deleteAll();
         fixedExpenseRepository.deleteAll();
     }
 
     @Override
     public void updateBudget(BudgetLabelAmountDateDTO newBudget) {
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        List<Budget> budgets = budgetRepository.findAll();
+
+        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
 
         if (newBudget.getEndDate().isBefore(budget.getEndDate())){
             throw new IllegalArgumentException("The end date must be after the original end date.");
