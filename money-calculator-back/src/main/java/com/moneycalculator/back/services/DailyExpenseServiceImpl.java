@@ -65,8 +65,9 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
 
     @Override
     public DailyExpenseListDTO getDailyExpensePerWeek(Integer number) {
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        List<Budget> budgets = budgetRepository.findAll();
+
+        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
 
         Pair<LocalDate, LocalDate> dateRange = calculateStartEndDate(budget, number);
         Pair<Boolean, Boolean> nextPreviousWeek = calculateNextAndPreviousWeek(budget, dateRange.getFirst(), dateRange.getSecond());

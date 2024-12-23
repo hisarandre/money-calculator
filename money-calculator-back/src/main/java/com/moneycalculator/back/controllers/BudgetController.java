@@ -61,7 +61,7 @@ public class BudgetController {
             @ApiResponse(responseCode = "204", description = "Budget reset successfully", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid budget input", content = @Content)
     })
-    @PostMapping("/reset")
+    @PutMapping("/reset")
     public ResponseEntity<Void> resetBudget(@Valid @RequestBody Budget budget) {
         logger.info("Reset budget");
         budgetService.resetBudget(budget);

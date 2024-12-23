@@ -46,8 +46,10 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
     @Override
     public FixedExpenseListEstimatedBudgetDTO getAllFixedExpenses() {
 
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        List<Budget> budgets = budgetRepository.findAll();
+
+        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
+
 
         List<FixedExpense> expenses = fixedExpenseRepository.findAll();
 
@@ -148,8 +150,10 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
         }
 
         // Determine the budget
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        List<Budget> budgets = budgetRepository.findAll();
+
+        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
+
 
         fixedExpenseRepository.deleteById(id);
 
@@ -196,8 +200,9 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
 
     @Override
     public FixedExpenseTotalDTO convertExpenseToExpenseWithTotal(FixedExpense fixedExpense){
-        Budget budget = budgetRepository.findById(1)
-                .orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        List<Budget> budgets = budgetRepository.findAll();
+
+        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
 
         FixedExpenseDTO fixedExpenseDTO = mapper.fixedExpenseToDTO(fixedExpense);
 
