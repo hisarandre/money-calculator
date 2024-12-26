@@ -21,6 +21,8 @@ public interface DailyExpenseService {
 
     DailyExpenseListDTO getDailyExpensePerWeek(Integer number);
 
+    Integer calculateCurrentWeekNumber(LocalDate date);
+
     Pair<LocalDate, LocalDate> calculateStartEndDate(Budget budget, int number);
 
     Pair<Boolean, Boolean> calculateNextAndPreviousWeek(Budget budget,LocalDate startOfWeek, LocalDate endOfWeek);

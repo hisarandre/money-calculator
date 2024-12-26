@@ -10,6 +10,7 @@ import com.moneycalculator.back.repositories.DailyExpenseRepository;
 import com.moneycalculator.back.repositories.FixedExpenseRepository;
 import com.moneycalculator.back.utils.BigDecimalUtils;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -59,43 +60,65 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
 
     @Override
     public List<DailyExpenseCalendarDTO> getDailyExpenseCalendar(){
+        Budget budget = budgetService.getCurrentBudget();
+        List<FixedExpense> fixedExpenses = fixedExpenseRepository.findAll();
+        Double totalFixedExpense = fixedExpenseService.calculateTotalExpense(budget, fixedExpenses);
+        Double estimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(budgetService.calculateEstimatedBudgetPerDay(totalFixedExpense));
+
         List<DailyExpense> dailyExpenses = dailyExpenseRepository.findAll();
-        return mapper.dailyExpenseToCalendarDTOs(dailyExpenses);
+        List<DailyExpenseCalendarDTO> dailyExpenseToCalendarDTOs = mapper.dailyExpenseToCalendarDTOs(dailyExpenses);
+
+        for(DailyExpenseCalendarDTO dailyExpenseSavingDTO : dailyExpenseToCalendarDTOs){
+            Integer weekNumber = calculateCurrentWeekNumber(dailyExpenseSavingDTO.getStart());
+
+            DailyExpense dailyExpense = dailyExpenses.stream()
+                    .filter(d -> d.getId().equals(dailyExpenseSavingDTO.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("DailyExpense not found with ID: " + dailyExpenseSavingDTO.getId()));
+
+            dailyExpenseSavingDTO.setSaving(estimatedBudget - dailyExpense.getAmount());
+            dailyExpenseSavingDTO.setWeekNumber(weekNumber);
+        }
+
+        return dailyExpenseToCalendarDTOs;
+    }
+
+    @Override
+    public Integer calculateCurrentWeekNumber(LocalDate date){
+        LocalDate currentDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate startOfDate = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+        return (int) ChronoUnit.WEEKS.between(currentDate, startOfDate);
     }
 
     @Override
     public DailyExpenseListDTO getDailyExpensePerWeek(Integer number) {
-        List<Budget> budgets = budgetRepository.findAll();
-
-        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        Budget budget =  budgetService.getCurrentBudget();
 
         Pair<LocalDate, LocalDate> dateRange = calculateStartEndDate(budget, number);
         Pair<Boolean, Boolean> nextPreviousWeek = calculateNextAndPreviousWeek(budget, dateRange.getFirst(), dateRange.getSecond());
 
         List<FixedExpense> fixedExpenses = fixedExpenseRepository.findAll();
-        List<DailyExpense> dailyExpenses = dailyExpenseRepository.findDailyExpensesByDateBetween(dateRange.getFirst(), dateRange.getSecond());
-        List<DailyExpenseSavingDTO> dailyExpensesDto = mapper.dailyExpenseToDTOs(dailyExpenses);
+        List<DailyExpense> dailyExpenses = dailyExpenseRepository.findAll();
+        List<DailyExpense> weekDailyExpenses = dailyExpenseRepository.findDailyExpensesByDateBetween(dateRange.getFirst(), dateRange.getSecond());
+        List<DailyExpenseSavingDTO> dailyExpensesDto = mapper.dailyExpenseToDTOs(weekDailyExpenses);
 
+        Double totalPerWeekDailyExpense = calculateTotalExpense(weekDailyExpenses);
         Double totalDailyExpense = calculateTotalExpense(dailyExpenses);
         Double totalFixedExpense = fixedExpenseService.calculateTotalExpense(budget, fixedExpenses);
-        Double estimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(budgetService.calculateEstimatedBudgetPerDay(budget, totalFixedExpense));
+        Double estimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(budgetService.calculateEstimatedBudgetPerDay(totalFixedExpense));
 
         List<DailyExpenseSavingDTO> emptyDailyExpenses = generateEmptyDailyExpense(budget, dailyExpensesDto, dateRange.getFirst(), dateRange.getSecond(), estimatedBudget);
         dailyExpensesDto.addAll(emptyDailyExpenses);
         dailyExpensesDto.sort(Comparator.comparing(DailyExpenseSavingDTO::getDate));
 
         Double totalSaving = calculateTotalSaving(dailyExpensesDto, estimatedBudget);
-
-        for (DailyExpenseSavingDTO emptyExpense : emptyDailyExpenses) {
-            totalSaving += emptyExpense.getSaving();
-        }
-
         totalSaving = BigDecimalUtils.roundToTwoDecimalPlaces(totalSaving);
 
         Double currentWallet = totalDailyExpense + totalFixedExpense;
         Double convertedCurrentWallet = budgetService.calculateConvertedAmountFromBudget(budget, currentWallet);
 
-        return createDailyExpenseListDTO(dailyExpensesDto, currentWallet, convertedCurrentWallet, totalDailyExpense, totalSaving, nextPreviousWeek);
+        return createDailyExpenseListDTO(dailyExpensesDto, currentWallet, convertedCurrentWallet, totalPerWeekDailyExpense, totalSaving, nextPreviousWeek);
     }
 
     private Double calculateTotalSaving(List<DailyExpenseSavingDTO> dailyExpensesDto, Double estimatedBudget) {

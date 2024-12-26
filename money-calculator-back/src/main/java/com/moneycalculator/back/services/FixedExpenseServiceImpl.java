@@ -69,7 +69,7 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
     }
 
     private FixedExpenseListEstimatedBudgetDTO createEmptyExpenseData(Budget budget) {
-        Double emptyEstimatedBudget = budgetService.calculateEstimatedBudgetPerDay(budget, 0.0);
+        Double emptyEstimatedBudget = budgetService.calculateEstimatedBudgetPerDay(0.0);
         emptyEstimatedBudget = BigDecimalUtils.roundToTwoDecimalPlaces(emptyEstimatedBudget);
 
         Double emptyMainCurrencyCurrentWallet = calculateCurrentWallet(0.0);
@@ -92,7 +92,7 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
     }
 
     private FixedExpenseListEstimatedBudgetDTO createExpenseListDTO(List<FixedExpenseDTO> expenseDTOS, Budget budget, Double mainCurrencyTotal, Double secondaryCurrencyTotal) {
-        Double estimatedBudgetPerDay = budgetService.calculateEstimatedBudgetPerDay(budget, mainCurrencyTotal);
+        Double estimatedBudgetPerDay = budgetService.calculateEstimatedBudgetPerDay(mainCurrencyTotal);
         estimatedBudgetPerDay = BigDecimalUtils.roundToTwoDecimalPlaces(estimatedBudgetPerDay);
 
         Double mainCurrencyCurrentWallet = calculateCurrentWallet(mainCurrencyTotal);
@@ -216,7 +216,7 @@ public class FixedExpenseServiceImpl implements FixedExpenseService {
         Double secondaryCurrencyTotal = budgetService.calculateConvertedAmountFromBudget(budget, mainCurrencyTotal);
 
         // Calculate the estimated budget per day
-        Double estimatedBudgetPerDay = budgetService.calculateEstimatedBudgetPerDay(budget, mainCurrencyTotal);
+        Double estimatedBudgetPerDay = budgetService.calculateEstimatedBudgetPerDay(mainCurrencyTotal);
         estimatedBudgetPerDay = BigDecimalUtils.roundToTwoDecimalPlaces(estimatedBudgetPerDay);
 
         Double mainCurrencyCurrentWallet = calculateCurrentWallet(mainCurrencyTotal);
