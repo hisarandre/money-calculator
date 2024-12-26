@@ -226,4 +226,29 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
         }
         return emptyExpenses;
     }
+
+    @Override
+    public List<DailyExpenseWeekSavingDTO> getDailyExpensePerSaving(){
+
+        List<DailyExpenseWeekSavingDTO> dailyExpenseWeekSavingDTOS = new ArrayList<>();
+
+        for(int i = 0; i < 12 ; i++){
+            DailyExpenseListDTO dailyExpenseListDTO = getDailyExpensePerWeek(i);
+            DailyExpenseWeekSavingDTO dailyExpenseWeekSavingDTO = new DailyExpenseWeekSavingDTO();
+            dailyExpenseWeekSavingDTO.setTotalExpense(dailyExpenseListDTO.getTotal());
+            dailyExpenseWeekSavingDTO.setTotalSaving(dailyExpenseListDTO.getTotalSaving());
+
+            List<DailyExpenseSavingDTO> dailyExpenses = dailyExpenseListDTO.getDailyExpenses();
+            DailyExpenseSavingDTO firstDailyExpense = dailyExpenses.stream().toList().getFirst();
+            DailyExpenseSavingDTO lastDailyExpense = dailyExpenses.stream().toList().getLast();
+
+            dailyExpenseWeekSavingDTO.setStartDate(firstDailyExpense.getDate());
+            dailyExpenseWeekSavingDTO.setEndDate(lastDailyExpense.getDate());
+
+            dailyExpenseWeekSavingDTOS.add(dailyExpenseWeekSavingDTO);
+        }
+
+        return dailyExpenseWeekSavingDTOS;
+    }
+
 }

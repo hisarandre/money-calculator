@@ -29,4 +29,5 @@ public interface DailyExpenseService {
 
     List<DailyExpenseSavingDTO> generateEmptyDailyExpense(Budget budget, List<DailyExpenseSavingDTO> existingDailyExpenses, LocalDate startOfWeek, LocalDate endOfWeek, Double estimatedBudget);
 
+    List<DailyExpenseWeekSavingDTO> getDailyExpensePerSaving();
 }
