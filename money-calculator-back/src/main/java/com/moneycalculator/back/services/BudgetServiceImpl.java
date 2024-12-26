@@ -39,10 +39,7 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Override
     public BudgetDTO getBudget() {
-        List<Budget> budgets = budgetRepository.findAll();
-
-        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
-
+        Budget budget = getCurrentBudget();
         BudgetDTO budgetDTO = mapper.budgetToBudgetDto(budget);
 
         if (budget.getConversion()) {
@@ -69,6 +66,12 @@ public class BudgetServiceImpl implements BudgetService{
     }
 
     @Override
+    public Budget getCurrentBudget() {
+        List<Budget> budgets = budgetRepository.findAll();
+        return budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
+    }
+
+    @Override
     public void resetBudget(Budget newBudget) {
         budgetRepository.deleteAll();
         budgetRepository.save(newBudget);
@@ -78,9 +81,7 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Override
     public void updateBudget(BudgetLabelAmountDateDTO newBudget) {
-        List<Budget> budgets = budgetRepository.findAll();
-
-        Budget budget = budgets.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No budget found."));
+        Budget budget = getCurrentBudget();
 
         if (newBudget.getEndDate().isBefore(budget.getEndDate())){
             throw new IllegalArgumentException("The end date must be after the original end date.");
@@ -96,7 +97,8 @@ public class BudgetServiceImpl implements BudgetService{
     }
 
     @Override
-    public Double calculateEstimatedBudgetPerDay(Budget budget, Double totalFixedExpense){
+    public Double calculateEstimatedBudgetPerDay(Double totalFixedExpense){
+        Budget budget = getCurrentBudget();
         // Calculate remaining amount
         Double totalRemaining = budget.getAmount() - totalFixedExpense;
 

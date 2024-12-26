@@ -18,4 +18,8 @@ public class DailyExpenseCalendarDTO {
 
     private String title;
 
+    private Double saving;
+
+    private Integer weekNumber;
+
 }

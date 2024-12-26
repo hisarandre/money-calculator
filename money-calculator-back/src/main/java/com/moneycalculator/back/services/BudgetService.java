@@ -10,9 +10,11 @@ public interface BudgetService {
 
     void resetBudget(Budget budget);
 
+    Budget getCurrentBudget();
+
     void updateBudget(BudgetLabelAmountDateDTO budget);
 
-    Double calculateEstimatedBudgetPerDay(Budget budget, Double totalFixedExpense);
+    Double calculateEstimatedBudgetPerDay(Double totalFixedExpense);
 
     Double calculateConvertedAmountFromBudget(Budget budget, Double amount);
 }
