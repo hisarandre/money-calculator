@@ -32,12 +32,10 @@ public class BudgetController {
 
     private static final Logger logger = LoggerFactory.getLogger(BudgetController.class);
     private final BudgetServiceImpl budgetService;
-    private final CurrencyConversionService currencyConversionService;
 
     @Autowired
     public BudgetController(BudgetServiceImpl budgetService, CurrencyConversionService currencyConversionService) {
         this.budgetService = budgetService;
-        this.currencyConversionService = currencyConversionService;
     }
 
     @Operation(summary = "Retrieve the current budget", description = "Fetches the current budget details.")
@@ -57,18 +55,6 @@ public class BudgetController {
         logger.info("Get budget ");
         BudgetDTO budget = budgetService.getBudget();
         return ResponseEntity.ok(budget);
-    }
-
-    @Operation(summary = "Get currencies", description = "Fetches the list of all available currencies")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Currencies retrieved successfully", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
-    })
-    @GetMapping("/currencies")
-    public ResponseEntity<List<Currency>> getCurrencies() {
-        logger.info("Get currencies ");
-        List<Currency> currencies = currencyConversionService.getCurrencies();
-        return ResponseEntity.ok(currencies);
     }
 
     @Operation(summary = "Reset the budget", description = "Resets the budget to its initial state.")

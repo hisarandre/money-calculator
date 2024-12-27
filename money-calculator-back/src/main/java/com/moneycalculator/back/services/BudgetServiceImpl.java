@@ -43,10 +43,7 @@ public class BudgetServiceImpl implements BudgetService{
         BudgetDTO budgetDTO = mapper.budgetToBudgetDto(budget);
 
         if (budget.getConversion()) {
-            BigDecimal conversionRate = currencyConversionService.getConversionRate(
-                    budget.getMainCurrency(),
-                    budget.getSecondaryCurrency()
-            );
+            BigDecimal conversionRate = currencyConversionService.getConversionRate();
 
             budgetDTO.setCurrencyRate(conversionRate);
 
