@@ -15,7 +15,6 @@ interface ExpenseFormProps {
     estimatedBudget: number;
     formSchema: typeof dailyExpenseFormSchema;
     mainCurrency: string;
-    weekNumber: number;
     onSubmit: (data: z.infer<typeof dailyExpenseFormSchema>) => void;
 }
 
@@ -24,7 +23,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     estimatedBudget,
     formSchema,
     mainCurrency,
-    weekNumber,
     onSubmit
 }) => {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -32,7 +30,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
         defaultValues: {
             date: expense.date,
             amount: expense.amount ?? 0,
-            weekNumber,
         },
     });
 
@@ -76,7 +73,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-2">
                         <FormFieldCustom form={form} inputName="date" disabled={true} className="hidden" />
                         <FormFieldCustom form={form} inputName="amount" type="number" /> / {formatAmount(mainCurrency, estimatedBudget)}
-                        <FormFieldCustom form={form} inputName="weekNumber" type="number" disabled={true} className="hidden" />
                     </form>
                 </Form>
 

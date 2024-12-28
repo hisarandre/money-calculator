@@ -1,6 +1,6 @@
 import CardCustom from "@/components/CardCustom.tsx";
 import {FixedExpense} from "@/models/FixedExpense.ts";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
+import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import {formatAmount, formatFrequency} from "@/utils/utils.ts";
 import {useState} from "react";
 import AddFixedExpense from "@/components/wallet/modals/AddFixedExpense.tsx";
@@ -18,22 +18,26 @@ import DeleteFixedExpense from "@/components/wallet/modals/DeleteFixedExpense.ts
 
 interface FixedExpensesCardProps {
     fixedExpenses: FixedExpense[];
+    mainCurrencyTotalExpenses: number;
+    secondaryCurrencyTotalExpenses: number;
     fixedExpensesFetchStatus: string;
     fixedExpensesFetchError?: string | null;
     mainCurrency: string | null;
     secondaryCurrency?: string | null;
-    currenciesFetchStatus: string;
+    budgetFetchStatus: string;
     currenciesFetchError?: string | null;
 }
 
 const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
     fixedExpenses,
+    mainCurrencyTotalExpenses,
+    secondaryCurrencyTotalExpenses,
     fixedExpensesFetchStatus,
     fixedExpensesFetchError,
     mainCurrency,
     secondaryCurrency,
-    currenciesFetchStatus,
-    currenciesFetchError
+    budgetFetchStatus,
+    budgetFetchError
 }) => {
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -55,13 +59,13 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
         <CardCustom
             title="Fixed Expenses"
             description="Monthly fixed expenses"
-            addAction={currenciesFetchStatus !== "failed" ? () => setIsAddDialogOpen(true) : undefined}
+            addAction={budgetFetchStatus !== "failed" ? () => setIsAddDialogOpen(true) : undefined}
         >
-            {currenciesFetchStatus === "failed" && currenciesFetchError && <p>No budget found. <span className="text-muted-foreground italic">(Error: {currenciesFetchError})</span></p>}
+            {budgetFetchStatus === "failed" && budgetFetchError && <p>No budget found. <span className="text-muted-foreground italic">(Error: {budgetFetchError})</span></p>}
 
-            {currenciesFetchStatus !== "failed" && (
+            {budgetFetchStatus !== "failed" && (
                 <>
-                    {(fixedExpensesFetchStatus === "loading" || currenciesFetchStatus === "loading") && (
+                    {(fixedExpensesFetchStatus === "loading" || budgetFetchStatus === "loading") && (
                         <p>Loading fixed expenses...</p>
                     )}
 
@@ -73,7 +77,7 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
                         fixedExpenses.length > 0 &&
                         mainCurrency &&
                         secondaryCurrency &&
-                        currenciesFetchStatus === "succeeded" && (
+                        budgetFetchStatus === "succeeded" && (
                             <>
                                 <Table>
                                     <TableHeader>
@@ -131,6 +135,19 @@ const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({
                                             </TableRow>
                                         ))}
                                     </TableBody>
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TableCell>Total on period</TableCell>
+                                            <TableCell>
+                                                {formatAmount(mainCurrency, mainCurrencyTotalExpenses)}
+                                            </TableCell>
+                                            <TableCell className="text-muted-foreground">
+                                                {formatAmount(secondaryCurrency, secondaryCurrencyTotalExpenses)}
+                                            </TableCell>
+                                            <TableCell/>
+                                            <TableCell/>
+                                        </TableRow>
+                                    </TableFooter>
                                 </Table>
 
                                 <EditFixedExpense

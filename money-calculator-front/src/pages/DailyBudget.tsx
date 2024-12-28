@@ -5,7 +5,7 @@ import Calendar from "@/components/calendar/CalendarCard.tsx";
 import ExpensesPerDayCard from "@/components/calendar/ExpensesPerDayCard.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/Store.ts";
-import {fetchAllFixedExpenses, fetchWeek} from "@/store/ExpensesSlice.ts";
+import {fetchAllFixedExpenses, fetchCalendar, fetchWeek} from "@/store/ExpensesSlice.ts";
 import {useFetchData} from "@/hooks/use-fetch-data.ts";
 import {fetchBudget} from "@/store/BudgetSlice.ts";
 
@@ -22,12 +22,18 @@ const DailyBudget = () => {
         dailyExpenses,
         fetchDailyStatus,
         fetchDailyError,
+        calendarDailyExpenses,
+        fetchCalendarDailyStatus,
+        fetchCalendarDailyError,
+        updateDailyStatus,
+        updateDailyError
     } = useSelector((state: RootState) => state.expenses);
     const {
         mainCurrency,
         secondaryCurrency,
-        fetchStatus: currenciesFetchStatus,
-        fetchError: currenciesFetchError,
+        budget,
+        fetchStatus: budgetFetchStatus,
+        fetchError: budgetFetchError,
     } = useSelector((state: RootState) => state.budget);
 
     useFetchData({
@@ -37,8 +43,8 @@ const DailyBudget = () => {
     });
 
     useFetchData({
-        fetchStatus: currenciesFetchStatus,
-        fetchError: currenciesFetchError,
+        fetchStatus: budgetFetchStatus,
+        fetchError: budgetFetchError,
         fetchAction: fetchBudget,
     });
 
@@ -48,35 +54,53 @@ const DailyBudget = () => {
         fetchAction: fetchWeek,
     });
 
+    useFetchData({
+        fetchStatus: fetchCalendarDailyStatus,
+        fetchError: fetchCalendarDailyError,
+        fetchAction: fetchCalendar,
+    });
+
     return (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FixedBudgetCard />
 
             <FixedExpensesCard
                 fixedExpenses={fixedExpenses}
-                fixedExpensesFetchStatus={fetchFixedStatus}
-                fixedExpensesFetchError={fetchFixedError}
-                mainCurrency={mainCurrency}
-                secondaryCurrency={secondaryCurrency}
-                currenciesFetchStatus={currenciesFetchStatus}
-                currenciesFetchError={currenciesFetchError}
-            />
-
-            <CurrentWalletCard
-                mainCurrencyCurrentWallet={mainCurrencyCurrentWallet}
-                secondaryCurrencyCurrentWallet={secondaryCurrencyCurrentWallet}
-                estimatedBudget={estimatedBudget}
                 mainCurrencyTotalExpenses={mainCurrencyTotalExpenses}
                 secondaryCurrencyTotalExpenses={secondaryCurrencyTotalExpenses}
                 fixedExpensesFetchStatus={fetchFixedStatus}
                 fixedExpensesFetchError={fetchFixedError}
                 mainCurrency={mainCurrency}
                 secondaryCurrency={secondaryCurrency}
-                currenciesFetchStatus={currenciesFetchStatus}
-                currenciesFetchError={currenciesFetchError}
+                budgetFetchStatus={budgetFetchStatus}
+                budgetFetchError={budgetFetchError}
             />
 
-            <Calendar />
+            <CurrentWalletCard
+                mainCurrencyCurrentWallet={mainCurrencyCurrentWallet}
+                secondaryCurrencyCurrentWallet={secondaryCurrencyCurrentWallet}
+                estimatedBudget={estimatedBudget}
+                fixedExpensesFetchStatus={fetchFixedStatus}
+                fixedExpensesFetchError={fetchFixedError}
+                budget={budget}
+                mainCurrency={mainCurrency}
+                secondaryCurrency={secondaryCurrency}
+                budgetFetchStatus={budgetFetchStatus}
+                budgetFetchError={budgetFetchError}
+            />
+
+            <Calendar
+                calendarDailyExpenses={calendarDailyExpenses}
+                estimatedBudget={estimatedBudget}
+                fetchCalendarDailyStatus={fetchCalendarDailyStatus}
+                fetchCalendarDailyError={fetchCalendarDailyError}
+                mainCurrency={mainCurrency}
+                budget={budget}
+                budgetFetchStatus={budgetFetchStatus}
+                budgetFetchError={budgetFetchError}
+                updateDailyStatus={updateDailyStatus}
+                updateDailyError={updateDailyError}
+            />
 
             <ExpensesPerDayCard
                 estimatedBudget={estimatedBudget}
@@ -84,8 +108,8 @@ const DailyBudget = () => {
                 fetchDailyStatus={fetchDailyStatus}
                 fetchDailyError={fetchDailyError}
                 mainCurrency={mainCurrency}
-                currenciesFetchStatus={currenciesFetchStatus}
-                currenciesFetchError={currenciesFetchError}
+                currenciesFetchStatus={budgetFetchStatus}
+                currenciesFetchError={budgetFetchError}
             />
         </div>
     )

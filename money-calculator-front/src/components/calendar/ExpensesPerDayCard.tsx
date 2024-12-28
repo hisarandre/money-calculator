@@ -7,7 +7,7 @@ import {z} from "zod";
 import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
 import ExpenseForm from "@/components/calendar/ExpenseForm.tsx";
-import {fetchWeek, setWeekNumber, updateDailyExpense} from "@/store/ExpensesSlice.ts";
+import {fetchCalendar, fetchWeek, setWeekNumber, updateDailyExpense} from "@/store/ExpensesSlice.ts";
 import {formatAmount, getWeekDates} from "@/utils/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 
@@ -53,8 +53,8 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
     }, [updateDailyStatus, updateDailyError]);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data);
-        dispatch(updateDailyExpense(data));
+        await dispatch(updateDailyExpense(data));
+        dispatch(fetchCalendar());
     };
 
     const getPreviousWeek = () => {
@@ -120,7 +120,6 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
                                     estimatedBudget={estimatedBudget}
                                     formSchema={formSchema}
                                     mainCurrency={mainCurrency}
-                                    weekNumber={weekNumber}
                                     onSubmit={onSubmit}
                                 />
                             ))}

@@ -63,6 +63,10 @@ const FixedBudgetCard = () => {
                         <p>
                             <strong>Currency rate ({budget.mainCurrency} to {budget.secondaryCurrency}):</strong> {budget.currencyRate}
                         </p>
+
+                        <Button asChild>
+                            <Link to="/reset-budget">Reset budget</Link>
+                        </Button>
                     </div>
 
                     <EditBudget budget={budget} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>
