@@ -60,12 +60,12 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
     const getPreviousWeek = () => {
         dispatch(setWeekNumber(weekNumber - 1));
         dispatch(fetchWeek());
-    }
+    };
 
     const getNextWeek = () => {
         dispatch(setWeekNumber(weekNumber + 1));
         dispatch(fetchWeek());
-    }
+    };
 
     let monday = "N/A";
     let sunday = "N/A";

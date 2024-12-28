@@ -12,7 +12,6 @@ import {z} from "zod";
 import {
     fetchCalendar,
     fetchWeek,
-    setWeekNumber as setStoreWeekNumber,
     updateDailyExpense
 } from "@/store/ExpensesSlice.ts";
 import {useDispatch} from "react-redux";
@@ -20,13 +19,21 @@ import {AppDispatch} from "@/store/Store.ts";
 import {dailyExpenseFormSchema} from "@/utils/formSchemas.ts";
 import AddCalendarDailyExpense from "@/components/calendar/modals/AddCalendarDailyExpense.tsx";
 
+interface FormattedCalendarExpense {
+    id: string;
+    title: string;
+    start: string;
+    saving: number;
+    backgroundColor: string;
+}
+
 interface CalendarCardProps {
     calendarDailyExpenses: CalendarDailyExpense[];
     estimatedBudget: number;
     fetchCalendarDailyStatus: string;
     fetchCalendarDailyError?: string | null;
     mainCurrency: string | null;
-    budget: Budget;
+    budget: Budget | null;
     budgetFetchStatus: string;
     budgetFetchError?: string | null;
     updateDailyStatus: string;
@@ -50,16 +57,19 @@ const CalendarCard: React.FC<CalendarCardProps> = ({
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [calendarDailyExpense, setCalendarDailyExpense] = useState<CalendarDailyExpense|null>(null);
     const [date, setDate] = useState<string|null>(null);
-    const [weekNumber, setWeekNumber] = useState<number>(0);
 
-    let formattedCalendarDailyExpenses = [];
-    if (calendarDailyExpenses.length > 0 && mainCurrency && estimatedBudget) {
-        formattedCalendarDailyExpenses = calendarDailyExpenses.map((expense) => ({
-            ...expense,
-            title: formatAmount(mainCurrency, Number(expense.title)),
-            backgroundColor: Number(expense.title) <= estimatedBudget ? "hsl(142.4 71.8% 29.2%)" : "hsl(0 62.8% 30.6%)",
-        }));
-    }
+    const formattedCalendarDailyExpenses: FormattedCalendarExpense[] =
+        calendarDailyExpenses.length > 0 && mainCurrency && estimatedBudget
+            ? calendarDailyExpenses.map((expense) => ({
+                ...expense,
+                id: String(expense.id),
+                title: formatAmount(mainCurrency, Number(expense.title)),
+                backgroundColor:
+                    Number(expense.title) <= estimatedBudget
+                        ? "hsl(var(--positive))"
+                        : "hsl(var(--destructive))",
+            }))
+            : [];
 
     const formSchema = dailyExpenseFormSchema;
 
@@ -84,7 +94,6 @@ const CalendarCard: React.FC<CalendarCardProps> = ({
         setDate(null);
     };
 
-    // TODO: arrow style + today button
     return (
         <CardCustom title="Calendar" description="Display the expenses per day"
                     className="col-span-2 row-span-2">
@@ -118,11 +127,7 @@ const CalendarCard: React.FC<CalendarCardProps> = ({
                                 }}
                                 events={formattedCalendarDailyExpenses}
                                 eventClassNames={["cursor-pointer"]}
-                                dayCellClassNames={(arg) => {
-                                    if (!arg.isDisabled) {
-                                        return ["cursor-pointer"];
-                                    }
-                                }}
+                                dayCellClassNames={(arg) => (!arg.isDisabled ? ["cursor-pointer"] : [])}
                                 eventClick={(info) => {
                                     const id = Number(info.event.id);
                                     const expense = calendarDailyExpenses.find(

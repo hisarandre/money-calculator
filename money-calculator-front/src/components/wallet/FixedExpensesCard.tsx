@@ -25,7 +25,7 @@ interface FixedExpensesCardProps {
     mainCurrency: string | null;
     secondaryCurrency?: string | null;
     budgetFetchStatus: string;
-    currenciesFetchError?: string | null;
+    budgetFetchError?: string | null;
 }
 
 const FixedExpensesCard: React.FC<FixedExpensesCardProps> = ({

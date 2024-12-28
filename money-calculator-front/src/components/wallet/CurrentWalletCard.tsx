@@ -9,7 +9,7 @@ interface CurrentWalletCardProps {
     estimatedBudget: number;
     fixedExpensesFetchStatus: string;
     fixedExpensesFetchError?: string | null;
-    budget: Budget;
+    budget: Budget | null;
     mainCurrency: string | null;
     secondaryCurrency?: string | null;
     budgetFetchStatus: string;
