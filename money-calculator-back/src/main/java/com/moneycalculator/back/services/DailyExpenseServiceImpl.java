@@ -69,7 +69,6 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
         List<DailyExpenseCalendarDTO> dailyExpenseToCalendarDTOs = mapper.dailyExpenseToCalendarDTOs(dailyExpenses);
 
         for(DailyExpenseCalendarDTO dailyExpenseSavingDTO : dailyExpenseToCalendarDTOs){
-            Integer weekNumber = calculateCurrentWeekNumber(dailyExpenseSavingDTO.getStart());
 
             DailyExpense dailyExpense = dailyExpenses.stream()
                     .filter(d -> d.getId().equals(dailyExpenseSavingDTO.getId()))
@@ -77,7 +76,6 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
                     .orElseThrow(() -> new RuntimeException("DailyExpense not found with ID: " + dailyExpenseSavingDTO.getId()));
 
             dailyExpenseSavingDTO.setSaving(estimatedBudget - dailyExpense.getAmount());
-            dailyExpenseSavingDTO.setWeekNumber(weekNumber);
         }
 
         return dailyExpenseToCalendarDTOs;
@@ -153,7 +151,9 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
         dailyExpense.setAmount(roundedAmount);
         dailyExpenseRepository.save(dailyExpense);
 
-        return getDailyExpensePerWeek(dailyExpenseAmountDateDTO.getWeekNumber());
+        Integer weekNumber = calculateCurrentWeekNumber(dailyExpenseAmountDateDTO.getDate());
+
+        return getDailyExpensePerWeek(weekNumber);
     }
 
     @Override
