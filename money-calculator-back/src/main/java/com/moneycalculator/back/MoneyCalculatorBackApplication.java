@@ -20,10 +20,7 @@ public class MoneyCalculatorBackApplication {
 	public CommandLineRunner run(ApplicationContext context) {
 		return args -> {
 			CurrencyConversionService currencyConversionService = context.getBean(CurrencyConversionService.class);
-			// Initialize currencies and conversion rates
 			currencyConversionService.initialize();
-			System.out.println("Available currencies: " + currencyConversionService.getCurrencies());
-			System.out.println("Default conversion rate: " + currencyConversionService.getConversionRate());
 		};
 	}
 }

@@ -20,6 +20,4 @@ public class DailyExpenseCalendarDTO {
 
     private Double saving;
 
-    private Integer weekNumber;
-
 }
