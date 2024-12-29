@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/config/firebase-config';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Card, CardHeader, CardFooter } from "@/components/ui/card";
+import { Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from '@/services/AuthContext';
 
-function AuthPage() {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -45,34 +50,36 @@ function AuthPage() {
     }
   };
 
-  const handleLogOut = async () => {
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      alert("Please enter your email to reset your password.");
+      return;
+    }
     try {
-      await signOut(auth);
-      toast({
-        title: "Goodbye",
-        description: "You have successfully logged out.",
-        variant: "positive",
-      });
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset email sent. Please check your inbox.");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      toast({
-        title: "Log Out Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      console.error("Error sending password reset email:", error);
+      alert("Failed to send password reset email.");
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto p-6">
+    <div className="max-w-sm mx-auto p-6 flex flex-col gap-6">
       <Card>
-        <CardHeader className="text-center mb-4">
-          <h2 className="text-lg font-bold">Authentication</h2>
+        <CardHeader className="text-center flex flex-col gap-2">
+          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            Login and enjoy budgeting
+          </CardDescription>
         </CardHeader>
 
         <div className="p-4">
           <div className="mb-4">
-            <label htmlFor="email" className="block mb-2">Email:</label>
+            <label htmlFor="email" className="block mb-2">
+              Email:
+            </label>
             <Input
               id="email"
               type="email"
@@ -81,7 +88,18 @@ function AuthPage() {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-2">Password:</label>
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="block">
+                Password:
+              </label>
+              <a
+                href="#"
+                onClick={handlePasswordReset}
+                className="text-sm underline-offset-4 hover:underline"
+              >
+                Forgot your password?
+              </a>
+            </div>
             <Input
               id="password"
               type="password"
@@ -106,4 +124,4 @@ function AuthPage() {
   );
 }
 
-export default AuthPage;
+export default Login;

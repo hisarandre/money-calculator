@@ -93,3 +93,8 @@ export const dailyExpenseFormSchema = z.object({
     amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
     weekNumber: z.preprocess((val) => Number(val), z.number({ required_error: "Week number is required" })),
 });
+
+export const userFormSchema = z.object({
+    displayName: z.string().min(1, {message: "A display name is required"}),
+    photoURL: z.string().min(1, {message: "Photo url is required"}),
+});

@@ -1,15 +1,24 @@
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-    SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
-} from "@/components/ui/sidebar"
 import {ToggleMode} from "@/components/ToggleMode.tsx";
 import {Calculator, House} from "lucide-react";
 import {Link} from "react-router-dom";
 
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup, 
+    SidebarGroupContent, 
+    SidebarGroupLabel,
+    SidebarHeader, 
+    SidebarMenu, 
+    SidebarMenuButton, 
+    SidebarMenuItem,
+} from "@/components/ui/sidebar"
+import UserSideBar from "./users/UserSideBar";
+
+
 export function AppSidebar() {
+    
     return (
         <Sidebar variant="floating">
             <SidebarHeader>
@@ -45,7 +54,14 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter/>
+
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <UserSideBar/>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
         </Sidebar>
-    )
+    );
 }
