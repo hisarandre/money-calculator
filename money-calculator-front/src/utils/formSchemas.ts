@@ -49,7 +49,6 @@ export const budgetFormSchema = z.object({
 
 export const resetBudgetFormSchema = z
     .object({
-        id: z.preprocess((val) => Number(val), z.number({ required_error: "Id is required" })),
         label: z.string().min(1, { message: "Label is required" }),
         startDate: z.string().min(1, { message: "Start date is required" }),
         endDate: z.string().min(1, { message: "End date is required" }),
@@ -91,7 +90,6 @@ export const fixedExpenseFormSchema = z.object({
 export const dailyExpenseFormSchema = z.object({
     date: z.string().min(1, { message: "Date is required" }),
     amount: z.preprocess((val) => Number(val), z.number({ required_error: "Amount is required" })),
-    weekNumber: z.preprocess((val) => Number(val), z.number({ required_error: "Week number is required" })),
 });
 
 export const userFormSchema = z.object({

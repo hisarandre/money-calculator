@@ -4,6 +4,8 @@ import {DAILY_EXPENSE_URL, FIXED_EXPENSE_URL} from "@/utils/api.ts";
 import {FixedExpense} from "@/models/FixedExpense.ts";
 import {DailyExpense} from "@/models/DailyExpense.ts";
 import {RootState} from "@/store/Store.ts";
+import {CalendarDailyExpense} from "@/models/CalendarDailyExpense.ts";
+import {WeekSaving} from "@/models/WeekSaving.ts";
 
 const PREFIX_FE = "fixed-expense";
 const PREFIX_DE = "daily-expense";
@@ -84,7 +86,7 @@ export const deleteFixedExpense = createAsyncThunk(
     });
 
 /* ----------------------------------------------- */
-/*                  DAILY EXPENSES                 */
+/*            DAILY EXPENSES & CALENDAR            */
 /* ----------------------------------------------- */
 export const fetchWeek = createAsyncThunk(
     `${PREFIX_DE}/fetchWeek`,
@@ -110,7 +112,6 @@ export const updateDailyExpense = createAsyncThunk(
     async (updatedDailyExpense: {
         date: string,
         amount: number,
-        weekNumber: number
     }, {rejectWithValue}) => {
         try {
             const response = await axios.post(`${DAILY_EXPENSE_URL}/week/set-expense`, updatedDailyExpense);
@@ -123,6 +124,38 @@ export const updateDailyExpense = createAsyncThunk(
             return rejectWithValue(errorMessage);
         }
     });
+
+export const fetchCalendar = createAsyncThunk(
+    `${PREFIX_DE}/fetchCalendar`,
+    async (_, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`${DAILY_EXPENSE_URL}/calendar`);
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to fetch calendar";
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
+
+export const fetchSavings = createAsyncThunk(
+    `${PREFIX_DE}/fetchSavings`,
+    async (_, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`${DAILY_EXPENSE_URL}/week/savings`);
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to fetch savings";
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
 
 // Slice definition
 const expensesSlice = createSlice({
@@ -137,17 +170,23 @@ const expensesSlice = createSlice({
         total: 0,
         totalSaving: 0,
         dailyExpenses: [] as DailyExpense[],
+        calendarDailyExpenses: [] as CalendarDailyExpense[],
         isNextAvailable: false,
         isPreviousAvailable: false,
         weekNumber: 0,
+        weekSavings: [] as WeekSaving[],
         fetchFixedStatus: "idle",
         fetchDailyStatus: "idle",
+        fetchCalendarDailyStatus: "idle",
+        fetchWeekSavingsStatus: "idle",
         addStatus: "idle",
         editStatus: "idle",
         updateDailyStatus: "idle",
         deleteStatus: "idle",
         fetchFixedError: null as string | null,
         fetchDailyError: null as string | null,
+        fetchCalendarDailyError: null as string | null,
+        fetchWeekSavingsError: null as string | null,
         addError: null as string | null,
         editError: null as string | null,
         updateDailyError: null as string | null,
@@ -281,6 +320,36 @@ const expensesSlice = createSlice({
             .addCase(updateDailyExpense.rejected, (state, action) => {
                 state.updateDailyStatus = "failed";
                 state.updateDailyError = (action.payload as string) || "Failed to update daily expense";
+            });
+
+        // fetchCalendar reducers
+        builder
+            .addCase(fetchCalendar.pending, (state) => {
+                state.fetchCalendarDailyStatus = "loading";
+                state.fetchCalendarDailyError = null;
+            })
+            .addCase(fetchCalendar.fulfilled, (state, action) => {
+                state.fetchCalendarDailyStatus = "succeeded";
+                state.calendarDailyExpenses = action.payload;
+            })
+            .addCase(fetchCalendar.rejected, (state, action) => {
+                state.fetchCalendarDailyStatus = "failed";
+                state.fetchCalendarDailyError = (action.payload as string) || "Failed to fetch week";
+            });
+
+        // fetchSavings reducers
+        builder
+            .addCase(fetchSavings.pending, (state) => {
+                state.fetchWeekSavingsStatus = "loading";
+                state.fetchWeekSavingsError = null;
+            })
+            .addCase(fetchSavings.fulfilled, (state, action) => {
+                state.fetchWeekSavingsStatus = "succeeded";
+                state.weekSavings = action.payload;
+            })
+            .addCase(fetchSavings.rejected, (state, action) => {
+                state.fetchWeekSavingsStatus = "failed";
+                state.fetchWeekSavingsError = (action.payload as string) || "Failed to fetch savings";
             });
     },
 });

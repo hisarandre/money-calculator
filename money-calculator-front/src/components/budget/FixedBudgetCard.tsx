@@ -30,7 +30,6 @@ const FixedBudgetCard = () => {
     return (
         <CardCustom
             title={fetchStatus === "succeeded" && budget ? budget.label : "Fixed Budget"}
-            description=""
             editAction={budget ? () => setIsEditDialogOpen(true) : undefined}
         >
             {fetchStatus === "succeeded" && budget && (
@@ -63,6 +62,10 @@ const FixedBudgetCard = () => {
                         <p>
                             <strong>Currency rate ({budget.mainCurrency} to {budget.secondaryCurrency}):</strong> {budget.currencyRate}
                         </p>
+
+                        <Button asChild>
+                            <Link to="/reset-budget">Reset budget</Link>
+                        </Button>
                     </div>
 
                     <EditBudget budget={budget} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>

@@ -15,7 +15,7 @@ import AddBudget from "@/pages/InitializeBudget";
 import Settings from "@/pages/Settings";
 import Login from '@/pages/Login';
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { AuthProvider } from "@/services/AuthContext";
+import {AuthProvider} from "@/services/AuthProvider.tsx";
 
 const routes: RouteObject[] = [
     {
