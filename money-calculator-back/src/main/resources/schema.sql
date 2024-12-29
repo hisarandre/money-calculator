@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS money_calculator;
 USE money_calculator;
 
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS account_balances;
 DROP TABLE IF EXISTS account_balance_histories;
@@ -9,6 +10,14 @@ DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS daily_expenses;
 DROP TABLE IF EXISTS fixed_expenses;
 DROP TABLE IF EXISTS budgets;
+
+CREATE TABLE users (
+  _id VARCHAR(50) NOT NULL,
+  display_name VARCHAR(50),
+  email VARCHAR(50) NOT NULL UNIQUE,
+  photoURL VARCHAR(200),
+  PRIMARY KEY (_id)
+);
 
 CREATE TABLE budgets (
    _id INT NOT NULL AUTO_INCREMENT,

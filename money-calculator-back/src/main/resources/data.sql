@@ -19,3 +19,9 @@ VALUES ('Internet Subscription', 50.00, 1);
 
 INSERT INTO daily_expenses (date, amount) VALUES ('2024-11-22', 50.00);
 INSERT INTO daily_expenses (date, amount) VALUES ('2024-11-23', 50.00);
+
+
+INSERT INTO users (_id, display_name, email, photoURL)
+VALUES ('y3wCMXiuytVEEZ62WUtWRh1GhBn2', 'Sara', 'info.sarahandre@gmail.com', 'https://i.pinimg.com/280x280_RS/d2/7b/83/d27b833084f7e73d840b0c06ff50fbc5.jpg');
+INSERT INTO users (_id, display_name, email, photoURL)
+VALUES ('lfQrhpf7ZMfEc3G0kkdy7KQjrMn1', 'Cecilia', 'ngcecilia@orange.fr', 'https://i.pinimg.com/736x/60/98/69/6098690ef77fe450b87b89c3e97c636f.jpg');

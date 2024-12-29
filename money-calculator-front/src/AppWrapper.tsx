@@ -12,7 +12,8 @@ import ProjectedCalculator from "@/pages/ProjectedCalculator";
 import DailyBudget from "@/pages/DailyBudget";
 import ResetBudget from "@/pages/ResetBudget";
 import AddBudget from "@/pages/InitializeBudget";
-import AuthPage from '@/pages/AuthPage';
+import Settings from "@/pages/Settings";
+import Login from '@/pages/Login';
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { AuthProvider } from "@/services/AuthContext";
 
@@ -24,11 +25,15 @@ const routes: RouteObject[] = [
         children: [
             {
                 path: "/login",
-                element: <AuthPage />,
+                element: <Login />,
             },
             {
                 path: "/",
                 element: <ProtectedRoute><ProjectedCalculator /></ProtectedRoute>,
+            },
+            {
+                path: "/settings",
+                element: <ProtectedRoute><Settings /></ProtectedRoute>,
             },
             {
                 path: "/daily-budget",
