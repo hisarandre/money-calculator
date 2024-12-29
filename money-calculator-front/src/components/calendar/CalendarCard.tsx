@@ -1,6 +1,6 @@
 import CardCustom from "@/components/CardCustom.tsx";
 import FullCalendar from '@fullcalendar/react';
-import interactionPlugin from '@fullcalendar/interaction';
+import interactionPlugin, {DateClickArg} from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {CalendarDailyExpense} from "@/models/CalendarDailyExpense.ts";
 import {formatAmount} from "@/utils/utils.ts";
@@ -18,6 +18,7 @@ import {useDispatch} from "react-redux";
 import {AppDispatch} from "@/store/Store.ts";
 import {dailyExpenseFormSchema} from "@/utils/formSchemas.ts";
 import AddCalendarDailyExpense from "@/components/calendar/modals/AddCalendarDailyExpense.tsx";
+import {EventClickArg} from "@fullcalendar/core";
 
 interface FormattedCalendarExpense {
     id: string;
@@ -57,6 +58,29 @@ const CalendarCard: React.FC<CalendarCardProps> = ({
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [calendarDailyExpense, setCalendarDailyExpense] = useState<CalendarDailyExpense|null>(null);
     const [date, setDate] = useState<string|null>(null);
+
+    const handleEventClick = (info: EventClickArg) => {
+        const id = Number(info.event.id);
+        const expense = calendarDailyExpenses.find(
+            (expense) => expense.id === id
+        );
+        setCalendarDailyExpense(expense ?? null);
+        setIsEditDialogOpen(true);
+    };
+
+    const handleDateClick = (info: DateClickArg) => {
+        const date = info.dateStr;
+        const expense = calendarDailyExpenses.find(
+            (expense) => expense.start === date
+        );
+        if (expense === undefined) {
+            setDate(date);
+            setIsAddDialogOpen(true);
+        } else {
+            setCalendarDailyExpense(expense ?? null);
+            setIsEditDialogOpen(true);
+        }
+    };
 
     const formattedCalendarDailyExpenses: FormattedCalendarExpense[] =
         calendarDailyExpenses.length > 0 && mainCurrency && estimatedBudget
@@ -151,32 +175,16 @@ const CalendarCard: React.FC<CalendarCardProps> = ({
                                 }}
                             />
 
-                            {mainCurrency && (
-                                <>
-                                    {date && (
-                                        <AddCalendarDailyExpense
-                                            date={date}
-                                            mainCurrency={mainCurrency}
-                                            estimatedBudget={estimatedBudget}
-                                            isOpen={isAddDialogOpen}
-                                            onOpenChange={setIsAddDialogOpen}
-                                            formSchema={formSchema}
-                                            onSubmit={onSubmit}
-                                        />
-                                    )}
-
-                                    {calendarDailyExpense && (
-                                        <EditCalendarDailyExpense
-                                            calendarDailyExpense={calendarDailyExpense}
-                                            mainCurrency={mainCurrency}
-                                            estimatedBudget={estimatedBudget}
-                                            isOpen={isEditDialogOpen}
-                                            onOpenChange={setIsEditDialogOpen}
-                                            formSchema={formSchema}
-                                            onSubmit={onSubmit}
-                                        />
-                                    )}
-                                </>
+                            {mainCurrency && calendarDailyExpense && (
+                                <EditCalendarDailyExpense
+                                    calendarDailyExpense={calendarDailyExpense}
+                                    mainCurrency={mainCurrency}
+                                    estimatedBudget={estimatedBudget}
+                                    isOpen={isEditDialogOpen}
+                                    onOpenChange={setIsEditDialogOpen}
+                                    formSchema={formSchema}
+                                    onSubmit={onSubmit}
+                                />
                             )}
                         </>
                     )}
@@ -186,6 +194,24 @@ const CalendarCard: React.FC<CalendarCardProps> = ({
                             plugins={[ dayGridPlugin, interactionPlugin ]}
                             initialView="dayGridMonth"
                             firstDay={1}
+                            validRange={{
+                                start: budget.startDate,
+                                end: new Date(new Date(budget.endDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                            }}
+                            dayCellClassNames={(arg) => (!arg.isDisabled ? ["cursor-pointer"] : [])}
+                            dateClick={handleDateClick}
+                        />
+                    )}
+
+                    {mainCurrency && date && (
+                        <AddCalendarDailyExpense
+                            date={date}
+                            mainCurrency={mainCurrency}
+                            estimatedBudget={estimatedBudget}
+                            isOpen={isAddDialogOpen}
+                            onOpenChange={setIsAddDialogOpen}
+                            formSchema={formSchema}
+                            onSubmit={onSubmit}
                         />
                     )}
                 </>

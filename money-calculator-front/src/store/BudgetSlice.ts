@@ -47,7 +47,7 @@ export const resetBudget = createAsyncThunk(
         secondaryCurrency?: string | undefined
     }, {rejectWithValue}) => {
         try {
-            await axios.post(`${BUDGET_URL}/reset`, resetBudget);
+            await axios.put(`${BUDGET_URL}/reset`, resetBudget);
         } catch (error) {
             const errorMessage =
                 axios.isAxiosError(error) && error.response?.data
