@@ -241,7 +241,6 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
         long weeksAvailable = ChronoUnit.WEEKS.between(startDate, today);
 
         for(int i = 0; i < weeksAvailable ; i++){
-            System.out.println("i pass");
             DailyExpenseListDTO dailyExpenseListDTO = getDailyExpensePerWeek(-i);
             DailyExpenseWeekSavingDTO dailyExpenseWeekSavingDTO = new DailyExpenseWeekSavingDTO();
             dailyExpenseWeekSavingDTO.setTotalExpense(dailyExpenseListDTO.getTotal());
