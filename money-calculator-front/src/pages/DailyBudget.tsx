@@ -5,9 +5,10 @@ import Calendar from "@/components/calendar/CalendarCard.tsx";
 import ExpensesPerDayCard from "@/components/calendar/ExpensesPerDayCard.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/Store.ts";
-import {fetchAllFixedExpenses, fetchCalendar, fetchWeek} from "@/store/ExpensesSlice.ts";
+import {fetchAllFixedExpenses, fetchCalendar, fetchSavings, fetchWeek} from "@/store/ExpensesSlice.ts";
 import {useFetchData} from "@/hooks/use-fetch-data.ts";
 import {fetchBudget} from "@/store/BudgetSlice.ts";
+import WeekSavingsCard from "@/components/calendar/WeekSavingsCard.tsx";
 
 const DailyBudget = () => {
     const {
@@ -26,7 +27,10 @@ const DailyBudget = () => {
         fetchCalendarDailyStatus,
         fetchCalendarDailyError,
         updateDailyStatus,
-        updateDailyError
+        updateDailyError,
+        weekSavings,
+        fetchWeekSavingsStatus,
+        fetchWeekSavingsError,
     } = useSelector((state: RootState) => state.expenses);
     const {
         mainCurrency,
@@ -60,6 +64,12 @@ const DailyBudget = () => {
         fetchAction: fetchCalendar,
     });
 
+    useFetchData({
+        fetchStatus: fetchWeekSavingsStatus,
+        fetchError: fetchWeekSavingsError,
+        fetchAction: fetchSavings,
+    });
+
     return (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FixedBudgetCard />
@@ -85,6 +95,15 @@ const DailyBudget = () => {
                 budget={budget}
                 mainCurrency={mainCurrency}
                 secondaryCurrency={secondaryCurrency}
+                budgetFetchStatus={budgetFetchStatus}
+                budgetFetchError={budgetFetchError}
+            />
+
+            <WeekSavingsCard
+                weekSavings={weekSavings}
+                fetchWeekSavingsStatus={fetchWeekSavingsStatus}
+                fetchWeekSavingsError={fetchWeekSavingsError}
+                mainCurrency={mainCurrency}
                 budgetFetchStatus={budgetFetchStatus}
                 budgetFetchError={budgetFetchError}
             />

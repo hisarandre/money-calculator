@@ -7,7 +7,7 @@ import {z} from "zod";
 import {useEffect} from "react";
 import {toast} from "@/hooks/use-toast.ts";
 import ExpenseForm from "@/components/calendar/ExpenseForm.tsx";
-import {fetchCalendar, fetchWeek, setWeekNumber, updateDailyExpense} from "@/store/ExpensesSlice.ts";
+import {fetchCalendar, fetchSavings, fetchWeek, setWeekNumber, updateDailyExpense} from "@/store/ExpensesSlice.ts";
 import {formatAmount, getWeekDates} from "@/utils/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 
@@ -55,6 +55,7 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         await dispatch(updateDailyExpense(data));
         dispatch(fetchCalendar());
+        dispatch(fetchSavings());
     };
 
     const getPreviousWeek = () => {
@@ -80,6 +81,7 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
         <CardCustom
             title={`Week: ${monday} - ${sunday}`}
             description="Enter the total amount of expenses of the day"
+            className="row-span-2 row-start-2 col-start-3"
             previousWeekAction={() => getPreviousWeek()}
             nextWeekAction={() => getNextWeek()}
             isPreviousAvailable={isPreviousAvailable}
@@ -107,7 +109,7 @@ const ExpensesPerDayCard: React.FC<ExpensesPerDayCardProps> = ({
 
                                 <div className="border-border border p-3 mb-2 rounded-md">
                                     <span className="text-sm">Total saving</span><br />
-                                    <strong className="text-lg">{formatAmount(mainCurrency, totalSaving)}</strong>
+                                    <strong className={`text-lg ${totalSaving < 0 ? 'text-destructive' :''}`}>{formatAmount(mainCurrency, totalSaving)}</strong>
                                 </div>
                             </div>
 

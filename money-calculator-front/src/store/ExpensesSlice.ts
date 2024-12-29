@@ -5,6 +5,7 @@ import {FixedExpense} from "@/models/FixedExpense.ts";
 import {DailyExpense} from "@/models/DailyExpense.ts";
 import {RootState} from "@/store/Store.ts";
 import {CalendarDailyExpense} from "@/models/CalendarDailyExpense.ts";
+import {WeekSaving} from "@/models/WeekSaving.ts";
 
 const PREFIX_FE = "fixed-expense";
 const PREFIX_DE = "daily-expense";
@@ -85,7 +86,7 @@ export const deleteFixedExpense = createAsyncThunk(
     });
 
 /* ----------------------------------------------- */
-/*                  DAILY EXPENSES                 */
+/*            DAILY EXPENSES & CALENDAR            */
 /* ----------------------------------------------- */
 export const fetchWeek = createAsyncThunk(
     `${PREFIX_DE}/fetchWeek`,
@@ -140,6 +141,22 @@ export const fetchCalendar = createAsyncThunk(
     }
 );
 
+export const fetchSavings = createAsyncThunk(
+    `${PREFIX_DE}/fetchSavings`,
+    async (_, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`${DAILY_EXPENSE_URL}/week/savings`);
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                axios.isAxiosError(error) && error.response?.data
+                    ? error.response.data
+                    : "Failed to fetch savings";
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
+
 // Slice definition
 const expensesSlice = createSlice({
     name: "expenses",
@@ -157,9 +174,11 @@ const expensesSlice = createSlice({
         isNextAvailable: false,
         isPreviousAvailable: false,
         weekNumber: 0,
+        weekSavings: [] as WeekSaving[],
         fetchFixedStatus: "idle",
         fetchDailyStatus: "idle",
         fetchCalendarDailyStatus: "idle",
+        fetchWeekSavingsStatus: "idle",
         addStatus: "idle",
         editStatus: "idle",
         updateDailyStatus: "idle",
@@ -167,6 +186,7 @@ const expensesSlice = createSlice({
         fetchFixedError: null as string | null,
         fetchDailyError: null as string | null,
         fetchCalendarDailyError: null as string | null,
+        fetchWeekSavingsError: null as string | null,
         addError: null as string | null,
         editError: null as string | null,
         updateDailyError: null as string | null,
@@ -315,6 +335,21 @@ const expensesSlice = createSlice({
             .addCase(fetchCalendar.rejected, (state, action) => {
                 state.fetchCalendarDailyStatus = "failed";
                 state.fetchCalendarDailyError = (action.payload as string) || "Failed to fetch week";
+            });
+
+        // fetchSavings reducers
+        builder
+            .addCase(fetchSavings.pending, (state) => {
+                state.fetchWeekSavingsStatus = "loading";
+                state.fetchWeekSavingsError = null;
+            })
+            .addCase(fetchSavings.fulfilled, (state, action) => {
+                state.fetchWeekSavingsStatus = "succeeded";
+                state.weekSavings = action.payload;
+            })
+            .addCase(fetchSavings.rejected, (state, action) => {
+                state.fetchWeekSavingsStatus = "failed";
+                state.fetchWeekSavingsError = (action.payload as string) || "Failed to fetch savings";
             });
     },
 });

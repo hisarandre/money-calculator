@@ -30,7 +30,6 @@ const FixedBudgetCard = () => {
     return (
         <CardCustom
             title={fetchStatus === "succeeded" && budget ? budget.label : "Fixed Budget"}
-            description=""
             editAction={budget ? () => setIsEditDialogOpen(true) : undefined}
         >
             {fetchStatus === "succeeded" && budget && (

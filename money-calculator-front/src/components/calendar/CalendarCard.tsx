@@ -96,7 +96,7 @@ const CalendarCard: React.FC<CalendarCardProps> = ({
 
     return (
         <CardCustom title="Calendar" description="Display the expenses per day"
-                    className="col-span-2 row-span-2">
+                    className="col-span-2">
             {budgetFetchStatus === "failed" && budgetFetchError && (
                 <FullCalendar
                     plugins={[ dayGridPlugin, interactionPlugin ]}
