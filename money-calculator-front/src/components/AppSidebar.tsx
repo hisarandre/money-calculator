@@ -1,24 +1,21 @@
 import {ToggleMode} from "@/components/ToggleMode.tsx";
-import {Calculator, House} from "lucide-react";
+import {Calculator, Wallet} from "lucide-react";
 import {Link} from "react-router-dom";
-
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup, 
-    SidebarGroupContent, 
+    SidebarGroup,
+    SidebarGroupContent,
     SidebarGroupLabel,
-    SidebarHeader, 
-    SidebarMenu, 
-    SidebarMenuButton, 
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import UserSideBar from "./users/UserSideBar";
 
-
 export function AppSidebar() {
-    
     return (
         <Sidebar variant="floating">
             <SidebarHeader>
@@ -38,15 +35,15 @@ export function AppSidebar() {
                                 <SidebarMenuButton asChild>
                                     <Link to={`/`}>
                                         <Calculator/>
-                                        <span>Projected Calculation</span>
+                                        <span>Projection</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
                                     <Link to={`/daily-budget`}>
-                                        <House/>
-                                        <span>Korea</span>
+                                        <Wallet/>
+                                        <span>Daily Budget</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
