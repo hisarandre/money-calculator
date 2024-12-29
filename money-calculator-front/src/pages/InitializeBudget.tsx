@@ -33,7 +33,6 @@ const InitializeBudget = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            id: 1,
             label: "",
             startDate: format(new Date(), "yyyy-MM-dd"),
             endDate: getDayAfter(new Date()),
@@ -69,7 +68,6 @@ const InitializeBudget = () => {
     }, [resetStatus, resetError]);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data);
         dispatch(resetBudget(data));
     };
 
@@ -89,7 +87,6 @@ const InitializeBudget = () => {
             <CardCustom title="Initialize budget">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} id="reset-budget-form" className="space-y-8">
-                        <FormFieldCustom form={form} inputName="id" label="id" type="number" disabled={true} className="hidden"/>
                         <FormFieldCustom form={form} inputName="label" label="label" description="This value can be changed later." className="!mt-0"/>
                         <div className="flex gap-3 *:flex-1">
                             <FormFieldCustom form={form} inputName="startDate" label="start date" type="date" className="flex flex-col"/>

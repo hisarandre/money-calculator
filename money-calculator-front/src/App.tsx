@@ -4,7 +4,7 @@ import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Toaster} from "@/components/ui/toaster.tsx";
 import {Outlet, useLocation} from "react-router-dom";
-import { useAuth } from '@/services/AuthContext';
+import {useAuth} from '@/services/useAuth';
 
 function App() {
     const [open, setOpen] = useState(false);

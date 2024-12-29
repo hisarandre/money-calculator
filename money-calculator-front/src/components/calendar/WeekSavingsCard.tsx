@@ -14,7 +14,7 @@ interface WeekSavingsCardProps {
     weekSavings: WeekSaving[];
     fetchWeekSavingsStatus: string;
     fetchWeekSavingsError?: string | null;
-    mainCurrency: string;
+    mainCurrency: string | null;
     budgetFetchStatus: string;
     budgetFetchError?: string | null;
 }
