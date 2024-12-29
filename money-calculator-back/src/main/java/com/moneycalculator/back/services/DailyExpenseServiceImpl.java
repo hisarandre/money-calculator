@@ -17,6 +17,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.Period;
 import java.time.temporal.TemporalAdjusters;
 
 
@@ -232,8 +233,16 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
 
         List<DailyExpenseWeekSavingDTO> dailyExpenseWeekSavingDTOS = new ArrayList<>();
 
-        for(int i = 0; i < 12 ; i++){
-            DailyExpenseListDTO dailyExpenseListDTO = getDailyExpensePerWeek(i);
+        Budget budget = budgetService.getCurrentBudget();
+
+        LocalDate startDate = budget.getStartDate();
+        LocalDate today = LocalDate.now();
+
+        long weeksAvailable = ChronoUnit.WEEKS.between(startDate, today);
+
+        for(int i = 0; i < weeksAvailable ; i++){
+            System.out.println("i pass");
+            DailyExpenseListDTO dailyExpenseListDTO = getDailyExpensePerWeek(-i);
             DailyExpenseWeekSavingDTO dailyExpenseWeekSavingDTO = new DailyExpenseWeekSavingDTO();
             dailyExpenseWeekSavingDTO.setTotalExpense(dailyExpenseListDTO.getTotal());
             dailyExpenseWeekSavingDTO.setTotalSaving(dailyExpenseListDTO.getTotalSaving());

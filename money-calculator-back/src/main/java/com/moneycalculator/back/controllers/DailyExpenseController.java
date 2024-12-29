@@ -143,7 +143,7 @@ public class DailyExpenseController {
         }
     }
 
-    @Operation(summary = "Get savings per week", description = "Sets savings and expenses per week the last three months.")
+    @Operation(summary = "Get savings per week", description = "Gets savings and expenses per week the last three months.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Savings retrieved successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = DailyExpenseListDTO.class))),
