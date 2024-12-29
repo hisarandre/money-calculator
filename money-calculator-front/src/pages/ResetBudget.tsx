@@ -53,7 +53,6 @@ const ResetBudget = () => {
     useEffect(() => {
         if (budget) {
             form.reset({
-                id: budget.id,
                 label: budget.label,
                 startDate: budget.startDate,
                 endDate: budget.endDate,
@@ -91,7 +90,6 @@ const ResetBudget = () => {
     }, [resetStatus, resetError, setIsResetDialogOpen]);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data);
         dispatch(resetBudget(data));
     };
 
@@ -127,8 +125,7 @@ const ResetBudget = () => {
                 {fetchStatus === "succeeded" && budget && (
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} id="reset-budget-form" className="space-y-8">
-                            <FormFieldCustom form={form} inputName="id" label="id" type="number" disabled={true} className="hidden"/>
-                            <FormFieldCustom form={form} inputName="label" label="label" description="This value can be changed later." className="!mt-0"/>
+                            <FormFieldCustom form={form} inputName="label" label="label" description="This value can be changed later."/>
                             <div className="flex gap-3 *:flex-1">
                                 <FormFieldCustom form={form} inputName="startDate" label="start date" type="date" className="flex flex-col"/>
                                 <FormFieldCustom form={form} inputName="endDate" label="end date" type="date" className="flex flex-col" disabledDates={(date) => date < new Date(startDate)} description="This value can be changed later."/>

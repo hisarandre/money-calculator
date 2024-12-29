@@ -38,7 +38,6 @@ export const editBudget = createAsyncThunk(
 export const resetBudget = createAsyncThunk(
     `${PREFIX}/resetBudget`,
     async (resetBudget: {
-        id: number,
         label: string,
         startDate: string,
         endDate: string,
