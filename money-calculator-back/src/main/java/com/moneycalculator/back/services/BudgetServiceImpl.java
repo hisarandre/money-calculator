@@ -89,8 +89,6 @@ public class BudgetServiceImpl implements BudgetService{
         budget.setAmount(newBudget.getAmount());
         budgetRepository.save(budget);
 
-        dailyExpenseRepository.deleteAll();
-        fixedExpenseRepository.deleteAll();
     }
 
     @Override
