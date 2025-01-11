@@ -230,13 +230,16 @@ public class DailyExpenseServiceImpl implements DailyExpenseService {
 
     @Override
     public List<DailyExpenseWeekSavingDTO> getDailyExpensePerSaving(){
-
         List<DailyExpenseWeekSavingDTO> dailyExpenseWeekSavingDTOS = new ArrayList<>();
-
         Budget budget = budgetService.getCurrentBudget();
 
+        LocalDate endDate = budget.getEndDate();
         LocalDate startDate = budget.getStartDate();
         LocalDate today = LocalDate.now();
+
+        if (today.isAfter(endDate) || today.isBefore(startDate)){
+            return dailyExpenseWeekSavingDTOS;
+        }
 
         long weeksAvailable = ChronoUnit.WEEKS.between(startDate, today);
 
